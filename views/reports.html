@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reportes - Sistema de Registro</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .report-toolbar {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+        }
+
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .kpi-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .kpi-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--accent-color);
+        }
+
+        .kpi-label {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <i class="fa-solid fa-book-open" style="margin-right: 10px;"></i>
+            <span>Mesa de Partes</span>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="/" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-table-list"></i></span>
+                    Registro Diario
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/register" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-plus-circle"></i></span>
+                    Nuevo Documento
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/reports" class="nav-link active">
+                    <span class="nav-icon"><i class="fa-solid fa-chart-line"></i></span>
+                    Reportes
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link" style="opacity: 0.5; cursor: not-allowed;">
+                    <span class="nav-icon"><i class="fa-solid fa-users"></i></span>
+                    Trabajadores
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <main class="main-content">
+        <header class="top-bar">
+            <div class="page-title">Reportes y Estadísticas</div>
+            <div class="user-info">
+                <span><i class="fa-solid fa-user-circle"></i> Admin</span>
+            </div>
+        </header>
+
+        <div class="content-area">
+
+            <div class="summary-cards">
+                <div class="kpi-card">
+                    <div class="kpi-value">12</div>
+                    <div class="kpi-label">Documentos Hoy</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-value">348</div>
+                    <div class="kpi-label">Total este Mes</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-value">5</div>
+                    <div class="kpi-label">Pendientes</div>
+                </div>
+            </div>
+
+            <div class="paper-card" style="padding: 20px;">
+                <div class="report-toolbar">
+                    <button class="btn btn-primary" style="background-color: #27ae60;">
+                        <i class="fa-solid fa-file-excel"></i> Exportar a Excel
+                    </button>
+                </div>
+
+                <h3 style="margin-bottom: 15px; color: var(--primary-color);">Resumen por Tipo de Documento</h3>
+                <table class="registry-table">
+                    <thead>
+                        <tr>
+                            <th>Tipo de Documento</th>
+                            <th>Total Recibidos</th>
+                            <th>Porcentaje</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Oficios</td>
+                            <td>120</td>
+                            <td>35%</td>
+                        </tr>
+                        <tr>
+                            <td>Cartas</td>
+                            <td>80</td>
+                            <td>23%</td>
+                        </tr>
+                        <tr>
+                            <td>Solicitudes</td>
+                            <td>95</td>
+                            <td>27%</td>
+                        </tr>
+                        <tr>
+                            <td>Memorandos</td>
+                            <td>40</td>
+                            <td>11%</td>
+                        </tr>
+                        <tr>
+                            <td>Otros</td>
+                            <td>13</td>
+                            <td>4%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</body>
+
+</html>

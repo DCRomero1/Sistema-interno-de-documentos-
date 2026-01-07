@@ -1,0 +1,16 @@
+{
+  "name": "sistema-registro-documentos",
+  "version": "1.0.0",
+  "description": "Sistema de Registro de Documentos Local (Mesa de Partes)",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "node src/app.js",
+    "dev": "node --watch src/app.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.22.1"
+  }
+}

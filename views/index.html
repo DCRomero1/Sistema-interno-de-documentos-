@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Registro Documentario</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- Using a common icon library for visuals -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <i class="fa-solid fa-book-open" style="margin-right: 10px;"></i>
+            <span>Administración</span>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="/" class="nav-link active">
+                    <span class="nav-icon"><i class="fa-solid fa-table-list"></i></span>
+                    Registro Diario
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/register" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-plus-circle"></i></span>
+                    Nuevo Documento
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/reports" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-chart-line"></i></span>
+                    Reportes
+                </a>
+            </li>
+            <!-- Future Modules -->
+            <li class="nav-item">
+                <a href="#" class="nav-link" style="opacity: 0.5; cursor: not-allowed;">
+                    <span class="nav-icon"><i class="fa-solid fa-users"></i></span>
+                    Trabajadores
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Top Bar -->
+        <header class="top-bar">
+            <div class="page-title">Registro Diario de Documentos</div>
+            <div class="user-info">
+                <span><i class="fa-solid fa-user-circle"></i> Admin</span>
+            </div>
+        </header>
+
+        <!-- Content Area -->
+        <div class="content-area">
+            <div class="paper-card">
+                <div class="registry-container">
+                    <table class="registry-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">N° Corr.</th>
+                                <th style="width: 90px;">Recepción</th>
+                                <th style="width: 80px;">Tipo</th>
+                                <th style="width: 150px;">Área Origen</th>
+                                <th>Concepto</th>
+                                <th style="width: 90px;">Despacho</th>
+                                <th style="width: 150px;">Área de derivacion</th>
+                                <th style="width: 60px;">Folios</th>
+                                <th style="width: 100px;">Cargo</th>
+                                <th style="width: 80px;">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="documentsTableBody">
+                            <!-- Data will be loaded via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal for Updating Location -->
+    <div id="updateModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-location-arrow"></i> Actualizar Ubicación</h3>
+                <span class="close-modal" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="updateForm">
+                    <div class="form-group">
+                        <label class="form-label">Documento ID</label>
+                        <input type="text" id="modalDocId" class="form-input" readonly style="background-color: #eee;">
+                    </div>
+                    <!-- Reuse the same list for location updates -->
+                    <div class="form-group">
+                        <p style="font-size: 0.9rem; color: #666;">Seleccione si el documento se mueve a otra área:</p>
+                        <select class="form-select" id="modalNewLocation">
+                            <option value="" selected disabled>Seleccione nueva ubicación...</option>
+                            <optgroup label="Gestión y Finanzas">
+                                <option>ORDEN DE COMPRA</option>
+                                <option>ORDEN SERVICIO</option>
+                                <option>HABILITACION DE FONDOS</option>
+                                <option>REEMBOLSO</option>
+                                <option>TESORERIA COMPROBANTE DE PAGO</option>
+                            </optgroup>
+                            <optgroup label="Administración Central">
+                                <option>JEFATURA DE UNIDAD DE ADMINISTRACION</option>
+                                <option>Abastecimiento</option>
+                                <option>Patrimonio</option>
+                                <option>Almacén</option>
+                                <option>Recursos humanos</option>
+                                <option>Secretaria académica</option>
+                                <option>Secretaria de dirección</option>
+                                <option>Coordinador administrativo fundo calana</option>
+                                <option>Personal de servicio</option>
+                            </optgroup>
+                            <optgroup label="Tecnologías e Información">
+                                <option>Canal 45 (Oficina de informática y comunicación)</option>
+                                <option>Mantenimiento de software</option>
+                                <option>Especialista hardware</option>
+                                <option>Fablab</option>
+                            </optgroup>
+                            <optgroup label="Gestión Académica y Bienestar">
+                                <option>Formación continua</option>
+                                <option>Jefatura de unidad académica</option>
+                                <option>Asistencia social</option>
+                                <option>Unidad de bienestar y empleabilidad</option>
+                            </optgroup>
+                            <optgroup label="Programas de Estudios (Áreas Académicas)">
+                                <option>Arquitectura de plataformas y servicios TI</option>
+                                <option>Asistencia administrativa</option>
+                                <option>Contabilidad</option>
+                                <option>Construcción civil</option>
+                                <option>Producción Agropecuaria</option>
+                                <option>Electricidad Industrial</option>
+                                <option>Electrónica Industrial</option>
+                                <option>Mecánica de producción industrial</option>
+                                <option>Mecatrónica Automotriz</option>
+                            </optgroup>
+                            <option>Otros</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
+                <button class="btn btn-primary" onclick="saveLocationUpdate()">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Load documents on startup
+        document.addEventListener('DOMContentLoaded', loadDocuments);
+
+        async function loadDocuments() {
+            try {
+                const response = await fetch('/api/documents');
+                const documents = await response.json();
+                const tbody = document.getElementById('documentsTableBody');
+                tbody.innerHTML = '';
+
+                documents.forEach(doc => {
+                    const row = document.createElement('tr');
+                    // "Ubicacion" is considered the current area it corresponds to effectively
+                    row.innerHTML = `
+                        <td style="font-weight: bold; color: var(--primary-color);">${doc.id}</td>
+                        <td>${doc.fecha}</td>
+                        <td>${doc.tipo}</td>
+                        <td>${doc.origen}</td>
+                        <td>${doc.concepto}</td>
+                        <td>${doc.fechaDespacho || '-'}</td>
+                        <td>${doc.ubicacion}</td>
+                        <td>${doc.folios || '0'}</td>
+                        <td>${doc.cargo || '-'}</td>
+                        <td>
+                            <button class="btn-icon edit" onclick="openModal('${doc.id}')">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </button>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error loading documents:', error);
+            }
+        }
+
+        function openModal(docId) {
+            document.getElementById('updateModal').style.display = 'block';
+            document.getElementById('modalDocId').value = docId;
+            document.getElementById('modalNewLocation').value = "";
+        }
+
+        function closeModal() {
+            document.getElementById('updateModal').style.display = 'none';
+        }
+
+        function toggleReturn() {
+            const isChecked = document.getElementById('returnToOrigin').checked;
+            const select = document.getElementById('modalNewLocation');
+
+            if (isChecked) {
+                select.disabled = true;
+                // Visual cue or logic to auto-select origin could go here
+            } else {
+                select.disabled = false;
+            }
+        }
+
+        async function saveLocationUpdate() {
+            const docId = document.getElementById('modalDocId').value;
+            const origin = document.getElementById('modalOrigin').value;
+            const isReturn = document.getElementById('returnToOrigin').checked;
+            let newLocation = document.getElementById('modalNewLocation').value;
+            const obs = document.getElementById('modalObs').value;
+
+            if (isReturn) {
+                newLocation = origin;
+            }
+
+            if (!newLocation) {
+                alert('Por favor seleccione una ubicación o marque regresar al origen.');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/documents/update-location', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        id: docId,
+                        ubicacion: newLocation,
+                        observaciones: obs
+                    })
+                });
+
+                if (response.ok) {
+                    alert('Ubicación actualizada correctamente');
+                    closeModal();
+                    loadDocuments(); // Reload table
+                } else {
+                    alert('Error al actualizar');
+                }
+            } catch (error) {
+                console.error(error);
+                alert('Error de conexión');
+            }
+        }
+
+        // Close modal if clicked outside
+        window.onclick = function (event) {
+            var modal = document.getElementById('updateModal');
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
+</body>
+
+</html>

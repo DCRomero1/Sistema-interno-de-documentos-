@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuevo Documento - Sistema de Registro</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <i class="fa-solid fa-book-open" style="margin-right: 10px;"></i>
+            <span>Administración</span>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="/" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-table-list"></i></span>
+                    Registro Diario
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/register" class="nav-link active">
+                    <span class="nav-icon"><i class="fa-solid fa-plus-circle"></i></span>
+                    Nuevo Documento
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/reports" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-chart-line"></i></span>
+                    Reportes
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link" style="opacity: 0.5; cursor: not-allowed;">
+                    <span class="nav-icon"><i class="fa-solid fa-users"></i></span>
+                    Trabajadores
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <main class="main-content">
+        <header class="top-bar">
+            <div class="page-title">Registrar Nuevo Documento</div>
+            <div class="user-info">
+                <span><i class="fa-solid fa-user-circle"></i> Admin</span>
+            </div>
+        </header>
+
+        <div class="content-area">
+            <div class="paper-card auto-height">
+                <div class="form-container">
+                    <form class="form-grid">
+
+                        <!-- Row 1: Dates -->
+                        <div class="form-group">
+                            <label class="form-label">Fecha de Recepción</label>
+                            <input type="date" id="fecha" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Fecha de Despacho (Derivación)</label>
+                            <input type="date" id="fechaDespacho" class="form-input">
+                        </div>
+
+                        <!-- Row 2: Type and Origin -->
+                        <div class="form-group">
+                            <label class="form-label">Tipo de Documento</label>
+                            <select id="tipo" class="form-select">
+                                <option>Oficio</option>
+                                <option>Solicitud</option>
+                                <option>Carta</option>
+                                <option>Memorando</option>
+                                <option>Informe</option>
+                                <option>Otro</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Área de donde llega (Origen)</label>
+                            <select id="origen" class="form-select">
+                                <option value="" selected disabled>Seleccione origen...</option>
+                                <option>Abastecimiento</option>
+                                <option>Patrimonio</option>
+                                <option>Almacén</option>
+                                <option>Recursos Humanos</option>
+                                <option>Secretaría Académica</option>
+                                <option>Secretaría de Dirección</option>
+                                <option>Coordinador Administrativo Fundo Calana</option>
+                                <option>Personal de Servicio</option>
+                                <option>Canal 45 (Oficina de Informática y Comunicación)</option>
+                                <option>Mantenimiento de Software</option>
+                                <option>Formación Continua</option>
+                                <option>Jefatura de Unidad Académica</option>
+                                <option>Asistencia Social</option>
+                                <option>Especialista Hardware</option>
+                                <option>Fablab</option>
+                                <option>Unidad de Bienestar y Empleabilidad</option>
+                                <optgroup label="Áreas Académicas">
+                                    <option>Arquitectura de Plataformas y Servicios de TI</option>
+                                    <option>Asistencia Administrativa</option>
+                                    <option>Contabilidad</option>
+                                    <option>Construcción Civil</option>
+                                    <option>Producción Agropecuaria</option>
+                                    <option>Electricidad Industrial</option>
+                                    <option>Electrónica Industrial</option>
+                                    <option>Mecánica de Producción Industrial</option>
+                                    <option>Mecatrónica Automotriz</option>
+                                </optgroup>
+                                <option>Otros</option>
+                            </select>
+                            <input type="text" id="origenOtro" class="form-input"
+                                style="display: none; margin-top: 10px;" placeholder="Especifique el área...">
+                        </div>
+
+                        <!-- Row 3: Concepto (Full width) -->
+                        <div class="form-group full-width">
+                            <label class="form-label">Concepto / Asunto</label>
+                            <input type="text" id="concepto" class="form-input"
+                                placeholder="Descripción breve del documento">
+                        </div>
+
+                        <!-- Row 4: Destination -->
+                        <div class="form-group full-width">
+                            <label class="form-label">Área que corresponde (Destino)</label>
+                            <select id="destino" class="form-select">
+                                <option value="" selected disabled>Seleccione un área...</option>
+                                <optgroup label="Gestión y Finanzas">
+                                    <option>ORDEN DE COMPRA</option>
+                                    <option>ORDEN SERVICIO</option>
+                                    <option>HABILITACION DE FONDOS</option>
+                                    <option>REEMBOLSO</option>
+                                    <option>TESORERIA COMPROBANTE DE PAGO</option>
+                                </optgroup>
+                                <optgroup label="Administración Central">
+                                    <option>JEFATURA DE UNIDAD DE ADMINISTRACION</option>
+                                    <option>Abastecimiento</option>
+                                    <option>Patrimonio</option>
+                                    <option>Almacén</option>
+                                    <option>Recursos humanos</option>
+                                    <option>Secretaria académica</option>
+                                    <option>Secretaria de dirección</option>
+                                    <option>Coordinador administrativo fundo calana</option>
+                                    <option>Personal de servicio</option>
+                                </optgroup>
+                                <optgroup label="Tecnologías e Información">
+                                    <option>Canal 45 (Oficina de informática y comunicación)</option>
+                                    <option>Mantenimiento de software</option>
+                                    <option>Especialista hardware</option>
+                                    <option>Fablab</option>
+                                </optgroup>
+                                <optgroup label="Gestión Académica y Bienestar">
+                                    <option>Formación continua</option>
+                                    <option>Jefatura de unidad académica</option>
+                                    <option>Asistencia social</option>
+                                    <option>Unidad de bienestar y empleabilidad</option>
+                                </optgroup>
+                                <optgroup label="Programas de Estudios (Áreas Académicas)">
+                                    <option>Arquitectura de plataformas y servicios TI</option>
+                                    <option>Asistencia administrativa</option>
+                                    <option>Contabilidad</option>
+                                    <option>Construcción civil</option>
+                                    <option>Producción Agropecuaria</option>
+                                    <option>Electricidad Industrial</option>
+                                    <option>Electrónica Industrial</option>
+                                    <option>Mecánica de producción industrial</option>
+                                    <option>Mecatrónica Automotriz</option>
+                                </optgroup>
+                                <option>Otros</option>
+                            </select>
+                        </div>
+
+                        <!-- Row 5: Details -->
+                        <div class="form-group">
+                            <label class="form-label">N° Folios</label>
+                            <input type="number" id="folios" class="form-input" placeholder="Ej. 10">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Cargo (Persona que recibe/firma)</label>
+                            <input type="text" id="cargo" class="form-input" placeholder="Nombre o Cargo">
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="reset" class="btn btn-secondary"
+                                style="background-color: #95a5a6; margin-right: auto;">
+                                <i class="fa-solid fa-eraser"></i> Limpiar
+                            </button>
+                            <a href="/" class="btn btn-secondary">Cancelar</a>
+                            <button type="button" class="btn btn-primary" onclick="submitForm()">
+                                <i class="fa-solid fa-save"></i> Guardar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Set default date to today
+        document.getElementById('fecha').valueAsDate = new Date();
+        document.getElementById('fechaDespacho').valueAsDate = new Date();
+
+        // Listen for changes on Origen Select
+        document.getElementById('origen').addEventListener('change', function () {
+            const inputOtro = document.getElementById('origenOtro');
+            if (this.value === 'Otros') {
+                inputOtro.style.display = 'block';
+                inputOtro.focus();
+            } else {
+                inputOtro.style.display = 'none';
+                inputOtro.value = ''; // Clear if hidden
+            }
+        });
+
+        async function submitForm() {
+            let origenVal = document.getElementById('origen').value;
+            if (origenVal === 'Otros') {
+                origenVal = document.getElementById('origenOtro').value.trim();
+                // append (Otro) tag or text if desired, or just use the text value
+                if (!origenVal) {
+                    alert('Por favor especifique el área de origen');
+                    document.getElementById('origenOtro').focus();
+                    return;
+                }
+            }
+
+            // Collect data
+            const data = {
+                fecha: document.getElementById('fecha').value,
+                fechaDespacho: document.getElementById('fechaDespacho').value,
+                tipo: document.getElementById('tipo').value,
+                origen: origenVal,
+                concepto: document.getElementById('concepto').value,
+                destino: document.getElementById('destino').value,
+                folios: document.getElementById('folios').value,
+                cargo: document.getElementById('cargo').value
+            };
+
+            // Basic validation
+            if (!data.origen || !data.concepto || !data.destino) {
+                alert('Por favor complete: Origen, Concepto, Destino');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/documents', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    alert('Documento registrado correctamente');
+                    window.location.href = '/'; // Go back to dashboard
+                } else {
+                    alert('Error al guardar el documento');
+                }
+            } catch (error) {
+                console.error(error);
+                alert('Error de conexión');
+            }
+        }
+    </script>
+</body>
+
+</html>
