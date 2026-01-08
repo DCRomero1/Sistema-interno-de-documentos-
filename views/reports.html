@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reportes - Sistema de Registro</title>
     <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/fontawesome.all.min.css">
     <style>
         .report-toolbar {
             display: flex;
@@ -46,7 +46,8 @@
 
     <nav class="sidebar">
         <div class="sidebar-header">
-            <i class="fa-solid fa-book-open" style="margin-right: 10px;"></i>
+            <i class="fa-solid fa-bars" id="sidebarToggle" style="margin-right: 15px; cursor: pointer;"></i>
+            <i class="fa-solid fa-book-open" id="sidebarIcon" style="margin-right: 10px;"></i>
             <span>Mesa de Partes</span>
         </div>
         <ul class="nav-menu">
@@ -80,8 +81,13 @@
     <main class="main-content">
         <header class="top-bar">
             <div class="page-title">Reportes y Estadísticas</div>
-            <div class="user-info">
-                <span><i class="fa-solid fa-user-circle"></i> Admin</span>
+            <div class="user-info" onclick="toggleUserDropdown(event)">
+                <span><i class="fa-solid fa-user-circle"></i> Admin <i class="fa-solid fa-caret-down"></i></span>
+                <div class="dropdown-menu" id="userDropdown">
+                    <a href="/logout" class="dropdown-item">
+                        <i class="fa-solid fa-right-from-bracket"></i> Cerrar Sesión
+                    </a>
+                </div>
             </div>
         </header>
 
@@ -149,6 +155,25 @@
             </div>
         </div>
     </main>
+
+    <script src="/js/common.js"></script>
+    <script>
+        // Sidebar Toggle Logic
+        document.addEventListener('DOMContentLoaded', () => {
+            const toggleBtn = document.getElementById('sidebarToggle');
+            const sidebar = document.querySelector('.sidebar');
+
+            // Restore state
+            if (localStorage.getItem('sidebarCollapsed') === 'true') {
+                sidebar.classList.add('collapsed');
+            }
+
+            toggleBtn.addEventListener('click', () => {
+                sidebar.classList.toggle('collapsed');
+                localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
+            });
+        });
+    </script>
 </body>
 
 </html>

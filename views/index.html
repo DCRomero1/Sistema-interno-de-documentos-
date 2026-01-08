@@ -7,7 +7,7 @@
     <title>Sistema de Registro Documentario</title>
     <link rel="stylesheet" href="/css/style.css">
     <!-- Using a common icon library for visuals -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/fontawesome.all.min.css">
 </head>
 
 <body>
@@ -15,7 +15,8 @@
     <!-- Sidebar -->
     <nav class="sidebar">
         <div class="sidebar-header">
-            <i class="fa-solid fa-book-open" style="margin-right: 10px;"></i>
+            <i class="fa-solid fa-bars" id="sidebarToggle" style="margin-right: 15px; cursor: pointer;"></i>
+            <i class="fa-solid fa-book-open" id="sidebarIcon" style="margin-right: 10px;"></i>
             <span>Administración</span>
         </div>
         <ul class="nav-menu">
@@ -52,14 +53,48 @@
         <!-- Top Bar -->
         <header class="top-bar">
             <div class="page-title">Registro Diario de Documentos</div>
-            <div class="user-info">
-                <span><i class="fa-solid fa-user-circle"></i> Admin</span>
+            <div class="user-info" onclick="toggleUserDropdown(event)">
+                <span><i class="fa-solid fa-user-circle"></i> Admin <i class="fa-solid fa-caret-down"></i></span>
+                <div class="dropdown-menu" id="userDropdown">
+                    <a href="/logout" class="dropdown-item">
+                        <i class="fa-solid fa-right-from-bracket"></i> Cerrar Sesión
+                    </a>
+                </div>
             </div>
         </header>
 
         <!-- Content Area -->
         <div class="content-area">
             <div class="paper-card">
+                <!-- Search and Filter Section -->
+                <div class="search-section">
+                    <div class="search-box">
+                        <i class="fa-solid fa-search search-icon"></i>
+                        <input type="text" id="searchInput" placeholder="Buscar por remite, concepto o cargo..."
+                            class="search-input">
+                    </div>
+                    <div class="filter-box">
+                        <select id="filterType" class="filter-select">
+                            <option value="">Todos los Tipos</option>
+                            <option value="Oficio">Oficio</option>
+                            <option value="Carta">Carta</option>
+                            <option value="Solicitud">Solicitud</option>
+                            <option value="Memorando">Memorando</option>
+                        </select>
+                        <select id="filterArea" class="filter-select">
+                            <option value="">Todas las Áreas</option>
+                            <option value="Gerencia">Gerencia</option>
+                            <option value="Administración">Administración</option>
+                            <option value="Logística">Logística</option>
+                            <option value="Patrimonio">Patrimonio</option>
+                            <option value="Contabilidad">Contabilidad</option>
+                        </select>
+                        <button class="btn btn-secondary btn-icon-only">
+                            <i class="fa-solid fa-filter"></i>
+                        </button>
+                    </div>
+                </div>
+
                 <div class="registry-container">
                     <table class="registry-table">
                         <thead>
@@ -73,7 +108,7 @@
                                 <th style="width: 150px;">Área de derivacion</th>
                                 <th style="width: 60px;">Folios</th>
                                 <th style="width: 100px;">Cargo</th>
-                                <th style="width: 80px;">Acciones</th>
+                                <th style="width: 100px;">Acciones</th>
                             </tr>
                         </thead>
                         <tbody id="documentsTableBody">
@@ -85,22 +120,24 @@
         </div>
     </main>
 
-    <!-- Modal for Updating Location -->
+    <!-- Modal for Updating Document -->
     <div id="updateModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3><i class="fa-solid fa-location-arrow"></i> Actualizar Ubicación</h3>
+                <h3><i class="fa-solid fa-pen-to-square"></i> Actualizar Documento</h3>
                 <span class="close-modal" onclick="closeModal()">&times;</span>
             </div>
             <div class="modal-body">
                 <form id="updateForm">
+                    <input type="hidden" id="modalDocId">
+
                     <div class="form-group">
-                        <label class="form-label">Documento ID</label>
-                        <input type="text" id="modalDocId" class="form-input" readonly style="background-color: #eee;">
+                        <label class="form-label">Fecha de Despacho</label>
+                        <input type="date" id="modalFechaDespacho" class="form-input">
                     </div>
-                    <!-- Reuse the same list for location updates -->
+
                     <div class="form-group">
-                        <p style="font-size: 0.9rem; color: #666;">Seleccione si el documento se mueve a otra área:</p>
+                        <label class="form-label">Área de Derivación (Destino)</label>
                         <select class="form-select" id="modalNewLocation">
                             <option value="" selected disabled>Seleccione nueva ubicación...</option>
                             <optgroup label="Gestión y Finanzas">
@@ -147,121 +184,76 @@
                             <option>Otros</option>
                         </select>
                     </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Cargos (Persona)</label>
+                        <input type="text" id="modalCargo" class="form-input" placeholder="Nombre o Cargo">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Observaciones</label>
+                        <textarea id="modalObs" class="form-textarea" rows="2"
+                            placeholder="Observaciones adicionales..."></textarea>
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
-                <button class="btn btn-primary" onclick="saveLocationUpdate()">Guardar</button>
+                <button class="btn btn-primary" onclick="saveLocationUpdate()">Guardar Cambios</button>
             </div>
         </div>
     </div>
 
+    <!-- Modal for Viewing History -->
+    <div id="historyModal" class="modal">
+        <div class="modal-content" style="max-width: 800px;">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-clock-rotate-left"></i> Historial del Documento</h3>
+                <span class="close-modal" onclick="closeHistoryModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="history-container">
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Acción</th>
+                                <th>Origen</th>
+                                <th>Destino</th>
+                                <th>Cargo</th>
+                                <th>Observaciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyTableBody">
+                            <!-- History items will be injected here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeHistoryModal()">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/common.js"></script>
+    <script src="/js/index.js"></script>
     <script>
-        // Load documents on startup
-        document.addEventListener('DOMContentLoaded', loadDocuments);
+        // Sidebar Toggle Logic
+        document.addEventListener('DOMContentLoaded', () => {
+            const toggleBtn = document.getElementById('sidebarToggle');
+            const sidebar = document.querySelector('.sidebar');
 
-        async function loadDocuments() {
-            try {
-                const response = await fetch('/api/documents');
-                const documents = await response.json();
-                const tbody = document.getElementById('documentsTableBody');
-                tbody.innerHTML = '';
-
-                documents.forEach(doc => {
-                    const row = document.createElement('tr');
-                    // "Ubicacion" is considered the current area it corresponds to effectively
-                    row.innerHTML = `
-                        <td style="font-weight: bold; color: var(--primary-color);">${doc.id}</td>
-                        <td>${doc.fecha}</td>
-                        <td>${doc.tipo}</td>
-                        <td>${doc.origen}</td>
-                        <td>${doc.concepto}</td>
-                        <td>${doc.fechaDespacho || '-'}</td>
-                        <td>${doc.ubicacion}</td>
-                        <td>${doc.folios || '0'}</td>
-                        <td>${doc.cargo || '-'}</td>
-                        <td>
-                            <button class="btn-icon edit" onclick="openModal('${doc.id}')">
-                                <i class="fa-solid fa-pen-to-square"></i>
-                            </button>
-                        </td>
-                    `;
-                    tbody.appendChild(row);
-                });
-            } catch (error) {
-                console.error('Error loading documents:', error);
-            }
-        }
-
-        function openModal(docId) {
-            document.getElementById('updateModal').style.display = 'block';
-            document.getElementById('modalDocId').value = docId;
-            document.getElementById('modalNewLocation').value = "";
-        }
-
-        function closeModal() {
-            document.getElementById('updateModal').style.display = 'none';
-        }
-
-        function toggleReturn() {
-            const isChecked = document.getElementById('returnToOrigin').checked;
-            const select = document.getElementById('modalNewLocation');
-
-            if (isChecked) {
-                select.disabled = true;
-                // Visual cue or logic to auto-select origin could go here
-            } else {
-                select.disabled = false;
-            }
-        }
-
-        async function saveLocationUpdate() {
-            const docId = document.getElementById('modalDocId').value;
-            const origin = document.getElementById('modalOrigin').value;
-            const isReturn = document.getElementById('returnToOrigin').checked;
-            let newLocation = document.getElementById('modalNewLocation').value;
-            const obs = document.getElementById('modalObs').value;
-
-            if (isReturn) {
-                newLocation = origin;
+            // Restore state
+            if (localStorage.getItem('sidebarCollapsed') === 'true') {
+                sidebar.classList.add('collapsed');
             }
 
-            if (!newLocation) {
-                alert('Por favor seleccione una ubicación o marque regresar al origen.');
-                return;
-            }
-
-            try {
-                const response = await fetch('/api/documents/update-location', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        id: docId,
-                        ubicacion: newLocation,
-                        observaciones: obs
-                    })
-                });
-
-                if (response.ok) {
-                    alert('Ubicación actualizada correctamente');
-                    closeModal();
-                    loadDocuments(); // Reload table
-                } else {
-                    alert('Error al actualizar');
-                }
-            } catch (error) {
-                console.error(error);
-                alert('Error de conexión');
-            }
-        }
-
-        // Close modal if clicked outside
-        window.onclick = function (event) {
-            var modal = document.getElementById('updateModal');
-            if (event.target == modal) {
-                modal.style.display = "none";
-            }
-        }
+            toggleBtn.addEventListener('click', () => {
+                sidebar.classList.toggle('collapsed');
+                localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
+            });
+        });
     </script>
 </body>
 

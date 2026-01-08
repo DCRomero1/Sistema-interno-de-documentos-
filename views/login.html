@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión - Sistema de Registro</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/fontawesome.all.min.css">
+    <style>
+        body {
+            background-color: var(--bg-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .login-card {
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .login-header {
+            margin-bottom: 30px;
+        }
+
+        .login-header i {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .login-header h2 {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+        }
+
+        .error-msg {
+            background-color: #fee2e2;
+            color: #dc2626;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="login-card">
+        <div class="login-header">
+            <i class="fa-solid fa-user-shield"></i>
+            <h2>Acceso al Sistema</h2>
+            <p style="color: #7f8c8d; font-size: 0.9rem;">Ingrese sus credenciales</p>
+        </div>
+
+        <div id="errorMsg" class="error-msg"></div>
+
+        <form id="loginForm" action="/login" method="POST">
+            <div class="form-group">
+                <label class="form-label">Usuario</label>
+                <div style="position: relative;">
+                    <i class="fa-solid fa-user" style="position: absolute; left: 10px; top: 12px; color: #95a5a6;"></i>
+                    <input type="text" name="username" class="form-input" style="padding-left: 35px;"
+                        placeholder="admin" required autofocus>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Contraseña</label>
+                <div style="position: relative;">
+                    <i class="fa-solid fa-lock" style="position: absolute; left: 10px; top: 12px; color: #95a5a6;"></i>
+                    <input type="password" name="password" class="form-input" style="padding-left: 35px;"
+                        placeholder="••••" required>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-login">
+                Ingresar <i class="fa-solid fa-arrow-right" style="margin-left: 5px;"></i>
+            </button>
+        </form>
+    </div>
+
+    <!-- Simple script to handle URL query params for errors -->
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('error')) {
+            const errorDiv = document.getElementById('errorMsg');
+            errorDiv.style.display = 'block';
+            errorDiv.textContent = 'Usuario o contraseña incorrectos';
+        }
+    </script>
+</body>
+
+</html>

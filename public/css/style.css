@@ -14,7 +14,7 @@
     /* Dark gray for text */
     --border-color: #dcdcdc;
     /* Light gray for lines */
-    --hover-color: #e8f6f3;
+    --hover-color: #f3f3f3;
     /* Light teal/blue for row hover */
 
     /* Dimensions */
@@ -75,6 +75,9 @@ body {
     text-decoration: none;
     transition: all 0.3s ease;
     border-left: 4px solid transparent;
+    white-space: nowrap;
+    /* Prevent text wrapping */
+    overflow: hidden;
 }
 
 .nav-link:hover,
@@ -88,6 +91,66 @@ body {
     margin-right: 10px;
     width: 20px;
     text-align: center;
+    font-size: 1rem;
+    /* Ensure icon has size when parent is 0 */
+}
+
+/* Collapsed Sidebar */
+.sidebar.collapsed {
+    width: 70px;
+    /* Slim width */
+}
+
+.sidebar.collapsed .sidebar-header span {
+    display: none;
+}
+
+.sidebar.collapsed .sidebar-header {
+    justify-content: center;
+    padding: 0;
+}
+
+.sidebar.collapsed .sidebar-header i {
+    margin-right: 0 !important;
+}
+
+.bg-plomito {
+    background-color: #f0f2f5;
+    /* Light gray "plomito" */
+}
+
+.sidebar.collapsed #sidebarIcon {
+    display: none;
+}
+
+.sidebar.collapsed .nav-link {
+    justify-content: center;
+    font-size: 0;
+    /* Hide text */
+    padding: 12px 0;
+    border-left: 0;
+    /* Remove border indicator or adjust it? keeping it might look odd if width is small */
+}
+
+.sidebar.collapsed .nav-link .nav-icon {
+    margin-right: 0;
+    font-size: 1.2rem;
+    /* Make icons slightly larger */
+}
+
+/* Sidebar Toggle Button */
+#sidebarToggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2rem;
+    color: white;
+    /* White to match sidebar text */
+    transition: color 0.2s;
+}
+
+#sidebarToggle:hover {
+    color: var(--accent-color);
 }
 
 /* Main Content */
@@ -140,6 +203,87 @@ body {
     overflow: visible;
 }
 
+
+/* Search and Filter Section */
+.search-section {
+    padding: 20px;
+    background-color: white;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.search-box {
+    flex-grow: 1;
+    position: relative;
+    min-width: 250px;
+}
+
+.search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #95a5a6;
+}
+
+.search-input {
+    width: 100%;
+    padding: 10px 10px 10px 35px;
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    background-color: #f9f9f9;
+    transition: all 0.3s;
+}
+
+.search-input:focus {
+    background-color: white;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(41, 128, 185, 0.1);
+    outline: none;
+}
+
+.filter-box {
+    display: flex;
+    gap: 10px;
+}
+
+.filter-select {
+    padding: 8px 15px;
+    border-radius: 20px;
+    border: 1px solid var(--border-color);
+    background-color: white;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.filter-select:hover {
+    border-color: #bdc3c7;
+}
+
+.btn-icon-only {
+    padding: 8px 12px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@media (max-width: 768px) {
+    .search-section {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+
+    .filter-box {
+        overflow-x: auto;
+        padding-bottom: 5px;
+    }
+}
+
 /* Registry Book Table */
 .registry-container {
     flex-grow: 1;
@@ -180,6 +324,13 @@ body {
 .registry-table tbody tr:hover {
     background-color: var(--hover-color);
     cursor: default;
+}
+
+/* Center Actions Column */
+/* Center Actions Column */
+.registry-table th:last-child,
+.registry-table td:last-child {
+    text-align: center !important;
 }
 
 /* Buttons */
@@ -236,8 +387,50 @@ body {
 .form-label {
     display: block;
     margin-bottom: 5px;
-    font-weight: 600;
+}
+
+/* User Info & Dropdown */
+.user-info {
+    font-weight: 500;
+    color: var(--text-color);
+    position: relative;
+    cursor: pointer;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    min-width: 150px;
+    z-index: 1000;
+    margin-top: 10px;
+    border: 1px solid var(--border-color);
+}
+
+.dropdown-menu.show {
+    display: block;
+}
+
+.dropdown-item {
+    display: block;
+    padding: 10px 15px;
+    color: var(--text-color);
+    text-decoration: none;
+    transition: background 0.2s;
+}
+
+.dropdown-item:hover {
+    background-color: var(--background-color);
     color: var(--primary-color);
+}
+
+.dropdown-item i {
+    width: 20px;
+    margin-right: 5px;
 }
 
 .form-input,
@@ -257,6 +450,11 @@ body {
     outline: none;
     border-color: var(--accent-color);
     box-shadow: 0 0 0 2px rgba(41, 128, 185, 0.1);
+}
+
+.input-error {
+    border: 1px solid #e74c3c !important;
+    background-color: #fdf2f2;
 }
 
 .form-actions {
@@ -283,8 +481,50 @@ body {
         height: 100vh;
     }
 
-    .registry-table {
-        font-size: 0.85rem;
+    /* Table responsive - Card View */
+    .registry-table thead {
+        display: none;
+    }
+
+    .registry-table,
+    .registry-table tbody,
+    .registry-table tr,
+    .registry-table td {
+        display: block;
+        width: 100%;
+    }
+
+    .registry-table tr {
+        margin-bottom: 15px;
+        background-color: white;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    }
+
+    .registry-table td {
+        text-align: right;
+        padding-left: 50%;
+        position: relative;
+        border-bottom: 1px solid #eee;
+    }
+
+    .registry-table td:last-child {
+        border-bottom: 0;
+        text-align: center;
+        /* Actions centered */
+        padding-left: 15px;
+    }
+
+    .registry-table td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 15px;
+        width: 45%;
+        padding-right: 10px;
+        text-align: left;
+        font-weight: bold;
+        color: var(--secondary-color);
     }
 }
 
@@ -405,4 +645,37 @@ body {
     border-bottom-right-radius: 8px;
     text-align: right;
     border-top: 1px solid #eee;
+}
+
+/* History Modal Styles */
+.history-container {
+    overflow-x: auto;
+}
+
+.history-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.history-table th {
+    background-color: var(--secondary-color);
+    color: white;
+    padding: 10px;
+    text-align: left;
+    font-size: 0.9rem;
+}
+
+.history-table td {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    font-size: 0.9rem;
+}
+
+.history-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.history-table tr:hover {
+    background-color: #f0f0f0;
 }
