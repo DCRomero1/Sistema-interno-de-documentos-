@@ -146,6 +146,7 @@ function closeModal() {
     document.getElementById('updateModal').style.display = 'none';
 }
 
+// cambios que necesitamos para hacer que las configuraciones sena mayores.
 async function saveLocationUpdate() {
     const docId = document.getElementById('modalDocId').value;
     const newLocation = document.getElementById('modalNewLocation').value;

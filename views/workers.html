@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trabajadores - Sistema de Registro</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/fontawesome.all.min.css">
+    <style>
+        .workers-layout {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+
+        .worker-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            transition: transform 0.2s;
+        }
+
+        .worker-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .worker-avatar {
+            width: 50px;
+            height: 50px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            margin-right: 15px;
+        }
+
+        .worker-info h4 {
+            margin: 0;
+            color: var(--text-color);
+        }
+
+        .worker-info p {
+            margin: 5px 0 0;
+            font-size: 0.9rem;
+            color: #7f8c8d;
+        }
+
+        .birthday-widget {
+            background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .birthday-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .birthday-header i {
+            font-size: 1.5rem;
+            margin-right: 10px;
+        }
+
+        .birthday-list .birthday-item {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .birthday-date {
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        /* Modal Styles Reuse */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 10% auto;
+            padding: 0;
+            border: 1px solid #888;
+            width: 50%;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-header,
+        .modal-footer {
+            padding: 15px 20px;
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #eee;
+        }
+
+        .modal-footer {
+            border-top: 1px solid #eee;
+            border-bottom: none;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <i class="fa-solid fa-bars" id="sidebarToggle" style="margin-right: 15px; cursor: pointer;"></i>
+            <i class="fa-solid fa-book-open" id="sidebarIcon" style="margin-right: 10px;"></i>
+            <span>Mesa de Partes</span>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="/" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-table-list"></i></span>
+                    Registro Diario
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/register" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-plus-circle"></i></span>
+                    Nuevo Documento
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/reports" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-chart-line"></i></span>
+                    Reportes
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/workers" class="nav-link active">
+                    <span class="nav-icon"><i class="fa-solid fa-users"></i></span>
+                    Trabajadores
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <main class="main-content">
+        <header class="top-bar">
+            <div class="page-title">Gestión de Personal</div>
+            <div class="user-info" onclick="toggleUserDropdown(event)">
+                <span><i class="fa-solid fa-user-circle"></i> Admin <i class="fa-solid fa-caret-down"></i></span>
+                <div class="dropdown-menu" id="userDropdown">
+                    <a href="/logout" class="dropdown-item">
+                        <i class="fa-solid fa-right-from-bracket"></i> Cerrar Sesión
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <div class="content-area">
+
+            <div class="workers-layout">
+                <!-- Left Column: Workers List -->
+                <div class="workers-list-section">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h2>Lista de Docentes y Personal</h2>
+                        <button class="btn btn-primary" onclick="openWorkerModal()">
+                            <i class="fa-solid fa-plus"></i> Nuevo Trabajador
+                        </button>
+                    </div>
+
+                    <!-- Placeholder for Workers List -->
+                    <div id="workersList">
+                        <!-- Example Static Data -->
+                        <div class="worker-card">
+                            <div class="worker-avatar">JP</div>
+                            <div class="worker-info">
+                                <h4>Juan Perez</h4>
+                                <p>Docente - Matemáticas</p>
+                            </div>
+                            <div style="margin-left: auto;">
+                                <button class="btn btn-secondary btn-icon-only"><i class="fa-solid fa-pen"></i></button>
+                            </div>
+                        </div>
+                        <div class="worker-card">
+                            <div class="worker-avatar">MR</div>
+                            <div class="worker-info">
+                                <h4>Maria Rodriguez</h4>
+                                <p>Administrativo - Secretaría</p>
+                            </div>
+                            <div style="margin-left: auto;">
+                                <button class="btn btn-secondary btn-icon-only"><i class="fa-solid fa-pen"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Birthdays & Stats -->
+                <div class="workers-widgets">
+                    <div class="birthday-widget">
+                        <div class="birthday-header">
+                            <i class="fa-solid fa-cake-candles"></i>
+                            <h3>Próximos Cumpleaños</h3>
+                        </div>
+                        <div class="birthday-list">
+                            <div class="birthday-item">
+                                <span>Juan Perez</span>
+                                <span class="birthday-date">12 Ene (Mañana)</span>
+                            </div>
+                            <div class="birthday-item">
+                                <span>Carlos Ruiz</span>
+                                <span class="birthday-date">24 Ene</span>
+                            </div>
+                        </div>
+                        <div style="text-align: center; margin-top: 15px; font-size: 0.9rem;">
+                            <i class="fa-solid fa-calendar-alt"></i> Este Mes
+                        </div>
+                    </div>
+
+                    <div class="paper-card">
+                        <h3>Resumen</h3>
+                        <p style="margin-top: 10px;">Total Personal: <strong>2</strong></p>
+                        <p>Docentes: <strong>1</strong></p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Modal for Adding Worker -->
+    <div id="workerModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-user-plus"></i> Registrar Trabajador</h3>
+                <span class="close-modal" onclick="closeWorkerModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="workerForm">
+                    <div class="form-group">
+                        <label class="form-label">Nombre Completo</label>
+                        <input type="text" class="form-input" placeholder="Ej. Juan Perez">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">DNI</label>
+                        <input type="text" class="form-input" placeholder="8 dígitos">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Fecha de Nacimiento</label>
+                        <input type="date" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Cargo / Puesto</label>
+                        <select class="form-select">
+                            <option>Docente</option>
+                            <option>Administrativo</option>
+                            <option>Dirección</option>
+                            <option>Servicios</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeWorkerModal()">Cancelar</button>
+                <button class="btn btn-primary" onclick="saveWorker()">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/common.js"></script>
+    <script src="/js/workers.js"></script>
+    <script>
+        // Modal Logic
+        function openWorkerModal() {
+            document.getElementById('workerModal').style.display = 'block';
+        }
+        function closeWorkerModal() {
+            document.getElementById('workerModal').style.display = 'none';
+        }
+
+        // Sidebar logic reused
+        document.addEventListener('DOMContentLoaded', () => {
+            const toggleBtn = document.getElementById('sidebarToggle');
+            const sidebar = document.querySelector('.sidebar');
+            if (localStorage.getItem('sidebarCollapsed') === 'true') {
+                sidebar.classList.add('collapsed');
+            }
+            toggleBtn.addEventListener('click', () => {
+                sidebar.classList.toggle('collapsed');
+                localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
+            });
+        });
+
+        // Close modal on click outside
+        window.onclick = function (event) {
+            if (event.target == document.getElementById('workerModal')) {
+                closeWorkerModal();
+            }
+        }
+    </script>
+</body>
+
+</html>

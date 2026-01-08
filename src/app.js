@@ -3,6 +3,8 @@ const path = require('path');
 const session = require('express-session');
 const app = express();
 const port = 3000;
+const db = require('./database');
+const bcrypt = require('bcrypt');
 
 // Middleware for parsing JSON and form data
 app.use(express.json());
@@ -39,13 +41,26 @@ app.get('/login', (req, res) => {
 
 app.post('/login', (req, res) => {
     const { username, password } = req.body;
-    // Hardcoded credentials: admin / admin
-    if (username === 'admin' && password === 'admin') {
-        req.session.user = { username: 'admin' };
-        res.redirect('/');
-    } else {
-        res.redirect('/login?error=1');
-    }
+
+    db.get('SELECT * FROM users WHERE username = ?', [username], (err, user) => {
+        if (err) {
+            console.error(err);
+            return res.redirect('/login?error=1');
+        }
+        if (!user) {
+            return res.redirect('/login?error=1');
+        }
+
+        // Compare hashed password
+        bcrypt.compare(password, user.password, (err, result) => {
+            if (result === true) {
+                req.session.user = { username: user.username, name: user.name };
+                res.redirect('/');
+            } else {
+                res.redirect('/login?error=1');
+            }
+        });
+    });
 });
 
 app.get('/logout', (req, res) => {
@@ -64,6 +79,71 @@ app.get('/register', isAuthenticated, (req, res) => {
 
 app.get('/reports', isAuthenticated, (req, res) => {
     res.sendFile(path.join(__dirname, '../views/reports.html'));
+});
+
+app.get('/workers', isAuthenticated, (req, res) => {
+    res.sendFile(path.join(__dirname, '../views/workers.html'));
+});
+
+// --- WORKERS API ---
+// Get all workers (for the list)
+app.get('/api/workers', isAuthenticated, (req, res) => {
+    db.all('SELECT * FROM workers ORDER BY fullName', [], (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(rows);
+    });
+});
+
+// Register new worker
+app.post('/api/workers', isAuthenticated, (req, res) => {
+    const { fullName, dni, birthDate, position } = req.body;
+    db.run(`INSERT INTO workers (fullName, dni, birthDate, position) VALUES (?, ?, ?, ?)`,
+        [fullName, dni, birthDate, position],
+        function (err) {
+            if (err) return res.status(400).json({ error: err.message });
+            res.json({ id: this.lastID, success: true });
+        }
+    );
+});
+
+// Get Upcoming Birthdays
+app.get('/api/workers/birthdays', isAuthenticated, (req, res) => {
+    db.all('SELECT fullName, birthDate, position FROM workers', [], (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+
+        const today = new Date();
+        const currentYear = today.getFullYear();
+        const currentMonth = today.getMonth(); // 0-11
+        const currentDay = today.getDate();
+
+        // Calculate next birthday for each worker
+        const upcoming = rows.map(w => {
+            const dob = new Date(w.birthDate);
+            // Set birthday to this year
+            let nextBirthday = new Date(currentYear, dob.getMonth(), dob.getDate() + 1); // +1 fix timezone offset roughly
+
+            // If birthday passed this year OR it's today but effectively passed? 
+            // Better logic: Compare MM-DD
+            // Create comparable date objects
+            // Actually simpler: 
+            // If (Month < CurMonth) or (Month == CurMonth && Day < CurDay) -> Next Year
+
+            if (nextBirthday < new Date(currentYear, currentMonth, currentDay)) {
+                nextBirthday.setFullYear(currentYear + 1);
+            }
+
+            w.nextBirthday = nextBirthday;
+            w.daysUntil = Math.ceil((nextBirthday - today) / (1000 * 60 * 60 * 24));
+
+            // Format nice date
+            w.birthDateStr = nextBirthday.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
+            return w;
+        })
+            .sort((a, b) => a.daysUntil - b.daysUntil)
+            .slice(0, 5); // Get top 5 upcoming
+
+        res.json(upcoming);
+    });
 });
 
 // API Routes (Also protected)
@@ -130,7 +210,7 @@ app.post('/api/documents/update-location', (req, res) => {
         res.status(404).json({ success: false, message: 'Documento no encontrado' });
     }
 });
-
+//
 // Encender el servidor 
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
