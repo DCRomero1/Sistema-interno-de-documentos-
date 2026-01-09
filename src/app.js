@@ -30,9 +30,6 @@ function isAuthenticated(req, res, next) {
 app.use(express.static(path.join(__dirname, '../public')));
 
 // In-memory data store (Simulating a database)
-let documents = [
-
-];
 
 // Login Routes
 app.get('/login', (req, res) => {
@@ -147,41 +144,103 @@ app.get('/api/workers/birthdays', isAuthenticated, (req, res) => {
 });
 
 // API Routes (Also protected)
+// API Routes (Also protected)
 app.get('/api/documents', isAuthenticated, (req, res) => {
-    res.json(documents);
+    // 1. Get all documents
+    db.all('SELECT * FROM documents ORDER BY created_at DESC', [], (err, docs) => {
+        if (err) return res.status(500).json({ error: err.message });
+
+        // 2. Get history for all documents (or do N+1 query which is simpler for small scale / restricted concurrency)
+        // For simplicity and local usage, let's fetch all history and map it.
+        db.all('SELECT * FROM document_history', [], (err, historyRows) => {
+            if (err) return res.status(500).json({ error: err.message });
+
+            // Map history to docs
+            const docsWithHistory = docs.map(doc => {
+                const docHistory = historyRows.filter(h => h.docId === doc.id).map(h => ({
+                    date: h.date,
+                    action: h.action,
+                    from: h.from_area,
+                    to: h.to_area,
+                    cargo: h.cargo,
+                    observation: h.observation
+                }));
+                // Sort history by id desc (newest first)? Or insertion order. 
+                // Let's assume ID order is enough or we rely on insertion.
+                return { ...doc, history: docHistory };
+            });
+
+            res.json(docsWithHistory);
+        });
+    });
 });
 
 app.post('/api/documents', (req, res) => {
     const newDoc = req.body;
-    // Auto-generate Correlativo (ID)
-    newDoc.id = String(documents.length + 1).padStart(3, '0');
 
-    // Initialize fields
-    newDoc.fechaDespacho = newDoc.fechaDespacho || '';
-    newDoc.ubicacion = newDoc.destino || '';
-    newDoc.folios = newDoc.folios || '';
-    newDoc.cargo = newDoc.cargo || '';
-    newDoc.status = 'Recibido'; // Initial Status
+    // Get count to generate ID
+    db.get('SELECT COUNT(*) as count FROM documents', [], (err, row) => {
+        if (err) return res.status(500).json({ error: err.message });
 
-    // Initialize History
-    newDoc.history = [{
-        date: newDoc.fecha,
-        action: 'Recepción',
-        from: 'Exterior',
-        to: newDoc.origen,
-        observation: 'Documento registrado'
-    }];
+        const count = row.count;
+        const newId = String(count + 1).padStart(3, '0');
 
-    documents.unshift(newDoc);
-    res.status(201).json(newDoc);
+        // Prepare vars
+        const fecha = newDoc.fecha || '';
+        const tipo = newDoc.tipo || '';
+        const origen = newDoc.origen || '';
+        const destino = newDoc.destino || ''; // Initial destination is also current ubicacion usually
+        const ubicacion = newDoc.destino || '';
+        const folios = newDoc.folios || '';
+        const concepto = newDoc.concepto || '';
+        const fechaDespacho = newDoc.fechaDespacho || '';
+        const cargo = newDoc.cargo || '';
+        const status = 'Recibido';
+        const observaciones = '';
+
+        // Insert Document
+        db.run(`INSERT INTO documents (id, fecha, tipo, origen, destino, ubicacion, folios, concepto, fechaDespacho, cargo, status, observaciones) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [newId, fecha, tipo, origen, destino, ubicacion, folios, concepto, fechaDespacho, cargo, status, observaciones],
+            function (err) {
+                if (err) return res.status(500).json({ error: err.message });
+
+                // Insert Initial History
+                const historyDate = newDoc.fecha; // Use registration date
+                const action = 'Recepción';
+                const from = 'Exterior';
+                const to = origen;
+                const obs = 'Documento registrado';
+
+                db.run(`INSERT INTO document_history (docId, date, action, from_area, to_area, cargo, observation)
+                    VALUES (?, ?, ?, ?, ?, ?, ?)`,
+                    [newId, historyDate, action, from, to, '', obs],
+                    (err) => {
+                        if (err) console.error('Error saving history', err);
+                    }
+                );
+
+                // Return constructed object so frontend updates immediately
+                newDoc.id = newId;
+                newDoc.status = status;
+                newDoc.history = [{
+                    date: historyDate,
+                    action: action,
+                    from: from,
+                    to: to,
+                    observation: obs
+                }];
+                res.status(201).json(newDoc);
+            });
+    });
 });
 
 app.post('/api/documents/update-location', (req, res) => {
     const { id, ubicacion, fechaDespacho, cargo, observaciones, finalize } = req.body;
-    const docIndex = documents.findIndex(d => d.id === id);
 
-    if (docIndex > -1) {
-        const doc = documents[docIndex];
+    // First get current doc to know "from" location
+    db.get('SELECT * FROM documents WHERE id = ?', [id], (err, doc) => {
+        if (err || !doc) return res.status(404).json({ success: false, message: 'Documento no encontrado' });
 
         // Determine Action and Status
         let actionParams = {
@@ -194,36 +253,34 @@ app.post('/api/documents/update-location', (req, res) => {
             actionParams.status = 'Finalizado';
         }
 
-        // Create History Record
-        const movement = {
-            date: new Date().toISOString(),
-            action: actionParams.action,
-            from: doc.ubicacion || doc.origen,
-            to: ubicacion,
-            cargo: cargo,
-            observation: observaciones || 'Sin observaciones'
-        };
+        // Params for update
+        const newUbicacion = ubicacion !== undefined ? ubicacion : doc.ubicacion;
+        const newFechaDespacho = fechaDespacho !== undefined ? fechaDespacho : doc.fechaDespacho;
+        const newCargo = cargo !== undefined ? cargo : doc.cargo;
+        const newObs = observaciones ? (doc.observaciones ? doc.observaciones + `; ${observaciones}` : observaciones) : doc.observaciones;
 
-        if (!doc.history) doc.history = [];
-        doc.history.push(movement);
+        // Update Document
+        db.run(`UPDATE documents SET ubicacion = ?, fechaDespacho = ?, cargo = ?, status = ?, observaciones = ? WHERE id = ?`,
+            [newUbicacion, newFechaDespacho, newCargo, actionParams.status, newObs, id],
+            (err) => {
+                if (err) return res.status(500).json({ success: false, error: err.message });
 
-        // Update fields
-        if (ubicacion !== undefined) doc.ubicacion = ubicacion;
-        if (fechaDespacho !== undefined) doc.fechaDespacho = fechaDespacho;
-        if (cargo !== undefined) doc.cargo = cargo;
+                // Insert History Record
+                const historyDate = new Date().toISOString(); // Full timestamp
+                const from = doc.ubicacion || doc.origen;
 
-        // Update Status
-        doc.status = actionParams.status;
+                db.run(`INSERT INTO document_history (docId, date, action, from_area, to_area, cargo, observation)
+                        VALUES (?, ?, ?, ?, ?, ?, ?)`,
+                    [id, historyDate, actionParams.action, from, ubicacion, cargo, observaciones || 'Sin observaciones'],
+                    (err) => {
+                        if (err) console.error('History save error', err);
+                    }
+                );
 
-        if (observaciones) {
-            doc.observaciones = doc.observaciones ?
-                doc.observaciones + `; ${observaciones}` : observaciones;
-        }
-
-        res.json({ success: true, doc: doc });
-    } else {
-        res.status(404).json({ success: false, message: 'Documento no encontrado' });
-    }
+                res.json({ success: true });
+            }
+        );
+    });
 });
 //
 // Encender el servidor 

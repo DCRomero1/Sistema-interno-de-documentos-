@@ -39,6 +39,40 @@ function initializeTables() {
     )`, (err) => {
         if (err) console.error('Error creating workers table:', err);
     });
+
+    // Documents Table
+    db.run(`CREATE TABLE IF NOT EXISTS documents (
+        id TEXT PRIMARY KEY,
+        fecha TEXT,
+        tipo TEXT,
+        origen TEXT,
+        destino TEXT,
+        ubicacion TEXT,
+        folios TEXT,
+        concepto TEXT,
+        fechaDespacho TEXT,
+        cargo TEXT,
+        status TEXT,
+        observaciones TEXT,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )`, (err) => {
+        if (err) console.error('Error creating documents table:', err);
+    });
+
+    // Document History Table
+    db.run(`CREATE TABLE IF NOT EXISTS document_history (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        docId TEXT,
+        date TEXT,
+        action TEXT,
+        from_area TEXT,
+        to_area TEXT,
+        cargo TEXT,
+        observation TEXT,
+        FOREIGN KEY(docId) REFERENCES documents(id)
+    )`, (err) => {
+        if (err) console.error('Error creating document_history table:', err);
+    });
 }
 
 function createDefaultAdmin() {
