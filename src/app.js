@@ -178,12 +178,15 @@ app.get('/api/documents', isAuthenticated, (req, res) => {
 app.post('/api/documents', (req, res) => {
     const newDoc = req.body;
 
-    // Get count to generate ID
-    db.get('SELECT COUNT(*) as count FROM documents', [], (err, row) => {
+    // Get MAX ID to ensure uniqueness
+    db.get('SELECT MAX(id) as maxId FROM documents', [], (err, row) => {
         if (err) return res.status(500).json({ error: err.message });
 
-        const count = row.count;
-        const newId = String(count + 1).padStart(3, '0');
+        let newNum = 1;
+        if (row && row.maxId) {
+            newNum = parseInt(row.maxId, 10) + 1;
+        }
+        const newId = String(newNum).padStart(3, '0');
 
         // Prepare vars
         const fecha = newDoc.fecha || '';

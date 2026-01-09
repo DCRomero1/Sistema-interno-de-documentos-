@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de Registro Documentario</title>
     <link rel="stylesheet" href="/css/style.css?v=2">
-    <!-- Using a common icon library for visuals -->
+    <!--  tenemos que cambiar esto para ver como funciona -->
     <link rel="stylesheet" href="/css/fontawesome.all.min.css">
 </head>
 
@@ -38,7 +38,7 @@
                     Reportes
                 </a>
             </li>
-            <!-- Future Modules -->
+            <!-- Modulo para ver el cumpleaños de los trabajadores de area -->
             <li class="nav-item">
                 <a href="/workers" class="nav-link">
                     <span class="nav-icon"><i class="fa-solid fa-users"></i></span>
@@ -48,7 +48,7 @@
         </ul>
     </nav>
 
-    <!-- Main Content -->
+    <!-- Contenido principal -->
     <main class="main-content">
         <!-- Top Bar -->
         <header class="top-bar">
@@ -63,7 +63,7 @@
             </div>
         </header>
 
-        <!-- Content Area -->
+        <!-- Contenido de  Area -->
         <div class="content-area">
             <div class="paper-card">
                 <!-- Search and Filter Section -->
@@ -121,7 +121,7 @@
         </div>
     </main>
 
-    <!-- Modal for Updating Document -->
+    <!-- Modal para actulizar el documento -->
     <div id="updateModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -141,6 +141,7 @@
                         <label class="form-label">Área de Derivación (Destino)</label>
                         <select class="form-select" id="modalNewLocation">
                             <option value="" selected disabled>Seleccione nueva ubicación...</option>
+                            <option>Administración</option>
                             <optgroup label="Gestión y Finanzas">
                                 <option>ORDEN DE COMPRA</option>
                                 <option>ORDEN SERVICIO</option>
@@ -194,7 +195,7 @@
                     <div class="form-group">
                         <label class="form-label">Observaciones</label>
                         <textarea id="modalObs" class="form-textarea" rows="2"
-                            placeholder="Ingrese nuevas observaciones ..."></textarea>
+                            placeholder="Ingrese nuevas observaciones . . ."></textarea>
                     </div>
 
                     <div class="form-group"
