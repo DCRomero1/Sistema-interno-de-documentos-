@@ -4,11 +4,39 @@ document.addEventListener('DOMContentLoaded', loadDocuments);
 // Helper to format date YYYY-MM-DD -> DD-MM-YYYY
 function formatDate(dateString) {
     if (!dateString) return '';
+    // If it is a full ISO string (contains T), just take the date part
+    if (dateString.includes('T')) {
+        dateString = dateString.split('T')[0];
+    }
+
     const parts = dateString.split('-');
     if (parts.length === 3) {
         return `${parts[2]}-${parts[1]}-${parts[0]}`;
     }
     return dateString;
+}
+
+// Helper to format Date and Time (DD-MM-YYYY HH:mm)
+function formatDateTime(isoString) {
+    if (!isoString) return '';
+    try {
+        const date = new Date(isoString);
+        // Check if date is valid
+        if (isNaN(date.getTime())) return isoString;
+
+        // If it looks like just a date (old records YYYY-MM-DD), return just date
+        if (isoString.length === 10) return formatDate(isoString);
+
+        const d = date.getDate().toString().padStart(2, '0');
+        const m = (date.getMonth() + 1).toString().padStart(2, '0');
+        const y = date.getFullYear();
+        const hh = date.getHours().toString().padStart(2, '0');
+        const mm = date.getMinutes().toString().padStart(2, '0');
+
+        return `${d}-${m}-${y} ${hh}:${mm}`;
+    } catch (e) {
+        return isoString;
+    }
 }
 
 // cambio de '-------' a '--------' para que se vea mejor, tambien a un color rojo.
@@ -19,16 +47,28 @@ function formatEmpty(value) {
     return value;
 }
 
-let allDocuments = []; // Store all documents globally
+let allDocuments = []; // instoria de los documentos para guardar 
 
 async function loadDocuments() {
     try {
         const response = await fetch('/api/documents');
-        allDocuments = await response.json(); // Save to global variable
-        renderTable(allDocuments); // Render all initially
+        allDocuments = await response.json(); // guardamos las variables
+        renderTable(allDocuments); // Renderisamos las actulizaciones.
     } catch (error) {
         console.error('Error loading documents:', error);
     }
+}
+
+
+function getBadge(status) {
+    // Default to Recibido if undefined
+    const s = status || 'Recibido';
+    let className = 'badge-received';
+
+    if (s === 'Derivado') className = 'badge-derived';
+    if (s === 'Finalizado') className = 'badge-finalized';
+
+    return `<span class="badge ${className}">${s}</span>`;
 }
 
 // Render table with specific set of documents
@@ -44,6 +84,7 @@ function renderTable(documents) {
         const safeFecha = doc.fechaDespacho || '';
         const safeUbicacion = doc.ubicacion || '';
         const safeCargo = doc.cargo || '';
+        const safeStatus = doc.status || 'Recibido';
 
         // Format dates for display
         const displayFecha = formatDate(doc.fecha);
@@ -59,6 +100,7 @@ function renderTable(documents) {
             <td data-label="Área de derivacion">${formatEmpty(safeUbicacion)}</td>
             <td data-label="Folios">${formatEmpty(doc.folios)}</td>
             <td data-label="Cargo">${formatEmpty(safeCargo)}</td>
+            <td data-label="Estado">${getBadge(safeStatus)}</td>
             <td>
                 <div style="display: flex; gap: 5px; justify-content: center;">
                     <button class="btn-icon edit" onclick="openModal('${safeId}', '${safeFecha}', '${safeUbicacion}', '${safeCargo}')" title="Editar">
@@ -134,6 +176,8 @@ function openModal(docId, fecha, ubicacion, cargo) {
     fUbicacion.value = ubicacion;
     fCargo.value = cargo;
     document.getElementById('modalObs').value = '';
+    // Reset Checkbox
+    document.getElementById('modalFinalize').checked = false;
 
     // Highlight empty fields immediately
     if (!fecha) fFecha.classList.add('input-error');
@@ -153,6 +197,7 @@ async function saveLocationUpdate() {
     const newFecha = document.getElementById('modalFechaDespacho').value;
     const newCargo = document.getElementById('modalCargo').value;
     const obs = document.getElementById('modalObs').value;
+    const isFinalize = document.getElementById('modalFinalize').checked;
 
     const inputs = {
         'modalFechaDespacho': newFecha,
@@ -182,7 +227,8 @@ async function saveLocationUpdate() {
                 ubicacion: newLocation,
                 fechaDespacho: newFecha,
                 cargo: newCargo,
-                observaciones: obs
+                observaciones: obs,
+                finalize: isFinalize
             })
         });
 
@@ -225,7 +271,7 @@ function viewHistory(docId) {
     history.forEach(item => {
         const row = document.createElement('tr');
         row.innerHTML = `
-            <td>${formatDate(item.date)}</td>
+            <td>${formatDateTime(item.date)}</td>
             <td>${formatEmpty(item.action)}</td>
             <td>${formatEmpty(item.from)}</td>
             <td>${formatEmpty(item.to)}</td>

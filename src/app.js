@@ -156,18 +156,19 @@ app.post('/api/documents', (req, res) => {
     // Auto-generate Correlativo (ID)
     newDoc.id = String(documents.length + 1).padStart(3, '0');
 
-    // Initialize fields that are not in the form as empty/pending
+    // Initialize fields
     newDoc.fechaDespacho = newDoc.fechaDespacho || '';
     newDoc.ubicacion = newDoc.destino || '';
     newDoc.folios = newDoc.folios || '';
     newDoc.cargo = newDoc.cargo || '';
+    newDoc.status = 'Recibido'; // Initial Status
 
     // Initialize History
     newDoc.history = [{
-        date: newDoc.fecha, // Creation date
+        date: newDoc.fecha,
         action: 'Recepción',
-        from: 'Exterior', // Or specific logic
-        to: newDoc.origen, // Initially received at origin logic? Or simply "Registered"
+        from: 'Exterior',
+        to: newDoc.origen,
         observation: 'Documento registrado'
     }];
 
@@ -176,29 +177,43 @@ app.post('/api/documents', (req, res) => {
 });
 
 app.post('/api/documents/update-location', (req, res) => {
-    const { id, ubicacion, fechaDespacho, cargo, observaciones } = req.body;
+    const { id, ubicacion, fechaDespacho, cargo, observaciones, finalize } = req.body;
     const docIndex = documents.findIndex(d => d.id === id);
 
     if (docIndex > -1) {
         const doc = documents[docIndex];
 
-        // Create History Record before updating
-        const movement = {
-            date: new Date().toISOString().split('T')[0], // Today's date YYYY-MM-DD
+        // Determine Action and Status
+        let actionParams = {
             action: 'Derivación / Actualización',
-            from: doc.ubicacion || doc.origen, // Previous location
+            status: 'Derivado'
+        };
+
+        if (finalize === true) {
+            actionParams.action = 'Finalización';
+            actionParams.status = 'Finalizado';
+        }
+
+        // Create History Record
+        const movement = {
+            date: new Date().toISOString(),
+            action: actionParams.action,
+            from: doc.ubicacion || doc.origen,
             to: ubicacion,
             cargo: cargo,
             observation: observaciones || 'Sin observaciones'
         };
 
-        if (!doc.history) doc.history = []; // Safety check for old docs
+        if (!doc.history) doc.history = [];
         doc.history.push(movement);
 
         // Update fields
         if (ubicacion !== undefined) doc.ubicacion = ubicacion;
         if (fechaDespacho !== undefined) doc.fechaDespacho = fechaDespacho;
         if (cargo !== undefined) doc.cargo = cargo;
+
+        // Update Status
+        doc.status = actionParams.status;
 
         if (observaciones) {
             doc.observaciones = doc.observaciones ?

@@ -1,14 +1,15 @@
 const db = require('./database');
 
 // ==========================================
+// modificaremos los datos de las paginas que hay
 // 1. ZONA DE EDICIÓN MANUAL (Agrega aquí tus docentes específicos)
+// 2. CONFIGURACIÓN DE RELLENO AUTOMÁTICO
 // ==========================================
 const trabajadoresManuales = [
     // Copia y pega estas líneas para agregar más
     { fullName: 'Ejemplo Docente 1', dni: '10000001', birthDate: '1980-05-15', position: 'Docente', email: 'doc1@test.com', phone: '999000001' },
     { fullName: 'Ejemplo Docente 2', dni: '10000002', birthDate: '1985-08-20', position: 'Administrativo', email: 'doc2@test.com', phone: '999000002' },
-];
-
+]
 // ==========================================
 // 2. CONFIGURACIÓN DE RELLENO AUTOMÁTICO
 // ==========================================

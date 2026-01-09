@@ -679,3 +679,28 @@ body {
 .history-table tr:hover {
     background-color: #f0f0f0;
 }
+
+/* Status Badges */
+.badge {
+    padding: 5px 10px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: white;
+    display: inline-block;
+}
+
+.badge-received {
+    background-color: #3498db;
+    /* Blue */
+}
+
+.badge-derived {
+    background-color: #e67e22;
+    /* Orange */
+}
+
+.badge-finalized {
+    background-color: #27ae60;
+    /* Green */
+}

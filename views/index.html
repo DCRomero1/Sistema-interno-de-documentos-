@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de Registro Documentario</title>
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/style.css?v=2">
     <!-- Using a common icon library for visuals -->
     <link rel="stylesheet" href="/css/fontawesome.all.min.css">
 </head>
@@ -108,6 +108,7 @@
                                 <th style="width: 150px;">Área de derivacion</th>
                                 <th style="width: 60px;">Folios</th>
                                 <th style="width: 100px;">Cargo</th>
+                                <th style="width: 100px;">Estado</th>
                                 <th style="width: 100px;">Acciones</th>
                             </tr>
                         </thead>
@@ -193,7 +194,19 @@
                     <div class="form-group">
                         <label class="form-label">Observaciones</label>
                         <textarea id="modalObs" class="form-textarea" rows="2"
-                            placeholder="Observaciones adicionales..."></textarea>
+                            placeholder="Ingrese nuevas observaciones ..."></textarea>
+                    </div>
+
+                    <div class="form-group"
+                        style="background-color: #e8f5e9; padding: 10px; border-radius: 4px; border: 1px solid #c8e6c9;">
+                        <label
+                            style="display: flex; align-items: center; gap: 10px; cursor: pointer; color: #2e7d32; font-weight: 600;">
+                            <input type="checkbox" id="modalFinalize" style="width: 18px; height: 18px;">
+                            Archivar / Finalizar Documento
+                        </label>
+                        <small style="display: block; margin-top: 5px; color: #666; margin-left: 28px;">
+                            Marque esto si el trámite ha concluido. El estado cambiará a "Finalizado".
+                        </small>
                     </div>
                 </form>
             </div>
@@ -229,32 +242,31 @@
                         </tbody>
                     </table>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="closeHistoryModal()">Cerrar</button>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" onclick="closeHistoryModal()">Cerrar</button>
+                </div>
             </div>
         </div>
-    </div>
 
-    <script src="/js/common.js"></script>
-    <script src="/js/index.js"></script>
-    <script>
-        // Sidebar Toggle Logic
-        document.addEventListener('DOMContentLoaded', () => {
-            const toggleBtn = document.getElementById('sidebarToggle');
-            const sidebar = document.querySelector('.sidebar');
+        <script src="/js/common.js"></script>
+        <script src="/js/index.js"></script>
+        <script>
+            // Sidebar Toggle Logic
+            document.addEventListener('DOMContentLoaded', () => {
+                const toggleBtn = document.getElementById('sidebarToggle');
+                const sidebar = document.querySelector('.sidebar');
 
-            // Restore state
-            if (localStorage.getItem('sidebarCollapsed') === 'true') {
-                sidebar.classList.add('collapsed');
-            }
+                // Restore state
+                if (localStorage.getItem('sidebarCollapsed') === 'true') {
+                    sidebar.classList.add('collapsed');
+                }
 
-            toggleBtn.addEventListener('click', () => {
-                sidebar.classList.toggle('collapsed');
-                localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
+                toggleBtn.addEventListener('click', () => {
+                    sidebar.classList.toggle('collapsed');
+                    localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
+                });
             });
-        });
-    </script>
+        </script>
 </body>
 
 </html>
