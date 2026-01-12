@@ -9,6 +9,7 @@ const trabajadoresManuales = [
     // Copia y pega estas líneas para agregar más
     { fullName: 'Ejemplo Docente 1', dni: '10000001', birthDate: '1980-05-15', position: 'Docente', email: 'doc1@test.com', phone: '999000001' },
     { fullName: 'Ejemplo Docente 2', dni: '10000002', birthDate: '1985-08-20', position: 'Administrativo', email: 'doc2@test.com', phone: '999000002' },
+    { fullName: 'Juan jimenez', dni: '73939940', birthDtae: '1998-01-13', position: 'Docente' }
 ]
 // ==========================================
 // 2. CONFIGURACIÓN DE RELLENO AUTOMÁTICO
@@ -20,6 +21,7 @@ const CANTIDAD_A_GENERAR = 50;    // Cantidad de usuarios aleatorios
 const firstNames = ['Juan', 'Maria', 'Carlos', 'Ana', 'Luis', 'Jose', 'Rosa', 'Miguel', 'Carmen', 'Pedro'];
 const lastNames = ['Perez', 'Gomez', 'Ruiz', 'Torres', 'Rodriguez', 'Lopez', 'Fernandez', 'Garcia'];
 const positions = ['Docente', 'Administrativo', 'Servicios', 'Dirección'];
+
 
 function getRandomElement(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 function generateRandomDNI() { return Math.floor(10000000 + Math.random() * 90000000).toString(); }
@@ -56,7 +58,7 @@ db.serialize(() => {
             );
         }
     }
-
+    // Falta editar las cartas de presentacion
     stmt.finalize(() => {
         setTimeout(() => {
             console.log('¡Listo! Datos cargados exitosamente.');

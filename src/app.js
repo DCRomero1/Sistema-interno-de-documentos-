@@ -143,6 +143,57 @@ app.get('/api/workers/birthdays', isAuthenticated, (req, res) => {
     });
 });
 
+// --- REPORTS API ---
+app.get('/api/reports/summary', isAuthenticated, (req, res) => {
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const dd = String(today.getDate()).padStart(2, '0');
+    const dbDateToday = `${yyyy}-${mm}-${dd}`;
+    const dbMonthPrefix = `${yyyy}-${mm}`;
+
+    const queries = {
+        todayCount: `SELECT COUNT(*) as count FROM documents WHERE fecha = ?`,
+        monthCount: `SELECT COUNT(*) as count FROM documents WHERE fecha LIKE ?`,
+        pendingCount: `SELECT COUNT(*) as count FROM documents WHERE status != 'Finalizado'`,
+        byType: `SELECT tipo, COUNT(*) as count FROM documents GROUP BY tipo`,
+    };
+
+    // Execute queries in parallel (or sequential for SQLite simplicity)
+    db.serialize(() => {
+        const results = {};
+
+        db.get(queries.todayCount, [dbDateToday], (err, row) => {
+            if (err) console.error(err);
+            results.today = row ? row.count : 0;
+
+            db.get(queries.monthCount, [`${dbMonthPrefix}%`], (err, row) => {
+                if (err) console.error(err);
+                results.month = row ? row.count : 0;
+
+                db.get(queries.pendingCount, [], (err, row) => {
+                    if (err) console.error(err);
+                    results.pending = row ? row.count : 0;
+
+                    db.all(queries.byType, [], (err, rows) => {
+                        if (err) console.error(err);
+                        results.byType = rows || [];
+
+                        // Calculate percentages
+                        const totalDocs = results.byType.reduce((acc, curr) => acc + curr.count, 0);
+                        results.byType = results.byType.map(item => ({
+                            ...item,
+                            percentage: totalDocs > 0 ? Math.round((item.count / totalDocs) * 100) : 0
+                        }));
+
+                        res.json(results);
+                    });
+                });
+            });
+        });
+    });
+});
+
 // API Routes (Also protected)
 // API Routes (Also protected)
 app.get('/api/documents', isAuthenticated, (req, res) => {
@@ -211,8 +262,8 @@ app.post('/api/documents', (req, res) => {
                 // Insert Initial History
                 const historyDate = newDoc.fecha; // Use registration date
                 const action = 'Recepción';
-                const from = 'Exterior';
-                const to = origen;
+                const from = origen;
+                const to = '';
                 const obs = 'Documento registrado';
 
                 db.run(`INSERT INTO document_history (docId, date, action, from_area, to_area, cargo, observation)
