@@ -39,6 +39,26 @@ function formatDateTime(isoString) {
     }
 }
 
+// Helper to format Date and Time on two lines (Date <br> Time)
+function formatDateTimeStacked(isoString) {
+    if (!isoString) return '';
+    try {
+        const date = new Date(isoString);
+        if (isNaN(date.getTime())) return isoString;
+        if (isoString.length === 10) return formatDate(isoString);
+
+        const d = date.getDate().toString().padStart(2, '0');
+        const m = (date.getMonth() + 1).toString().padStart(2, '0');
+        const y = date.getFullYear();
+        const hh = date.getHours().toString().padStart(2, '0');
+        const mm = date.getMinutes().toString().padStart(2, '0');
+
+        return `${d}-${m}-${y}<br><span style="color: #888; font-size: 0.85em;">${hh}:${mm}</span>`;
+    } catch (e) {
+        return isoString;
+    }
+}
+
 // cambio de '-------' a '--------' para que se vea mejor, tambien a un color rojo.
 function formatEmpty(value) {
     if (value === null || value === undefined || (typeof value === 'string' && value.trim() === '')) {
@@ -271,7 +291,7 @@ function viewHistory(docId) {
     history.forEach(item => {
         const row = document.createElement('tr');
         row.innerHTML = `
-            <td>${formatDateTime(item.date)}</td>
+            <td>${formatDateTimeStacked(item.date)}</td>
             <td>${formatEmpty(item.action)}</td>
             <td>${formatEmpty(item.from)}</td>
             <td>${formatEmpty(item.to)}</td>

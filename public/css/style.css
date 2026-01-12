@@ -672,7 +672,8 @@ body {
 .history-table td {
     padding: 12px;
     border-bottom: 1px solid #eee;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
+    /* Slightly smaller for better fit */
     vertical-align: top;
     /* Align text to top for better multi-line readability */
 }
