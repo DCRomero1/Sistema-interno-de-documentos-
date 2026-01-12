@@ -13,3 +13,8 @@ start http://localhost:3000
 
 :: Iniciar servidor
 npm start
+
+
+
+// en la carpeta src se encuentra el archivo seed_workers.js 
+// que va servir para inicializar la aplicacion en modo escritorio.

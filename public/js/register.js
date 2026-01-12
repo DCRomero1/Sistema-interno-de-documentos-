@@ -13,6 +13,17 @@ document.getElementById('origen').addEventListener('change', function () {
     }
 });
 
+document.getElementById('tipo').addEventListener('change', function () {
+    const inputTipoOtro = document.getElementById('tipoOtro');
+    if (this.value === 'Otro') {
+        inputTipoOtro.style.display = 'block';
+        inputTipoOtro.focus();
+    } else {
+        inputTipoOtro.style.display = 'none';
+        inputTipoOtro.value = ''; // borrar
+    }
+});
+
 async function submitForm() {
     let origenVal = document.getElementById('origen').value;
     if (origenVal === 'Otros') {
@@ -25,10 +36,20 @@ async function submitForm() {
         }
     }
 
+    let tipoVal = document.getElementById('tipo').value;
+    if (tipoVal === 'Otro') {
+        tipoVal = document.getElementById('tipoOtro').value.trim();
+        if (!tipoVal) {
+            alert('Por favor especifique el tipo de documento');
+            document.getElementById('tipoOtro').focus();
+            return;
+        }
+    }
+
     // Collect data
     const data = {
         fecha: document.getElementById('fecha').value,
-        tipo: document.getElementById('tipo').value,
+        tipo: tipoVal,
         origen: origenVal,
         concepto: document.getElementById('concepto').value,
         folios: document.getElementById('folios').value

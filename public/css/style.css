@@ -6,7 +6,7 @@
     /* Slightly lighter blue */
     --accent-color: #2980b9;
     /* Bright Blue for actions */
-    --bg-color: #f5f6fa;
+    --bg-color: #f3f4f6;
     /* Very light gray background */
     --paper-color: #ffffff;
     /* White for content areas */
@@ -29,7 +29,7 @@
 }
 
 body {
-    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     background-color: var(--bg-color);
     color: var(--text-color);
     display: flex;
@@ -188,9 +188,9 @@ body {
 /* Card/Paper Effect */
 .paper-card {
     background-color: var(--paper-color);
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    border: none;
     overflow: hidden;
     height: 100%;
     display: flex;
@@ -298,21 +298,22 @@ body {
 }
 
 .registry-table thead th {
-    background-color: var(--primary-color);
-    color: white;
+    background-color: #f8f9fa;
+    color: #555;
     text-align: left;
-    padding: 12px 15px;
-    font-weight: 500;
+    padding: 16px;
+    font-weight: 600;
     position: sticky;
     top: 0;
     z-index: 10;
-    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 2px solid #e2e8f0;
+    border-right: none;
 }
 
 .registry-table tbody td {
-    padding: 12px 15px;
+    padding: 16px;
     border-bottom: 1px solid var(--border-color);
-    border-right: 1px solid #f0f0f0;
+    border-right: none;
     vertical-align: middle;
     font-size: 0.95rem;
 }
@@ -322,7 +323,7 @@ body {
 }
 
 .registry-table tbody tr:hover {
-    background-color: var(--hover-color);
+    background-color: #f9fafb;
     cursor: default;
 }
 
@@ -659,17 +660,31 @@ body {
 }
 
 .history-table th {
-    background-color: var(--secondary-color);
-    color: white;
-    padding: 10px;
+    background-color: #f8f9fa;
+    color: #555;
+    padding: 12px;
     text-align: left;
     font-size: 0.9rem;
+    font-weight: 600;
+    border-bottom: 2px solid #e2e8f0;
 }
 
 .history-table td {
-    padding: 10px;
+    padding: 12px;
     border-bottom: 1px solid #eee;
     font-size: 0.9rem;
+    vertical-align: top;
+    /* Align text to top for better multi-line readability */
+}
+
+/* Specific column adjustments */
+.history-table td:nth-child(1),
+/* Fecha */
+.history-table td:nth-child(2)
+
+/* Acción */
+    {
+    white-space: nowrap;
 }
 
 .history-table tr:nth-child(even) {
@@ -682,25 +697,24 @@ body {
 
 /* Status Badges */
 .badge {
-    padding: 5px 10px;
-    border-radius: 12px;
+    padding: 6px 12px;
+    border-radius: 50px;
     font-size: 0.8rem;
     font-weight: 600;
-    color: white;
     display: inline-block;
 }
 
 .badge-received {
-    background-color: #3498db;
-    /* Blue */
+    background-color: #dbeafe;
+    color: #1e40af;
 }
 
 .badge-derived {
-    background-color: #e67e22;
-    /* Orange */
+    background-color: #ffedd5;
+    color: #9a3412;
 }
 
 .badge-finalized {
-    background-color: #27ae60;
-    /* Green */
+    background-color: #dcfce7;
+    color: #166534;
 }

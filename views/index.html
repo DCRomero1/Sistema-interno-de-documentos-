@@ -141,45 +141,34 @@
                         <label class="form-label">Área de Derivación (Destino)</label>
                         <select class="form-select" id="modalNewLocation">
                             <option value="" selected disabled>Seleccione nueva ubicación...</option>
-                            <option>Administración</option>
-                            <optgroup label="Gestión y Finanzas">
-                                <option>ORDEN DE COMPRA</option>
-                                <option>ORDEN SERVICIO</option>
-                                <option>HABILITACION DE FONDOS</option>
-                                <option>REEMBOLSO</option>
-                                <option>TESORERIA COMPROBANTE DE PAGO</option>
-                            </optgroup>
-                            <optgroup label="Administración Central">
-                                <option>JEFATURA DE UNIDAD DE ADMINISTRACION</option>
+                            <optgroup label="JEFATURA DE UNIDAD DE ADMINISTRACION">
+                                <option value="JEFATURA DE UNIDAD DE ADMINISTRACION">JEFATURA DE UNIDAD DE
+                                    ADMINISTRACION</option>
                                 <option>Abastecimiento</option>
                                 <option>Patrimonio</option>
                                 <option>Almacén</option>
                                 <option>Recursos humanos</option>
                                 <option>Secretaria académica</option>
                                 <option>Secretaria de dirección</option>
-                                <option>Coordinador administrativo fundo calana</option>
+                                <option>Cordinador administrativo fundo calana</option>
                                 <option>Personal de servicio</option>
-                            </optgroup>
-                            <optgroup label="Tecnologías e Información">
-                                <option>Canal 45 (Oficina de informática y comunicación)</option>
+                                <option>Canal 45(oficina de informatica y comunicación)</option>
                                 <option>Mantenimiento de software</option>
-                                <option>Especialista hardware</option>
-                                <option>Fablab</option>
-                            </optgroup>
-                            <optgroup label="Gestión Académica y Bienestar">
                                 <option>Formación continua</option>
                                 <option>Jefatura de unidad académica</option>
                                 <option>Asistencia social</option>
+                                <option>Especialista hadware</option>
+                                <option>Fablab</option>
                                 <option>Unidad de bienestar y empleabilidad</option>
                             </optgroup>
-                            <optgroup label="Programas de Estudios (Áreas Académicas)">
-                                <option>Arquitectura de plataformas y servicios TI</option>
+                            <optgroup label="AREAS ACADÉMICAS">
+                                <option>Arquitectura de plataformas y servicios de tecnologías de informatic</option>
                                 <option>Asistencia administrativa</option>
                                 <option>Contabilidad</option>
                                 <option>Construcción civil</option>
                                 <option>Producción Agropecuaria</option>
                                 <option>Electricidad Industrial</option>
-                                <option>Electrónica Industrial</option>
+                                <option>Electronica Industrial</option>
                                 <option>Mecánica de producción industrial</option>
                                 <option>Mecatrónica Automotriz</option>
                             </optgroup>
@@ -220,7 +209,7 @@
 
     <!-- Modal for Viewing History -->
     <div id="historyModal" class="modal">
-        <div class="modal-content" style="max-width: 800px;">
+        <div class="modal-content" style="max-width: 1000px; width: 90%;">
             <div class="modal-header">
                 <h3><i class="fa-solid fa-clock-rotate-left"></i> Historial del Documento</h3>
                 <span class="close-modal" onclick="closeHistoryModal()">&times;</span>
@@ -267,6 +256,9 @@
                     localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
                 });
             });
+
+            // Futuras actualiaciones futuras
+            // vamos a derivas las congregaciones 
         </script>
 </body>
 

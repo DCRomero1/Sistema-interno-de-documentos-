@@ -29,8 +29,6 @@ function isAuthenticated(req, res, next) {
 // Static files (Allow CSS/JS even if not logged in, or protect them? Usually public is public)
 app.use(express.static(path.join(__dirname, '../public')));
 
-// In-memory data store (Simulating a database)
-
 // Login Routes
 app.get('/login', (req, res) => {
     res.sendFile(path.join(__dirname, '../views/login.html'));
@@ -321,7 +319,9 @@ app.post('/api/documents/update-location', (req, res) => {
 
                 // Insert History Record
                 const historyDate = new Date().toISOString(); // Full timestamp
-                const from = doc.ubicacion || doc.origen;
+                // If it's the first derivation (no current location), it comes from Jefatura (Mesa de Partes)
+                // Otherwise it comes from the current location.
+                const from = doc.ubicacion || 'JEFATURA DE UNIDAD DE ADMINISTRACION';
 
                 db.run(`INSERT INTO document_history (docId, date, action, from_area, to_area, cargo, observation)
                         VALUES (?, ?, ?, ?, ?, ?, ?)`,
