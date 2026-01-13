@@ -50,14 +50,15 @@ async function submitForm() {
     const data = {
         fecha: document.getElementById('fecha').value,
         tipo: tipoVal,
+        nombre: document.getElementById('nombre').value,
         origen: origenVal,
         concepto: document.getElementById('concepto').value,
         folios: document.getElementById('folios').value
     };
 
     // Basic validation
-    if (!data.origen || !data.concepto) {
-        alert('Por favor complete: Origen y Concepto');
+    if (!data.origen || !data.concepto || !data.nombre) {
+        alert('Por favor complete: Origen, Nombre y Concepto');
         return;
     }
 

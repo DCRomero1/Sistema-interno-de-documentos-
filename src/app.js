@@ -240,6 +240,7 @@ app.post('/api/documents', (req, res) => {
         // Prepare vars
         const fecha = newDoc.fecha || '';
         const tipo = newDoc.tipo || '';
+        const nombre = newDoc.nombre || '';
         const origen = newDoc.origen || '';
         const destino = newDoc.destino || ''; // Initial destination is also current ubicacion usually
         const ubicacion = newDoc.destino || '';
@@ -251,9 +252,9 @@ app.post('/api/documents', (req, res) => {
         const observaciones = '';
 
         // Insert Document
-        db.run(`INSERT INTO documents (id, fecha, tipo, origen, destino, ubicacion, folios, concepto, fechaDespacho, cargo, status, observaciones) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-            [newId, fecha, tipo, origen, destino, ubicacion, folios, concepto, fechaDespacho, cargo, status, observaciones],
+        db.run(`INSERT INTO documents (id, fecha, tipo, nombre, origen, destino, ubicacion, folios, concepto, fechaDespacho, cargo, status, observaciones) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [newId, fecha, tipo, nombre, origen, destino, ubicacion, folios, concepto, fechaDespacho, cargo, status, observaciones],
             function (err) {
                 if (err) return res.status(500).json({ error: err.message });
 

@@ -60,6 +60,7 @@ function formatDateTimeStacked(isoString) {
 }
 
 // cambio de '-------' a '--------' para que se vea mejor, tambien a un color rojo.
+// Helper to clean empty data
 function formatEmpty(value) {
     if (value === null || value === undefined || (typeof value === 'string' && value.trim() === '')) {
         return '<center><span style="color: red;">--------</span></center>';
@@ -99,7 +100,6 @@ function renderTable(documents) {
     documents.forEach(doc => {
         const row = document.createElement('tr');
         // Pass all needed data to openModal including cargo and fechaDespacho
-        // Safe quoting for strings
         const safeId = doc.id;
         const safeFecha = doc.fechaDespacho || '';
         const safeUbicacion = doc.ubicacion || '';
@@ -114,6 +114,7 @@ function renderTable(documents) {
             <td data-label="N° Corr." style="font-weight: bold; color: var(--primary-color);">${doc.id}</td>
             <td data-label="Recepción">${formatEmpty(displayFecha)}</td>
             <td data-label="Tipo">${formatEmpty(doc.tipo)}</td>
+            <td data-label="Remitente">${formatEmpty(doc.nombre)}</td>
             <td data-label="Área Origen">${formatEmpty(doc.origen)}</td>
             <td data-label="Concepto">${formatEmpty(doc.concepto)}</td>
             <td data-label="Despacho">${formatEmpty(displayFechaDespacho)}</td>

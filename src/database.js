@@ -45,6 +45,7 @@ function initializeTables() {
         id TEXT PRIMARY KEY,
         fecha TEXT,
         tipo TEXT,
+        nombre TEXT,
         origen TEXT,
         destino TEXT,
         ubicacion TEXT,
@@ -57,6 +58,17 @@ function initializeTables() {
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )`, (err) => {
         if (err) console.error('Error creating documents table:', err);
+        else {
+            // Migration: Attempt to add the column if it's missing (for existing databases)
+            // SQLite doesn't support "IF NOT EXISTS" in ADD COLUMN directly in all versions comfortably without check,
+            // but running it and ignoring the "duplicate column" error is a common simple pattern.
+            db.run(`ALTER TABLE documents ADD COLUMN nombre TEXT`, (err) => {
+                // Ignore error if column already exists
+                if (err && !err.message.includes('duplicate column')) {
+                    // console.error('Migration note:', err.message); 
+                }
+            });
+        }
     });
 
     // Document History Table
