@@ -6,7 +6,8 @@
     /* Slightly lighter blue */
     --accent-color: #2980b9;
     /* Bright Blue for actions */
-    --bg-color: #f3f4f6;
+    --bg-color: #dfe6e9;
+    /* Darker gray background (was #f3f4f6) for better contrast */
     /* Very light gray background */
     --paper-color: #ffffff;
     /* White for content areas */
@@ -167,15 +168,30 @@ body {
     border-bottom: 1px solid var(--border-color);
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-end;
+    /* Push content (user-info) to the right */
     padding: 0 30px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    position: relative;
+    /* Needed for absolute positioning of title */
 }
 
 .page-title {
-    font-size: 1.2rem;
+    font-size: 1.5rem;
+    /* Larger font */
     color: var(--primary-color);
-    font-weight: 600;
+    font-weight: 800;
+    /* Bolder */
+    text-transform: uppercase;
+    /* Uppercase */
+    letter-spacing: 1px;
+    /* Spacing */
+    position: absolute;
+    /* Center it */
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    text-align: center;
 }
 
 .content-area {
@@ -241,8 +257,8 @@ body {
 .paper-card {
     background-color: var(--paper-color);
     border-radius: 12px;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    /* Diffuse shadow */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    /* Stronger shadow for floating effect */
     border: none;
     overflow: hidden;
     height: 100%;
@@ -339,40 +355,77 @@ body {
 }
 
 /* Registry Book Table */
+/* Registry Book Table - Clean Enterprise Style */
 .registry-container {
     flex-grow: 1;
     overflow: auto;
     position: relative;
+    border-radius: 8px;
+    /* Smooth corners for the container */
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    /* Subtle container shadow */
 }
 
 .registry-table {
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: separate;
+    /* Allows for border-radius on rows if needed */
+    border-spacing: 0;
+    /* But keeps them close */
     min-width: 800px;
 }
 
 .registry-table thead th {
-    background-color: #f8f9fa;
-    color: #555;
+    background-color: rgba(248, 250, 252, 0.95);
+    /* Semi-transparent */
+    backdrop-filter: blur(8px);
+    /* Glass effect */
+    color: #475569;
+    /* Slate 600 */
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
     text-align: left;
     padding: 16px;
-    font-weight: 600;
+    font-weight: 700;
     position: sticky;
     top: 0;
     z-index: 10;
     border-bottom: 2px solid #e2e8f0;
-    border-right: none;
 }
 
 .registry-table tbody td {
     padding: 16px;
-    border-bottom: 1px solid var(--border-color);
-    border-right: none;
+    border-bottom: 1px solid #f1f5f9;
+    /* Very light border */
     vertical-align: middle;
-    /* Ensure vertical center */
-    font-size: 0.95rem;
-    height: 100%;
-    /* Help with alignment */
+    font-size: 0.9rem;
+    color: #334155;
+    /* Slate 700 */
+    transition: color 0.2s;
+}
+
+/* Row Hover Effect */
+.registry-table tbody tr {
+    transition: all 0.2s ease;
+    background-color: white;
+}
+
+.registry-table tbody tr:hover {
+    background-color: #f8fafc;
+    /* Very light blue/gray */
+    transform: scale(1.002);
+    /* Micro-interaction to feel tactile */
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    /* Lift effect */
+    z-index: 1;
+    position: relative;
+}
+
+/* Remove odd/even striping for a cleaner look, or keep it very subtle. 
+   Let's remove it to favor the clean look with hover. */
+.registry-table tbody tr:nth-child(even) {
+    background-color: white;
 }
 
 /* Concept Truncation */
@@ -467,24 +520,43 @@ body {
 
 /* User Info & Dropdown */
 .user-info {
-    font-weight: 500;
-    color: var(--text-color);
+    font-weight: 600;
+    color: var(--primary-color);
     position: relative;
     cursor: pointer;
+    background-color: #f1f5f9;
+    /* Light background pill */
+    padding: 8px 20px;
+    border-radius: 30px;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid transparent;
+}
+
+.user-info:hover {
+    background-color: white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+    border-color: var(--border-color);
+    transform: translateY(-1px);
 }
 
 .dropdown-menu {
     display: none;
     position: absolute;
-    top: 100%;
+    top: 120%;
+    /* Slightly separated */
     right: 0;
     background-color: white;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 4px;
-    min-width: 150px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    min-width: 180px;
     z-index: 1000;
-    margin-top: 10px;
-    border: 1px solid var(--border-color);
+    margin-top: 5px;
+    border: 1px solid #f0f0f0;
+    overflow: hidden;
+    /* For smooth corners */
 }
 
 .dropdown-menu.show {
@@ -611,6 +683,72 @@ body {
         text-align: left;
         font-weight: bold;
         color: var(--secondary-color);
+    }
+
+    /* Mobile Title Adjustment */
+    .page-title {
+        position: static;
+        /* Stack normally */
+        transform: none;
+        width: 100%;
+        text-align: center;
+        margin-bottom: 5px;
+        font-size: 1.1rem;
+        white-space: normal;
+        /* Allow wrapping */
+    }
+
+    .top-bar {
+        padding: 10px 15px;
+        height: auto;
+        /* Allow growing */
+        flex-direction: column;
+        /* Stack items */
+        justify-content: center;
+        gap: 5px;
+    }
+
+    .user-info {
+        align-self: center;
+        /* Center user pill */
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* Table Mobile Card View Refinement */
+    .registry-table td {
+        display: flex;
+        /* Use flex for better control */
+        justify-content: space-between;
+        /* Space between label and value */
+        text-align: right;
+        padding: 10px 15px;
+        position: relative;
+        border-bottom: 1px solid #eee;
+        min-height: 40px;
+        /* Ensure height */
+        align-items: center;
+    }
+
+    .registry-table td::before {
+        content: attr(data-label);
+        position: static;
+        /* Not absolute */
+        width: auto;
+        /* Auto width */
+        padding-right: 15px;
+        text-align: left;
+        font-weight: 700;
+        color: var(--secondary-color);
+        flex-shrink: 0;
+        /* Don't shrink label */
+        flex-basis: 40%;
+        /* Target width for label */
+    }
+
+    /* Override previous padding-left hack */
+    .registry-table td {
+        padding-left: 15px;
     }
 }
 
@@ -781,33 +919,49 @@ body {
     background-color: #f0f0f0;
 }
 
-/* Status Badges */
+/* Status Badges - Modern Pills */
 .badge {
-    padding: 6px 14px;
-    border-radius: 50px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 9999px;
+    /* Full pill */
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     white-space: nowrap;
-    /* Prevent cut-off */
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-    /* Subtle depth */
+    box-shadow: none;
+    /* Cleaner flat look */
 }
 
+/* Status: Received (Blue) */
 .badge-received {
-    background-color: #e3f2fd;
-    /* Softer Blue */
-    color: #1565c0;
+    background-color: #eff6ff;
+    /* Blue 50 */
+    color: #2563eb;
+    /* Blue 600 */
+    border: 1px solid #dbeafe;
+    /* Blue 100 */
 }
 
+/* Status: Derived (Amber/Orange) */
 .badge-derived {
-    background-color: #fff3e0;
-    /* Softer Orange */
-    color: #ef6c00;
+    background-color: #fffbeb;
+    /* Amber 50 */
+    color: #d97706;
+    /* Amber 600 */
+    border: 1px solid #fef3c7;
+    /* Amber 100 */
 }
 
+/* Status: Finalized (Green) */
 .badge-finalized {
-    background-color: #e8f5e9;
-    /* Softer Green */
-    color: #2e7d32;
+    background-color: #f0fdf4;
+    /* Green 50 */
+    color: #16a34a;
+    /* Green 600 */
+    border: 1px solid #dcfce7;
+    /* Green 100 */
 }
