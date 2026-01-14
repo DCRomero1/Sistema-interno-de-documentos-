@@ -1,5 +1,5 @@
 @echo off
-title Sistema de Registro - MESA DE PARTES
+title Sistema de Registro - Oficina de Administración
 echo ==========================================
 echo      INICIANDO SISTEMA...
 echo ==========================================

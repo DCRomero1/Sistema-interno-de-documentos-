@@ -1,22 +1,28 @@
 :root {
-    /* Institutional Color Palette */
-    --primary-color: #2c3e50;
-    /* Dark Blue - Professional */
-    --secondary-color: #34495e;
-    /* Slightly lighter blue */
-    --accent-color: #2980b9;
-    /* Bright Blue for actions */
-    --bg-color: #dfe6e9;
-    /* Darker gray background (was #f3f4f6) for better contrast */
-    /* Very light gray background */
+    /* --- Vibrant Tech Palette --- */
+    /* Primary: Bright Royal Blue */
+    --primary-color: #2563eb;
+
+    /* Secondary: Deep Indigo/Blue for contrast */
+    --secondary-color: #1e3a8a;
+
+    /* Accent: Vivid Sky Blue for highlights */
+    --accent-color: #3b82f6;
+
+    /* Background: Very light cool blue-gray (cleaner than gray) */
+    --bg-color: #f0f4f8;
+
+    /* Paper: Pure White */
     --paper-color: #ffffff;
-    /* White for content areas */
-    --text-color: #2c3e50;
-    /* Dark gray for text */
-    --border-color: #dcdcdc;
-    /* Light gray for lines */
-    --hover-color: #f3f3f3;
-    /* Light teal/blue for row hover */
+
+    /* Text: Dark Blue-Gray for better readability than pure black */
+    --text-color: #1e293b;
+
+    /* Borders: Light Blue-Gray */
+    --border-color: #e2e8f0;
+
+    /* Hover: Very soft blue */
+    --hover-color: #eff6ff;
 
     /* Dimensions */
     --sidebar-width: 260px;
@@ -30,7 +36,7 @@
 }
 
 body {
-    font-family: 'Segoe UI', Roboto, Helvetica, Arial, system-ui, -apple-system, sans-serif;
+    font-family: 'Segoe UI', 'Inter', Roboto, Helvetica, Arial, sans-serif;
     background-color: var(--bg-color);
     color: var(--text-color);
     display: flex;
@@ -38,14 +44,18 @@ body {
     overflow: hidden;
 }
 
-/* Sidebar */
+/* Sidebar with Gradient */
 .sidebar {
     width: var(--sidebar-width);
-    background-color: var(--primary-color);
+    /* Modern Gradient: Deep Blue to Brighter Blue */
+    background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
     color: white;
     display: flex;
     flex-direction: column;
     flex-shrink: 0;
+    box-shadow: 4px 0 25px rgba(0, 0, 0, 0.15);
+    /* Soft shadow over content */
+    z-index: 10;
 }
 
 .sidebar-header {
@@ -53,10 +63,12 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: bold;
+    font-weight: 700;
     font-size: 1.2rem;
-    background-color: rgba(0, 0, 0, 0.1);
+    background-color: rgba(255, 255, 255, 0.05);
+    /* Ultra subtle glass */
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    letter-spacing: 0.5px;
 }
 
 .nav-menu {
@@ -65,27 +77,35 @@ body {
 }
 
 .nav-item {
-    margin-bottom: 5px;
+    margin-bottom: 8px;
+    /* Slightly more space */
+    padding: 0 10px;
+    /* Indent for rounded look */
 }
 
 .nav-link {
     display: flex;
     align-items: center;
-    padding: 12px 25px;
-    color: #bdc3c7;
+    padding: 12px 20px;
+    color: #cbd5e1;
+    /* Lighter text for contrast on dark blue */
     text-decoration: none;
     transition: all 0.3s ease;
-    border-left: 4px solid transparent;
+    border-radius: 8px;
+    /* Modern rounded corners */
     white-space: nowrap;
-    /* Prevent text wrapping */
     overflow: hidden;
+    border-left: none;
+    /* Remove old border style */
 }
 
 .nav-link:hover,
 .nav-link.active {
-    background-color: var(--secondary-color);
+    background-color: rgba(255, 255, 255, 0.15);
+    /* Glassy active state */
     color: white;
-    border-left-color: var(--accent-color);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    /* Glow */
 }
 
 .nav-icon {
@@ -152,6 +172,47 @@ body {
 
 #sidebarToggle:hover {
     color: var(--accent-color);
+}
+
+/* Sidebar Footer (Logo) */
+.sidebar-footer {
+    margin-top: auto;
+    padding: 0 15px 20px 15px;
+    /* Add padding around the card */
+    text-align: center;
+    background: transparent;
+    border-top: none;
+}
+
+.sidebar-logo {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    background-color: white;
+    padding: 12px 15px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    /* Strong shadow for pop */
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    /* Bouncy transition */
+    transform-origin: center bottom;
+}
+
+.sidebar-logo:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.sidebar.collapsed .sidebar-footer {
+    padding: 10px 5px;
+    display: flex;
+    justify-content: center;
+}
+
+.sidebar.collapsed .sidebar-logo {
+    display: none;
+    /* Keep hidden on collapse as requested, or we could show a mini icon */
 }
 
 /* Main Content */
@@ -457,30 +518,31 @@ body {
 
 /* Buttons */
 .btn {
-    padding: 10px 20px;
-    border-radius: 4px;
+    padding: 10px 24px;
+    border-radius: 8px;
+    /* Softer rounded */
     border: none;
-    font-weight: 500;
+    font-weight: 600;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     text-decoration: none;
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: inherit;
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, var(--accent-color) 0%, #1a5276 100%);
-    /* Subtle gradient */
+    /* Vibrant Electric Gradient */
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
     color: white;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.3), 0 2px 4px -1px rgba(37, 99, 235, 0.15);
 }
 
 .btn-primary:hover {
     transform: translateY(-2px);
-    /* Lift effect */
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
-    /* Brighter on hover */
+    box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.4), 0 4px 6px -2px rgba(37, 99, 235, 0.2);
+    filter: brightness(1.05);
 }
 
 .btn-secondary {
@@ -965,3 +1027,5 @@ body {
     border: 1px solid #dcfce7;
     /* Green 100 */
 }
+
+/*Aguegar: Diseño de cerrar seción*/
