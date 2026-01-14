@@ -11,6 +11,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+// Helper XSS Protection
+function escapeHtml(text) {
+    if (!text) return text;
+    return String(text)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
 async function loadWorkers() {
     try {
         const response = await fetch('/api/workers');
@@ -34,8 +45,8 @@ async function loadWorkers() {
             card.innerHTML = `
                 <div class="worker-avatar">${initials}</div>
                 <div class="worker-info">
-                    <h4>${worker.fullName}</h4>
-                    <p>${worker.position || 'Sin cargo'} - ${worker.dni}</p>
+                    <h4>${escapeHtml(worker.fullName)}</h4>
+                    <p>${escapeHtml(worker.position) || 'Sin cargo'} - ${escapeHtml(worker.dni)}</p>
                 </div>
                 <!-- <div style="margin-left: auto;">
                     <button class="btn btn-secondary btn-icon-only"><i class="fa-solid fa-pen"></i></button>
@@ -71,7 +82,7 @@ async function loadBirthdays() {
             const style = isToday ? 'font-weight:bold; color:#ffeaa7;' : '';
 
             item.innerHTML = `
-                <span>${b.fullName}</span>
+                <span>${escapeHtml(b.fullName)}</span>
                 <span class="birthday-date" style="${style}">${dateText}</span>
             `;
             listContainer.appendChild(item);

@@ -20,10 +20,19 @@ function initializeTables() {
         username TEXT UNIQUE NOT NULL,
         password TEXT NOT NULL,
         name TEXT,
+        role TEXT DEFAULT 'user',
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )`, (err) => {
         if (err) console.error('Error creating users table:', err);
-        else createDefaultAdmin();
+        else {
+            // Migration: Add role column if not exists
+            db.run(`ALTER TABLE users ADD COLUMN role TEXT DEFAULT 'user'`, (err) => {
+                if (err && !err.message.includes('duplicate column')) {
+                    // console.error('Migration note:', err.message);
+                }
+            });
+            createDefaultAdmin();
+        }
     });
 
     // Workers Table (Docentes/Personal)

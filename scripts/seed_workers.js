@@ -1,4 +1,4 @@
-const db = require('./database');
+const db = require('../src/database');
 
 // ==========================================
 // modificaremos los datos de las paginas que hay

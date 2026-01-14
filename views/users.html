@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Usuarios - Vigil Tecnológico</title>
+    <!-- Use Google Fonts (Outfit) -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/fontawesome.all.min.css">
+    <style>
+        /* Specific Styles for Users Grid */
+        .users-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        .user-card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px 20px;
+            text-align: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .user-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 20px -3px rgba(0, 0, 0, 0.15);
+        }
+
+        .user-avatar {
+            width: 80px;
+            height: 80px;
+            background: #f1f5f9;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: #94a3b8;
+            font-weight: 500;
+        }
+
+        .user-avatar.admin {
+            background: #e0e7ff;
+            color: #4f46e5;
+        }
+
+        .user-name {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 4px;
+        }
+
+        .user-username {
+            color: #64748b;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+
+        .role-badge {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .role-badge.admin {
+            background-color: #e0e7ff;
+            color: #4338ca;
+        }
+
+        .role-badge.user {
+            background-color: #f1f5f9;
+            color: #475569;
+        }
+
+        .delete-btn {
+            background: #fee2e2;
+            color: #ef4444;
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin: 0 auto;
+        }
+
+        .delete-btn:hover {
+            background: #fecaca;
+            transform: scale(1.1);
+        }
+
+        /* Search Section Override/Custom */
+        .users-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .search-wrapper {
+            position: relative;
+            width: 300px;
+        }
+
+        .search-wrapper i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+        }
+
+        .search-wrapper input {
+            width: 100%;
+            padding: 10px 10px 10px 36px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .search-wrapper input:focus {
+            border-color: #3b82f6;
+        }
+
+        .add-btn {
+            background: #0f172a;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.2s;
+        }
+
+        .add-btn:hover {
+            background: #1e293b;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <i class="fa-solid fa-bars" id="sidebarToggle" style="margin-right: 15px; cursor: pointer;"></i>
+            <i class="fa-solid fa-book-open" id="sidebarIcon" style="margin-right: 10px;"></i>
+            <span>Administración</span>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="/" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-table-list"></i></span>
+                    Registro Diario
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/register" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-plus-circle"></i></span>
+                    Nuevo Documento
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/reports" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-chart-line"></i></span>
+                    Reportes
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/workers" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-users"></i></span>
+                    Trabajadores
+                </a>
+            </li>
+            <!-- Admin Only Section -->
+            <li class="nav-item" id="nav-admin-users" style="display: none;">
+                <a href="/users" class="nav-link active">
+                    <span class="nav-icon"><i class="fa-solid fa-user-shield"></i></span>
+                    Usuarios (Admin)
+                </a>
+            </li>
+        </ul>
+        <div class="sidebar-footer">
+            <img src="/img/logo_vigil.png" alt="Vigil Tecnológico" class="sidebar-logo">
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Top Bar -->
+        <header class="top-bar">
+            <!-- Center Title -->
+            <div class="page-title">Gestión de Usuarios</div>
+
+            <!-- User Info (Right) -->
+            <div class="user-info" onclick="toggleUserDropdown(event)">
+                <span><i class="fa-solid fa-user-circle"></i> Admin <i class="fa-solid fa-caret-down"></i></span>
+                <div class="dropdown-menu" id="userDropdown">
+                    <a href="/logout" class="dropdown-item">
+                        <i class="fa-solid fa-right-from-bracket"></i> Cerrar Sesión
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <!-- Content Area -->
+        <div class="content-area">
+
+            <!-- Toolbar -->
+            <div class="users-toolbar">
+                <div class="search-wrapper">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="searchInput" placeholder="Buscar usuario..." onkeyup="filterUsers()">
+                </div>
+                <button class="add-btn" onclick="openAddUserModal()">
+                    <i class="fa-solid fa-plus"></i> Nuevo Usuario
+                </button>
+            </div>
+
+            <!-- Grid -->
+            <div id="usersGrid" class="users-grid">
+                <!-- Data Loaded Here -->
+                <div style="grid-column: 1/-1; text-align: center; color: #64748b;">
+                    Cargando...
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Modal Add User -->
+    <div id="addUserModal" class="modal">
+        <div class="modal-content" style="max-width: 400px;">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-user-plus"></i> Nuevo Usuario</h3>
+                <span class="close-modal" onclick="closeAddUserModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="addUserForm" onsubmit="event.preventDefault(); submitNewUser();">
+                    <div class="form-group">
+                        <label class="form-label">Nombre Completo</label>
+                        <input type="text" id="newMetricName" class="form-input" required placeholder="Ej. Juan Pérez">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Usuario</label>
+                        <input type="text" id="newMetricUser" class="form-input" required placeholder="Ej. juanp">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Contraseña</label>
+                        <input type="password" id="newMetricPass" class="form-input" required placeholder="******">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Rol</label>
+                        <select id="newMetricRole" class="form-select">
+                            <option value="user">Personal (Acceso Limitado)</option>
+                            <option value="admin">Administrador (Control Total)</option>
+                        </select>
+                    </div>
+
+                    <div class="modal-footer" style="padding-bottom: 0;">
+                        <button class="btn btn-secondary" onclick="closeAddUserModal()">Cancelar</button>
+                        <button class="btn btn-primary" type="submit">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/common.js?v=2"></script>
+    <script>
+        // Check for common.js sidebar logic or implement simpler toggle here if missing in common.js for this page specifically
+        // Assuming common.js might handle dropdowns but index.html had custom sidebar logic. 
+        // Let's add the sidebar toggle logic here to be safe.
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadUsers();
+
+            const toggleBtn = document.getElementById('sidebarToggle');
+            const sidebar = document.getElementById('sidebar');
+            if (toggleBtn && sidebar) {
+                if (localStorage.getItem('sidebarCollapsed') === 'true') {
+                    sidebar.classList.add('collapsed');
+                }
+                toggleBtn.addEventListener('click', () => {
+                    sidebar.classList.toggle('collapsed');
+                    localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
+                });
+            }
+        });
+
+        let allUsers = [];
+
+        // Helper to escape HTML keys
+        function escapeHtml(text) {
+            if (!text) return text;
+            return String(text)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        async function loadUsers() {
+            try {
+                const response = await fetch('/api/users');
+                if (!response.ok) throw new Error('Error');
+                allUsers = await response.json();
+                renderUsers(allUsers);
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        function renderUsers(users) {
+            const grid = document.getElementById('usersGrid');
+            grid.innerHTML = '';
+
+            users.forEach(user => {
+                const isAdmin = user.role === 'admin';
+                const initial = user.name.charAt(0).toUpperCase();
+
+                const card = document.createElement('div');
+                card.className = 'user-card';
+
+                // Block deleting yourself (simple client check)
+                const isMe = user.username === 'diego'; // ideally check session
+                const deleteBtn = isMe ? '' : `
+                    <button class="delete-btn" onclick="deleteUser(${user.id}, '${user.username}')" title="Eliminar">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                `;
+
+                card.innerHTML = `
+                    <div class="user-avatar ${isAdmin ? 'admin' : ''}">
+                        ${escapeHtml(initial)}
+                    </div>
+                    <div class="user-name">${escapeHtml(user.name)}</div>
+                    <div class="user-username">@${escapeHtml(user.username)}</div>
+                    <div class="role-badge ${isAdmin ? 'admin' : 'user'}">
+                        ${isAdmin ? 'Administrador' : 'Personal'}
+                    </div>
+                    ${deleteBtn}
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function filterUsers() {
+            const term = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = allUsers.filter(u =>
+                u.name.toLowerCase().includes(term) ||
+                u.username.toLowerCase().includes(term)
+            );
+            renderUsers(filtered);
+        }
+
+        function openAddUserModal() {
+            document.getElementById('addUserModal').style.display = 'block';
+            document.getElementById('addUserForm').reset();
+        }
+
+        function closeAddUserModal() {
+            document.getElementById('addUserModal').style.display = 'none';
+        }
+
+        // Window click closing handled by common.js usually, but forcing here if needed
+        window.onclick = function (event) {
+            const modal = document.getElementById('addUserModal');
+            if (event.target == modal) {
+                closeAddUserModal();
+            }
+        }
+
+        async function submitNewUser() {
+            const name = document.getElementById('newMetricName').value;
+            const username = document.getElementById('newMetricUser').value;
+            const password = document.getElementById('newMetricPass').value;
+            const role = document.getElementById('newMetricRole').value;
+
+            try {
+                const response = await fetch('/api/users', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, username, password, role })
+                });
+                const result = await response.json();
+                if (result.success) {
+                    closeAddUserModal();
+                    loadUsers();
+                } else {
+                    alert(result.error || 'Error');
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function deleteUser(id, username) {
+            if (!confirm(`¿Eliminar a ${username}?`)) return;
+            try {
+                await fetch(`/api/users/${id}`, { method: 'DELETE' });
+                loadUsers();
+            } catch (e) { console.error(e); }
+        }
+    </script>
+</body>
+
+</html>

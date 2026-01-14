@@ -9,15 +9,28 @@ let chartInstance = null;
 
 async function loadDashboard() {
     try {
-        const response = await fetch('/api/reports/summary');
-        if (!response.ok) throw new Error('Error al cargar datos');
+        // Fetch Summary
+        const summaryResponse = await fetch('/api/reports/summary');
+        if (!summaryResponse.ok) throw new Error('Error al cargar resumen');
+        const summaryData = await summaryResponse.json();
 
-        const data = await response.json();
-        reportData = data; // Store for export
+        // Fetch Full Documents (reusing existing API)
+        const docsResponse = await fetch('/api/documents');
+        if (!docsResponse.ok) throw new Error('Error al cargar documentos');
+        const docsData = await docsResponse.json();
 
-        updateKPIs(data);
-        updateTable(data.byType);
-        renderChart(data.byType);
+        // Store combo data for export
+        reportData = {
+            ...summaryData,
+            documents: docsData
+        };
+
+        updateKPIs(summaryData);
+        updateTable(summaryData.byType);
+        renderChart(summaryData.byType);
+
+        // Render Full Table
+        renderFullTable(docsData);
 
     } catch (error) {
         console.error(error);
@@ -55,6 +68,40 @@ function updateTable(typeData) {
             </td>
         `;
         tbody.appendChild(row);
+    });
+}
+
+function renderFullTable(documents) {
+    const tbody = document.getElementById('full-registry-body');
+    tbody.innerHTML = '';
+
+    if (!documents || documents.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="11" style="text-align:center; padding: 20px;">No hay documentos registrados en el sistema.</td></tr>';
+        return;
+    }
+
+    documents.forEach(doc => {
+        const tr = document.createElement('tr');
+
+        // Status Badge Logic
+        let statusClass = 'status-received';
+        if (doc.status === 'Derivado') statusClass = 'status-derived';
+        if (doc.status === 'Finalizado') statusClass = 'status-finalized';
+
+        tr.innerHTML = `
+            <td>${doc.id}</td>
+            <td>${doc.fecha}</td>
+            <td>${doc.tipo}</td>
+            <td>${doc.nombre}</td>
+            <td>${doc.origen}</td>
+            <td>${doc.concepto}</td>
+            <td>${doc.fechaDespacho || '-'}</td>
+            <td>${doc.destino || '-'}</td>
+            <td>${doc.folios}</td>
+            <td>${doc.cargo}</td>
+            <td><span class="status-badge ${statusClass}">${doc.status}</span></td>
+        `;
+        tbody.appendChild(tr);
     });
 }
 
@@ -97,35 +144,46 @@ function renderChart(typeData) {
 }
 
 function exportToCSV() {
-    if (!reportData || !reportData.byType) {
+    if (!reportData || !reportData.documents) {
         alert('No hay datos para exportar');
         return;
     }
 
-    // Define CSV content: Summary + Details
+    // Define CSV content: ONLY Document Details
     let csvContent = "data:text/csv;charset=utf-8,";
 
-    // KPI Section
-    csvContent += "REPORTE GENERAL\n";
-    csvContent += `Documentos Hoy,${reportData.today}\n`;
-    csvContent += `Documentos Mes,${reportData.month}\n`;
-    csvContent += `Pendientes,${reportData.pending}\n\n`;
+    // Header Row
+    csvContent += "ID,Fecha Recepcion,Tipo,Remitente,Area Origen,Concepto,Fecha Despacho,Destino,Folios,Cargo,Estado,Observaciones\n";
 
-    // Table Section
-    csvContent += "DETALLE POR TIPO\n";
-    csvContent += "Tipo,Cantidad,Porcentaje\n";
+    if (reportData.documents) {
+        reportData.documents.forEach(doc => {
+            // Escape commas in fields to prevent CSV breakage
+            const clean = (text) => text ? `"${text.toString().replace(/"/g, '""')}"` : '';
 
-    reportData.byType.forEach(item => {
-        const tipo = item.tipo || 'Sin Tipo';
-        csvContent += `${tipo},${item.count},${item.percentage}%\n`;
-    });
+            const row = [
+                doc.id,
+                doc.fecha,
+                doc.tipo,
+                doc.nombre,
+                doc.origen,
+                clean(doc.concepto),
+                doc.fechaDespacho || '',
+                doc.destino || '',
+                doc.folios,
+                doc.cargo,
+                doc.status,
+                clean(doc.observaciones)
+            ];
+            csvContent += row.join(",") + "\n";
+        });
+    }
 
     // Create Download Link
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
     const dateStr = new Date().toISOString().split('T')[0];
-    link.setAttribute("download", `reporte_mesa_partes_${dateStr}.csv`);
+    link.setAttribute("download", `registro_documentos_${dateStr}.csv`);
     document.body.appendChild(link); // Required for FF
     link.click();
     document.body.removeChild(link);

@@ -1,51 +1,83 @@
-# Sistema de Registro de Documentos
+# Sistema de Gestión Documentaria (Mesa de Partes)
 
-Esta guía te ayudará a instalar y ejecutar el sistema en una nueva computadora.
+Un sistema web local para la gestión, seguimiento y administración de documentos, usuarios y trabajadores.
 
-## Requisitos Previos
-1.  **Node.js**: Debes tener instalado Node.js en la computadora.
-    *   Descárgalo e instálalo desde: [https://nodejs.org/](https://nodejs.org/) (La versión LTS es recomendada).
+## 📋 Requisitos Previos
 
-## Pasos de Instalación
+- **Node.js** (Versión 18 o superior).
+- **NPM** (Viene incluido con Node.js).
+- **SQLite3** (La base de datos se crea automáticamente, no requiere instalación externa).
 
-1.  **Copiar Archivos**
-    *   Copia toda la carpeta del proyecto a la nueva computadora.
+---
 
-2.  **Instalar Dependencias**
-    *   Abre una terminal (PowerShell o CMD) dentro de la carpeta del proyecto.
-    *   Ejecuta el siguiente comando para descargar las librerías necesarias:
-        ```bash
-        npm install
-        ```
+## 🚀 Instalación y Configuración
 
-3.  **Iniciar el Sistema**
-    *   Una vez instaladas las dependencias, inicia el servidor con:
-        ```bash
-        npm start
-        ```
-    *   Verás un mensaje: `Server running at http://localhost:3000`.
+### 1. Clonar o Descargar
+Descarga el código fuente en tu carpeta de proyectos (Ej. `C:\Proyectos\Reportes`).
 
-4.  **Usar**
-    *   Abre tu navegador (Chrome, Edge, etc.) y ve a: `http://localhost:3000`
+### 2. Instalar Dependencias
+Abre una terminal en la carpeta del proyecto y ejecuta:
+```bash
+npm install
+```
+*Si estás en Windows y tienes problemas, puedes usar el archivo `INSTALAR_DEPENDENCIAS.bat` (doble clic).*
 
-## Sobre la Base de Datos
-*   Los datos se guardan en el archivo `src/database.sqlite`.
-*   **Para conservar los datos**: Asegúrate de copiar este archivo junto con el resto del proyecto.
-*   **Para empezar desde cero**: Si borras este archivo (o no lo copias), el sistema creará uno nuevo y vacío automáticamente al iniciarse (con el usuario `admin` por defecto).
+### 3. Configuración de Entorno (.env)
+El sistema requiere un archivo `.env` en la raíz para las claves de seguridad. Se crea uno automáticamente con valores por defecto, o puedes crearlo tú mismo:
 
-## Usuarios por Defecto
-*   **Usuario**: `admin`
-*   **Contraseña**: `admin`
+`Archivo: .env`
+```env
+SESSION_SECRET=clave-super-secreta-cambiar-en-produccion
+MASTER_KEY=vigil2026
+NODE_ENV=development
+```
 
-## Compartir en Internet (Ngrok)
+---
 
-Si deseas que alguien más pruebe el sistema desde otra ubicación sin instalar nada, puedes usar **ngrok**:
+## 🏃‍♂️ Ejecución
 
-1.  Descarga **ngrok** desde [ngrok.com](https://ngrok.com/).
-2.  Descomprime el archivo y abre la terminal en esa carpeta.
-3.  Con tu sistema ya corriendo (paso 3 de instalación), ejecuta en la terminal de ngrok:
-    ```bash
-    ngrok http 3000
-    ```
-4.  Ngrok te dará una dirección web (algo como `https://a1b2-c3d4.ngrok.io`).
-5.  Envía esa dirección a la otra persona. Podrán acceder a tu sistema mientras mantengas tu computadora y la terminal encendidas.
+Para iniciar el servidor, abre la terminal y ejecuta:
+```bash
+npm start
+```
+El sistema estará disponible en: **http://localhost:3000**
+
+*Alternativamente, usa el archivo `INICIAR_SISTEMA.bat` para un arranque rápido.*
+
+---
+
+## 🛡️ Credenciales (Por Defecto)
+
+El sistema viene con un usuario administrador preconfigurado si usas los scripts de inicio:
+
+- **Usuario:** `diego`
+- **Contraseña:** `1234`
+- **Rol:** `admin` (Acceso total)
+
+---
+
+## 🛠️ Herramientas y Scripts (Base de Datos)
+
+En la carpeta `scripts/` encontrarás utilidades para gestionar la base de datos sin tocar código:
+
+### Ingesta de Datos (Relleno)
+- **`node scripts/bulk_insert_documents.js`**: Crea 1000 documentos de prueba automáticamente.
+- **`node scripts/seed_workers.js`**: Rellena la tabla de trabajadores con datos falsos.
+- **`node scripts/seed_users.js`**: Crea usuarios por defecto.
+
+### Mantenimiento y Consultas
+- **`node scripts/consultar_datos.js`**: Muestra una tabla en consola con todos los documentos y usuarios.
+- **`node scripts/limpiar_duplicados.js`**: Elimina registros duplicados en el historial.
+- **`node scripts/sql_shell.js`**: Abre una consola SQL interactiva para ejecutar comandos directos (`SELECT`, `DELETE`, etc.).
+
+### Recuperación
+- **`node scripts/reset_password.js`**: Restablece la contraseña de `diego` a `1234` en caso de emergencia.
+
+---
+
+## 🔐 Seguridad Implementada
+
+- **Protección XSS**: Todos los inputs están sanitizados para evitar inyección de código.
+- **Sesiones Seguras**: Cookies HTTPOnly.
+- **Roles**: Sistema de roles (`admin`, `user`) para restringir el acceso a la gestión de usuarios.
+- **Encriptación**: Contraseñas almacenadas con Hash (Bcrypt).

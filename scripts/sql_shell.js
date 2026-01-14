@@ -2,7 +2,7 @@ const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const readline = require('readline');
 
-const dbPath = path.join(__dirname, 'src/database.sqlite');
+const dbPath = path.join(__dirname, '../src/database.sqlite');
 const db = new sqlite3.Database(dbPath);
 
 const rl = readline.createInterface({

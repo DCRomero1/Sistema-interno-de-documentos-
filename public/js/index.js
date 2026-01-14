@@ -60,12 +60,23 @@ function formatDateTimeStacked(isoString) {
 }
 
 // cambio de '-------' a '--------' para que se vea mejor, tambien a un color rojo.
+// Helper to escape HTML characters (XSS Prevention)
+function escapeHtml(text) {
+    if (text === null || text === undefined) return '';
+    return String(text)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
 // Helper to clean empty data
 function formatEmpty(value) {
     if (value === null || value === undefined || (typeof value === 'string' && value.trim() === '')) {
         return '<center><span style="color: red;">--------</span></center>';
     }
-    return value;
+    return escapeHtml(value);
 }
 
 let allDocuments = []; // instoria de los documentos para guardar 

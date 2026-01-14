@@ -49,6 +49,13 @@
                     Trabajadores
                 </a>
             </li>
+            <!-- Admin Only Section -->
+            <li class="nav-item" id="nav-admin-users" style="display: none;">
+                <a href="/users" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-user-shield"></i></span>
+                    Usuarios
+                </a>
+            </li>
         </ul>
         <div class="sidebar-footer">
             <img src="/img/logo_vigil.png" alt="Vigil Tecnológico" class="sidebar-logo">
@@ -130,6 +137,33 @@
                 </div>
             </div>
 
+            <!-- Full Document Registry Table (Read Only) -->
+            <div class="paper-card" style="padding: 20px; margin-bottom: 20px;">
+                <h3 style="margin-bottom: 15px; color: var(--primary-color);">Registro Completo de Documentos</h3>
+                <div class="registry-container">
+                    <table class="registry-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">N°</th>
+                                <th style="width: 90px;">Recepción</th>
+                                <th style="width: 80px;">Tipo</th>
+                                <th style="width: 150px;">Remitente</th>
+                                <th style="width: 150px;">Área Origen</th>
+                                <th>Concepto</th>
+                                <th style="width: 90px;">Despacho</th>
+                                <th style="width: 150px;">Destino</th>
+                                <th style="width: 60px;">Folios</th>
+                                <th style="width: 100px;">Cargo</th>
+                                <th style="width: 100px;">Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody id="full-registry-body">
+                            <!-- Dynamic Content -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
             <div class="report-toolbar" style="justify-content: center;">
                 <button id="btn-export" class="btn btn-primary" style="background-color: #27ae60;">
                     <i class="fa-solid fa-file-excel"></i> Exportar a Excel (CSV)
@@ -140,8 +174,10 @@
         </div>
     </main>
 
+
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="/js/common.js"></script>
+    <script src="/js/common.js?v=2"></script>
     <script src="/js/reports.js"></script>
     <script>
         // Sidebar Toggle Logic

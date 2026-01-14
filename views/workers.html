@@ -165,6 +165,13 @@
                     Trabajadores
                 </a>
             </li>
+            <!-- Admin Only Section -->
+            <li class="nav-item" id="nav-admin-users" style="display: none;">
+                <a href="/users" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-user-shield"></i></span>
+                    Usuarios
+                </a>
+            </li>
         </ul>
         <div class="sidebar-footer">
             <img src="/img/logo_vigil.png" alt="Vigil Tecnológico" class="sidebar-logo">
@@ -295,7 +302,37 @@
         </div>
     </div>
 
-    <script src="/js/common.js"></script>
+    <!-- Modal for Registering New User -->
+    <div id="registerUserModal" class="modal">
+        <div class="modal-content" style="max-width: 400px;">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-user-plus"></i> Registrar Nuevo Usuario</h3>
+                <span class="close-modal" onclick="closeRegisterUserModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="registerUserForm" onsubmit="event.preventDefault(); submitRegisterUser();">
+                    <div class="form-group">
+                        <label class="form-label">Nombre Completo</label>
+                        <input type="text" id="regName" class="form-input" required placeholder="Nombre del usuario">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Usuario (Login)</label>
+                        <input type="text" id="regUsername" class="form-input" required placeholder="Ej. admin2">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Contraseña</label>
+                        <input type="password" id="regPassword" class="form-input" required placeholder="******">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeRegisterUserModal()">Cancelar</button>
+                <button class="btn btn-primary" onclick="submitRegisterUser()">Registrar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/common.js?v=2"></script>
     <script src="/js/workers.js"></script>
     <script>
         // Modal Logic

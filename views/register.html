@@ -42,6 +42,13 @@
                     Trabajadores
                 </a>
             </li>
+            <!-- Admin Only Section -->
+            <li class="nav-item" id="nav-admin-users" style="display: none;">
+                <a href="/users" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-user-shield"></i></span>
+                    Usuarios
+                </a>
+            </li>
         </ul>
         <div class="sidebar-footer">
             <img src="/img/logo_vigil.png" alt="Vigil Tecnológico" class="sidebar-logo">
@@ -67,21 +74,26 @@
                 <div class="form-container">
                     <form class="form-grid">
 
-                        <!-- Row 1: Dates -->
+                        <!-- Row 1: Datos -->
                         <div class="form-group">
                             <label class="form-label">Fecha de Recepción</label>
                             <input type="date" id="fecha" class="form-input">
                         </div>
 
-                        <!-- Row 2: Type and Origin -->
+                        <!-- Row 2: Tipo y origen del documento -->
                         <div class="form-group">
                             <label class="form-label">Tipo de Documento</label>
                             <select id="tipo" class="form-select">
-                                <option>Oficio</option>
-                                <option>Solicitud</option>
-                                <option>Carta</option>
-                                <option>Memorando</option>
-                                <option>Informe</option>
+                                <option>INFORME:</option>
+                                <option>FUT:</option>
+                                <option>CARTA:</option>
+                                <option>OFICIO INTERNO:</option>
+                                <option>OFICIO EXTERNO:</option>
+                                <option>NOTA DE CORDINACION INTERNA:</option>
+                                <option>NOTA DE COODINACION EXTERNA:</option>
+                                <option>RECIBO:</option>
+                                <option>RESOLUCION DIRECTORIAL:</option>
+                                <option>RECIBO ELECTRONICO:</option>
                                 <option value="Otro">Otro</option>
                             </select>
                             <input type="text" id="tipoOtro" class="form-input" style="display: none; margin-top: 10px;"
@@ -115,6 +127,7 @@
                                     <option>Especialista hadware</option>
                                     <option>Fablab</option>
                                     <option>Mesa de partes</option>
+                                    <option>Estudiante</option>
                                     <option>Unidad de bienestar y empleabilidad</option>
                                 </optgroup>
                                 <optgroup label="AREAS ACADÉMICAS">
@@ -135,7 +148,7 @@
                                 style="display: none; margin-top: 10px;" placeholder="Especifique el área...">
                         </div>
 
-                        <!-- Row 3: ento (Full width) -->
+                        <!-- Row 3: Ingresar asusnto -->
                         <div class="form-group full-width">
                             <label class="form-label">Concepto / Asunto</label>
                             <input type="text" id="concepto" class="form-input"
@@ -164,7 +177,9 @@
         </div>
     </main>
 
-    <script src="/js/common.js"></script>
+
+
+    <script src="/js/common.js?v=2"></script>
     <script src="/js/register.js"></script>
     <script>
         // Sidebar Toggle Logic
