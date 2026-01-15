@@ -193,70 +193,83 @@
 
         <div class="content-area">
 
-            <div class="workers-layout">
-                <!-- Left Column: Workers List -->
-                <div class="workers-list-section">
+            <!-- Workers Grid Layout -->
+            <div style="display: grid; grid-template-columns: 3fr 1fr; gap: 20px;">
+
+                <!-- Main Column: Personnel Grid -->
+                <div>
                     <div
                         style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                        <h2>Lista de Docentes y Personal</h2>
-                        <button class="btn btn-primary" onclick="openWorkerModal()">
-                            <i class="fa-solid fa-plus"></i> Nuevo Trabajador
+                        <div>
+                            <h2 style="color: var(--primary-color); font-weight: 800; letter-spacing: -0.5px;">
+                                Directorio de Personal</h2>
+                            <p style="color: #64748b; font-size: 0.9rem;">Gestión de docentes y personal administrativo
+                            </p>
+                        </div>
+                        <button class="btn btn-primary" onclick="openWorkerModal()"
+                            style="box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);">
+                            <i class="fa-solid fa-plus"></i> Nuevo
                         </button>
                     </div>
 
-                    <!-- Placeholder for Workers List -->
-                    <div id="workersList">
-                        <!-- Example Static Data -->
-                        <div class="worker-card">
-                            <div class="worker-avatar">JP</div>
+                    <!-- Workers Grid -->
+                    <div id="workersGrid"
+                        style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;">
+                        <!-- Dynamic Cards Here -->
+                        <!-- Loading State -->
+                        <div class="worker-card" style="opacity: 0.7; pointer-events: none;">
+                            <div class="worker-avatar" style="background: #e2e8f0;"></div>
                             <div class="worker-info">
-                                <h4>Juan Perez</h4>
-                                <p>Docente - Matemáticas</p>
-                            </div>
-                            <div style="margin-left: auto;">
-                                <button class="btn btn-secondary btn-icon-only"><i class="fa-solid fa-pen"></i></button>
-                            </div>
-                        </div>
-                        <div class="worker-card">
-                            <div class="worker-avatar">MR</div>
-                            <div class="worker-info">
-                                <h4>Maria Rodriguez</h4>
-                                <p>Administrativo - Secretaría</p>
-                            </div>
-                            <div style="margin-left: auto;">
-                                <button class="btn btn-secondary btn-icon-only"><i class="fa-solid fa-pen"></i></button>
+                                <div
+                                    style="height: 15px; width: 120px; background: #e2e8f0; border-radius: 4px; margin-bottom: 5px;">
+                                </div>
+                                <div style="height: 10px; width: 80px; background: #e2e8f0; border-radius: 4px;"></div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Right Column: Birthdays & Stats -->
-                <div class="workers-widgets">
-                    <div class="birthday-widget">
-                        <div class="birthday-header">
-                            <i class="fa-solid fa-cake-candles"></i>
-                            <h3>Próximos Cumpleaños</h3>
-                        </div>
-                        <div class="birthday-list">
-                            <div class="birthday-item">
-                                <span>Juan Perez</span>
-                                <span class="birthday-date">12 Ene (Mañana)</span>
-                            </div>
-                            <div class="birthday-item">
-                                <span>Carlos Ruiz</span>
-                                <span class="birthday-date">24 Ene</span>
+                <!-- Right Column: Sidebar Widgets -->
+                <div style="display: flex; flex-direction: column; gap: 20px;">
+
+                    <!-- Birthday Widget -->
+                    <div class="birthday-widget"
+                        style="background: linear-gradient(135deg, #8e44ad, #9b59b6); box-shadow: 0 8px 20px rgba(142, 68, 173, 0.3);">
+                        <div class="birthday-header"
+                            style="border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 15px; margin-bottom: 15px;">
+                            <i class="fa-solid fa-cake-candles"
+                                style="font-size: 1.8rem; background: rgba(255,255,255,0.2); padding: 10px; border-radius: 50%;"></i>
+                            <div style="margin-left: 10px;">
+                                <h3 style="margin: 0; font-size: 1.1rem; font-weight: 700;">Cumpleaños</h3>
+                                <span style="font-size: 0.8rem; opacity: 0.9;">Próximos eventos</span>
                             </div>
                         </div>
-                        <div style="text-align: center; margin-top: 15px; font-size: 0.9rem;">
-                            <i class="fa-solid fa-calendar-alt"></i> Este Mes
+                        <div class="birthday-list" id="birthdayList">
+                            <!-- Dynamic Birthday Items -->
+                        </div>
+                        <div
+                            style="text-align: center; margin-top: 15px; font-size: 0.8rem; background: rgba(0,0,0,0.1); padding: 8px; border-radius: 20px;">
+                            <i class="fa-solid fa-calendar-check"></i> Actualizado hoy
                         </div>
                     </div>
 
-                    <div class="paper-card">
-                        <h3>Resumen</h3>
-                        <p style="margin-top: 10px;">Total Personal: <strong>2</strong></p>
-                        <p>Docentes: <strong>1</strong></p>
+                    <!-- Stats / Summary Card -->
+                    <div class="paper-card" style="padding: 20px;">
+                        <h4
+                            style="color: var(--text-color); margin-bottom: 15px; border-left: 3px solid var(--accent-color); padding-left: 10px;">
+                            Resumen</h4>
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #f1f5f9;">
+                            <span style="color: #64748b;">Total Personal</span>
+                            <span style="font-weight: 800; color: var(--primary-color); font-size: 1.2rem;"
+                                id="statTotal">--</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="color: #64748b;">Docentes</span>
+                            <span style="font-weight: 600; color: var(--text-color);" id="statDocentes">--</span>
+                        </div>
                     </div>
+
                 </div>
             </div>
 

@@ -344,12 +344,16 @@ body {
     gap: 20px;
     align-items: center;
     flex-wrap: wrap;
+    justify-content: space-between;
+    /* Push filters to the right */
 }
 
 .search-box {
     flex-grow: 1;
     position: relative;
     min-width: 250px;
+    max-width: 600px;
+    /* Limit search box width so it doesn't look too stretched */
 }
 
 .search-icon {
@@ -378,7 +382,9 @@ body {
 
 .filter-box {
     display: flex;
-    gap: 10px;
+    gap: 16px;
+    /* More breathing room */
+    align-items: center;
 }
 
 .filter-select {
@@ -388,6 +394,8 @@ body {
     background-color: white;
     cursor: pointer;
     font-size: 0.9rem;
+    min-width: 140px;
+    /* Consistent width for order */
 }
 
 .filter-select:hover {

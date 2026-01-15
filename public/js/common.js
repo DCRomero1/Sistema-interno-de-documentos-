@@ -46,6 +46,7 @@ function toggleUserDropdown(event) {
 }
 
 // Close dropdown when clicking outside
+// Close dropdown when clicking outside
 window.addEventListener('click', function (event) {
     const dropdown = document.getElementById('userDropdown');
     const userInfo = document.querySelector('.user-info');
@@ -56,3 +57,59 @@ window.addEventListener('click', function (event) {
         }
     }
 });
+
+// Birthday Notification Logic
+async function checkBirthdays() {
+    // Only run if SweetAlert is loaded
+    if (typeof Swal === 'undefined') return;
+
+    // Check if we already showed it this session to avoid annoyance
+    if (sessionStorage.getItem('birthdayShown')) return;
+
+    try {
+        const response = await fetch('/api/workers/birthdays');
+        if (!response.ok) return;
+
+        const birthdays = await response.json();
+        if (birthdays.length === 0) return;
+
+        // Filter for very close birthdays (e.g., next 7 days)
+        const nearby = birthdays.filter(b => b.daysUntil <= 7);
+
+        if (nearby.length > 0) {
+            // Construct message
+            const names = nearby.map(b => {
+                const time = b.daysUntil === 0 ? '¡Hoy!' : (b.daysUntil === 1 ? 'Mañana' : `en ${b.daysUntil} días`);
+                return `<b>${b.fullName.split(' ')[0]}</b> (${time})`;
+            }).join('<br>');
+
+            // Show Toast
+            Swal.fire({
+                title: '🎂 ¡Cumpleaños Cercanos!',
+                html: names,
+                icon: 'info',
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 8000,
+                timerProgressBar: true,
+                background: '#fff',
+                color: '#333',
+                iconColor: '#e67e22',
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            });
+
+            // Mark as shown
+            sessionStorage.setItem('birthdayShown', 'true');
+        }
+
+    } catch (e) {
+        console.error('Error checking birthdays', e);
+    }
+}
+
+// Run check
+checkBirthdays();

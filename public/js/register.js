@@ -38,54 +38,84 @@ document.getElementById('tipo').addEventListener('change', function () {
     }
 });
 
+// Remove error class on input
+document.querySelectorAll('.form-input, .form-select').forEach(input => {
+    input.addEventListener('input', function () {
+        this.classList.remove('input-error');
+    });
+    input.addEventListener('change', function () {
+        this.classList.remove('input-error');
+    });
+});
+
 async function submitForm() {
+    let hasError = false;
+
+    // Helper to highlight error
+    const showError = (id, message) => {
+        const el = document.getElementById(id);
+        el.classList.add('input-error');
+        // Optional: Focus first error
+        if (!hasError) el.focus();
+        hasError = true;
+    };
+
     let origenVal = document.getElementById('origen').value;
     if (origenVal === 'Otros') {
         origenVal = document.getElementById('origenOtro').value.trim();
-        // append (Otro) tag or text if desired, or just use the text value
         if (!origenVal) {
-            alert('Por favor especifique el área de origen');
-            document.getElementById('origenOtro').focus();
-            return;
+            showError('origenOtro');
         }
+    } else if (!origenVal) { // Check if select is empty/default
+        showError('origen');
     }
 
     let tipoVal = document.getElementById('tipo').value;
     if (tipoVal === 'Otro') {
         tipoVal = document.getElementById('tipoOtro').value.trim();
         if (!tipoVal) {
-            alert('Por favor especifique el tipo de documento');
-            document.getElementById('tipoOtro').focus();
-            return;
+            showError('tipoOtro');
         }
     } else {
-        // For standard types, append the number/code
         const numInforme = document.getElementById('numeroInforme').value.trim();
         if (!numInforme) {
-            alert('Por favor ingrese el N° o Código del documento');
-            document.getElementById('numeroInforme').focus();
-            return;
+            showError('numeroInforme');
         }
-        // Remove trailing colon if present (e.g. "INFORME:") and trim whitespace
         let baseType = tipoVal.replace(/:$/, '').trim();
         tipoVal = `${baseType}: N° ${numInforme}`;
+    }
+
+    const nombre = document.getElementById('nombre');
+    if (!nombre.value.trim()) showError('nombre');
+
+    const concepto = document.getElementById('concepto');
+    if (!concepto.value.trim()) showError('concepto');
+
+    const folios = document.getElementById('folios');
+    // Folios might be optional but let's assume required based on previous code
+    // If not strictly required previously, we can skip or keep it strict. 
+    // Previous code didn't explicitly check folios in the "Basic validation" block, 
+    // but the screenshot alert said "Origen, Nombre y Concepto". I'll stick to those 3 strict ones + logic for type/origin.
+
+    if (hasError) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Campos Incompletos',
+            text: 'Por favor, complete los campos marcados en rojo.',
+            confirmButtonColor: '#2563eb'
+        });
+        return;
     }
 
     // Collect data
     const data = {
         fecha: document.getElementById('fecha').value,
         tipo: tipoVal,
-        nombre: document.getElementById('nombre').value,
+        nombre: nombre.value,
         origen: origenVal,
-        concepto: document.getElementById('concepto').value,
-        folios: document.getElementById('folios').value
+        concepto: concepto.value,
+        folios: folios.value
     };
-
-    // Basic validation
-    if (!data.origen || !data.concepto || !data.nombre) {
-        alert('Por favor complete: Origen, Nombre y Concepto');
-        return;
-    }
 
     try {
         const response = await fetch('/api/documents', {
@@ -95,13 +125,28 @@ async function submitForm() {
         });
 
         if (response.ok) {
-            alert('Documento registrado correctamente');
-            window.location.href = '/'; // tecla 
+            Swal.fire({
+                icon: 'success',
+                title: '¡Registrado!',
+                text: 'El documento se ha guardado correctamente.',
+                timer: 1500,
+                showConfirmButton: false
+            }).then(() => {
+                window.location.href = '/';
+            });
         } else {
-            alert('Error al guardar el documento');
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Hubo un problema al guardar el documento.'
+            });
         }
     } catch (error) {
         console.error(error);
-        alert('Error de conexión');
+        Swal.fire({
+            icon: 'error',
+            title: 'Error de Conexión',
+            text: 'No se pudo contactar con el servidor.'
+        });
     }
 }

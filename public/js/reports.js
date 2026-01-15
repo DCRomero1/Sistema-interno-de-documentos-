@@ -96,7 +96,7 @@ function renderFullTable(documents) {
             <td>${doc.origen}</td>
             <td>${doc.concepto}</td>
             <td>${doc.fechaDespacho || '-'}</td>
-            <td>${doc.destino || '-'}</td>
+            <td>${doc.ubicacion || '-'}</td>
             <td>${doc.folios}</td>
             <td>${doc.cargo}</td>
             <td><span class="status-badge ${statusClass}">${doc.status}</span></td>
