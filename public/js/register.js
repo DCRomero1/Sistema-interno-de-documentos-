@@ -15,12 +15,26 @@ document.getElementById('origen').addEventListener('change', function () {
 
 document.getElementById('tipo').addEventListener('change', function () {
     const inputTipoOtro = document.getElementById('tipoOtro');
+    const inputNumeroInforme = document.getElementById('numeroInforme');
+
+    // Reset visibility
+    inputTipoOtro.style.display = 'none';
+    inputNumeroInforme.style.display = 'none';
+
     if (this.value === 'Otro') {
         inputTipoOtro.style.display = 'block';
         inputTipoOtro.focus();
     } else {
-        inputTipoOtro.style.display = 'none';
-        inputTipoOtro.value = ''; // borrar
+        // For all other options (FUT, INFORME, CARTA, etc.) show the number input
+        inputNumeroInforme.style.display = 'block';
+        inputNumeroInforme.focus();
+    }
+
+    if (this.value !== 'Otro') {
+        // clear other input if satisfied
+        inputTipoOtro.value = '';
+    } else {
+        inputNumeroInforme.value = '';
     }
 });
 
@@ -44,6 +58,17 @@ async function submitForm() {
             document.getElementById('tipoOtro').focus();
             return;
         }
+    } else {
+        // For standard types, append the number/code
+        const numInforme = document.getElementById('numeroInforme').value.trim();
+        if (!numInforme) {
+            alert('Por favor ingrese el N° o Código del documento');
+            document.getElementById('numeroInforme').focus();
+            return;
+        }
+        // Remove trailing colon if present (e.g. "INFORME:") and trim whitespace
+        let baseType = tipoVal.replace(/:$/, '').trim();
+        tipoVal = `${baseType}: N° ${numInforme}`;
     }
 
     // Collect data

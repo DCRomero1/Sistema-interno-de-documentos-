@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de Registro Documentario</title>
     <link rel="stylesheet" href="/css/style.css?v=2">
-    <!--  tenemos que cambiar esto para ver como funciona -->
+    <!--  Fondes de css actulizados -->
     <link rel="stylesheet" href="/css/fontawesome.all.min.css">
 </head>
 
@@ -85,22 +85,23 @@
                             class="search-input">
                     </div>
                     <div class="filter-box">
+                        <select id="filterStatus" class="filter-select">
+                            <option value="">Todos los Estados</option>
+                            <option value="Recibido">Recibido</option>
+                            <option value="Derivado">Derivado</option>
+                            <option value="Finalizado">Finalizado</option>
+                        </select>
+
                         <select id="filterType" class="filter-select">
                             <option value="">Todos los Tipos</option>
-                            <option value="Oficio">Oficio</option>
-                            <option value="Carta">Carta</option>
-                            <option value="Solicitud">Solicitud</option>
-                            <option value="Memorando">Memorando</option>
+                            <!-- Populated Dynamically -->
                         </select>
                         <select id="filterArea" class="filter-select">
                             <option value="">Todas las Áreas</option>
-                            <option value="Gerencia">Gerencia</option>
-                            <option value="Administración">Administración</option>
-                            <option value="Logística">Logística</option>
-                            <option value="Patrimonio">Patrimonio</option>
-                            <option value="Contabilidad">Contabilidad</option>
+                            <!-- Populated Dynamically -->
                         </select>
-                        <button class="btn btn-secondary btn-icon-only">
+                        <button class="btn btn-secondary btn-icon-only" onclick="applyFilters()"
+                            title="Aplicar Filtros">
                             <i class="fa-solid fa-filter"></i>
                         </button>
                     </div>

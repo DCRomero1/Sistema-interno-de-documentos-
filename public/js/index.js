@@ -74,18 +74,21 @@ function escapeHtml(text) {
 // Helper to clean empty data
 function formatEmpty(value) {
     if (value === null || value === undefined || (typeof value === 'string' && value.trim() === '')) {
-        return '<center><span style="color: red;">--------</span></center>';
+        return '<div style="text-align: center; color: #db0e0eff; font-size: 1.5rem; line-height: 1;">&mdash;</div>';
     }
     return escapeHtml(value);
 }
 
-let allDocuments = []; // instoria de los documentos para guardar 
-
+let allDocuments = []; // instoria de los documentos para guardar
 async function loadDocuments() {
     try {
         const response = await fetch('/api/documents');
         allDocuments = await response.json(); // guardamos las variables
         renderTable(allDocuments); // Renderisamos las actulizaciones.
+        // Populate dynamic filters if function is ready
+        if (window.populateFilters) {
+            window.populateFilters(allDocuments);
+        }
     } catch (error) {
         console.error('Error loading documents:', error);
     }
@@ -150,30 +153,71 @@ function renderTable(documents) {
 
 // Generar los eventos 
 document.addEventListener('DOMContentLoaded', () => {
-    const filterType = document.getElementById('filterType');
-    const filterArea = document.getElementById('filterArea');
-    const searchInput = document.getElementById('searchInput');
+    const filterStatus = document.getElementById('filterStatus');
+
+
+    // Populate Dynamic Filters
+    function populateFilters(documents) {
+        // Extract unique types and origins
+        const types = [...new Set(documents.map(d => d.tipo ? d.tipo.split(':')[0].trim() : '').filter(t => t))].sort();
+        const areas = [...new Set(documents.map(d => d.origen ? d.origen.trim() : '').filter(a => a))].sort();
+
+        // Populate Type Select
+        filterType.innerHTML = '<option value="">Todos los Tipos</option>';
+        types.forEach(t => {
+            const opt = document.createElement('option');
+            opt.value = t;
+            opt.textContent = t;
+            filterType.appendChild(opt);
+        });
+
+        // Populate Area Select
+        filterArea.innerHTML = '<option value="">Todas las Áreas</option>';
+        areas.forEach(a => {
+            const opt = document.createElement('option');
+            opt.value = a;
+            opt.textContent = a;
+            filterArea.appendChild(opt);
+        });
+    }
+
+    // Expose popular filters to loadDocuments
+    window.populateFilters = populateFilters;
 
     // Unified Filter Function
     function applyFilters() {
         const selectedType = filterType ? filterType.value.toLowerCase() : '';
         const selectedArea = filterArea ? filterArea.value.toLowerCase() : '';
+        const selectedStatus = filterStatus ? filterStatus.value : '';
         const searchValue = searchInput ? searchInput.value.toLowerCase() : '';
 
-        const filtered = allDocuments.filter(doc => {
-            // Filter by Type
-            const matchesType = selectedType === '' || (doc.tipo && doc.tipo.toLowerCase() === selectedType);
 
-            // Filter by Area (Partial match on Origen)
+
+        const filtered = allDocuments.filter(doc => {
+            // 1. Filter by Type (Partial match logic to catch subtypes handled by split above)
+            // But detailed match: if doc.tipo is "INFORME: N 123", select value "INFORME" matches
+            const docType = doc.tipo ? doc.tipo.toLowerCase() : '';
+            const matchesType = selectedType === '' || docType.includes(selectedType);
+
+            // 2. Filter by Area
             const matchesArea = selectedArea === '' || (doc.origen && doc.origen.toLowerCase().includes(selectedArea));
 
-            // Filter by Search Text (Concepto, Origen, Cargo)
+            // 3. Filter by Status
+            const docStatus = doc.status || 'Recibido'; // Default
+            const matchesStatus = selectedStatus === '' || docStatus === selectedStatus;
+
+
+
+            // 5. Global Search (ID, Remitente, Concepto, Cargo, Origen)
             const matchesSearch = searchValue === '' ||
+                (doc.id && doc.id.toLowerCase().includes(searchValue)) ||
+                (doc.nombre && doc.nombre.toLowerCase().includes(searchValue)) ||
                 (doc.concepto && doc.concepto.toLowerCase().includes(searchValue)) ||
                 (doc.origen && doc.origen.toLowerCase().includes(searchValue)) ||
-                (doc.cargo && doc.cargo.toLowerCase().includes(searchValue));
+                (doc.cargo && doc.cargo.toLowerCase().includes(searchValue)) ||
+                (doc.tipo && doc.tipo.toLowerCase().includes(searchValue));
 
-            return matchesType && matchesArea && matchesSearch;
+            return matchesType && matchesArea && matchesStatus && matchesSearch;
         });
 
         renderTable(filtered);
@@ -182,6 +226,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Attach listeners
     if (filterType) filterType.addEventListener('change', applyFilters);
     if (filterArea) filterArea.addEventListener('change', applyFilters);
+    if (filterStatus) filterStatus.addEventListener('change', applyFilters);
+
     if (searchInput) searchInput.addEventListener('input', applyFilters);
 });
 

@@ -78,7 +78,7 @@
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.5);
-            padding: 50px 40px;
+            padding: 30px 25px;
             border-radius: 24px;
             box-shadow: var(--shadow-xl);
             width: 100%;
@@ -98,14 +98,15 @@
         }
 
         .login-header {
-            margin-bottom: 40px;
+            margin-bottom: 20px;
         }
 
         .logo-img {
-            max-width: 220px;
+            max-width: 140px;
             /* Adjust based on logo proportions */
             height: auto;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
+            border-radius: 20px;
         }
 
         .login-header h2 {
@@ -123,7 +124,7 @@
         }
 
         .form-group {
-            margin-bottom: 24px;
+            margin-bottom: 16px;
             text-align: left;
         }
 
@@ -260,7 +261,8 @@
             <!-- Updated Logo -->
             <img src="/img/logo_vigil.png" alt="Vigil Tecnológico" class="logo-img">
             <h2>Bienvenido</h2>
-            <p>Sistema de Registro de Documentos</p>
+            <p>Oficina de administración </p>
+
         </div>
 
         <div id="errorMsg" class="error-msg">
@@ -289,96 +291,17 @@
             <button type="submit" class="btn-login">
                 Iniciar Sesión <i class="fa-solid fa-arrow-right" style="margin-left: 8px;"></i>
             </button>
-            <div style="margin-top: 15px;">
-                <a href="#" onclick="openRecoverModal(event)"
-                    style="color: #64748b; text-decoration: none; font-size: 0.9rem;">
-                    ¿Olvidaste tu contraseña?
-                </a>
-            </div>
+
         </form>
 
         <div class="footer-text">
-            &copy; 2026 Vigil Tecnológico. Todos los derechos reservados.
+            &copy; 2026 INSTITUTO SUPERIOR PUBLICO "FRANCISCO DE PAULA GOZALES VIGIL".
         </div>
     </div>
 
-    <!-- Recovery Modal -->
-    <div id="recoverModal"
-        style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
-        <div
-            style="background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 350px; text-align: left; box-shadow: 0 4px 20px rgba(0,0,0,0.2);">
-            <h3 style="margin-top: 0; color: #1e293b;">Recuperar Acceso</h3>
-            <p style="color: #64748b; font-size: 0.9rem; margin-bottom: 20px;">Ingresa la clave maestra del sistema para
-                restablecer tu contraseña.</p>
 
-            <form id="recoverForm" onsubmit="event.preventDefault(); submitRecovery();">
-                <div class="form-group" style="margin-bottom: 15px;">
-                    <label class="form-label">Clave Maestra</label>
-                    <input type="password" id="masterKey" class="form-input" placeholder="Clave de seguridad" required>
-                </div>
-                <div class="form-group" style="margin-bottom: 20px;">
-                    <label class="form-label">Nueva Contraseña</label>
-                    <input type="password" id="newRecoverPass" class="form-input" placeholder="Nueva contraseña"
-                        required>
-                </div>
-                <div style="display: flex; gap: 10px; justify-content: flex-end;">
-                    <button type="button" onclick="closeRecoverModal()"
-                        style="padding: 10px 15px; border: 1px solid #ccc; background: white; border-radius: 8px; cursor: pointer;">Cancelar</button>
-                    <button type="submit"
-                        style="padding: 10px 20px; background: #CC0000; color: white; border: none; border-radius: 8px; cursor: pointer;">Restablecer</button>
-                </div>
-                <p id="recoverMsg" style="margin-top: 10px; font-size: 0.85rem; text-align: center; font-weight: bold;">
-                </p>
-            </form>
-        </div>
-    </div>
 
-    <script>
-        function openRecoverModal(e) {
-            e.preventDefault();
-            document.getElementById('recoverModal').style.display = 'flex';
-        }
 
-        function closeRecoverModal() {
-            document.getElementById('recoverModal').style.display = 'none';
-            document.getElementById('recoverMsg').textContent = '';
-            document.getElementById('recoverForm').reset();
-        }
-
-        async function submitRecovery() {
-            const masterKey = document.getElementById('masterKey').value;
-            const newPassword = document.getElementById('newRecoverPass').value;
-            const msg = document.getElementById('recoverMsg');
-
-            msg.textContent = 'Procesando...';
-            msg.style.color = '#64748b';
-
-            try {
-                const response = await fetch('/api/recover-password', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ masterKey, newPassword })
-                });
-
-                const result = await response.json();
-                if (result.success) {
-                    msg.style.color = 'green';
-                    msg.textContent = '¡Contraseña actualizada!';
-                    setTimeout(() => {
-                        closeRecoverModal();
-                        alert('Tu contraseña ha sido restablecida. Inicia sesión ahora.');
-                    }, 1500);
-                } else {
-                    msg.style.color = 'red';
-                    msg.textContent = result.error || 'Clave incorrecta';
-                }
-            } catch (err) {
-                console.error(err);
-                msg.style.color = 'red';
-                msg.textContent = 'Error de conexión';
-            }
-        }
-    </script>
 
 
     <!-- Script to handle errors cleanly -->
