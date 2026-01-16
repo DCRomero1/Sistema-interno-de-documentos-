@@ -56,14 +56,18 @@ function updateTable(typeData) {
     typeData.forEach(item => {
         const row = document.createElement('tr');
         row.innerHTML = `
-            <td>${item.tipo || 'Sin Tipo'}</td>
-            <td>${item.count}</td>
-            <td>
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <div style="flex-grow: 1; background: #ecf0f1; height: 8px; border-radius: 4px; overflow: hidden;">
-                        <div style="width: ${item.percentage}%; background: var(--secondary-color); height: 100%;"></div>
+            <td style="font-weight: 600; color: #334155; padding-top: 15px; padding-bottom: 15px;">
+                ${item.tipo || 'Sin Tipo'}
+            </td>
+            <td style="text-align: center; font-weight: 700; color: #0f172a; padding-top: 15px; padding-bottom: 15px;">
+                ${item.count}
+            </td>
+            <td style="width: 45%; vertical-align: middle; padding-top: 15px; padding-bottom: 15px;">
+                <div style="display: flex; align-items: center; width: 100%;">
+                    <div style="flex: 1; background-color: #e2e8f0; height: 10px; border-radius: 5px; overflow: hidden; margin-right: 15px;">
+                        <div style="width: ${item.percentage}%; background-color: var(--primary-color); height: 100%; border-radius: 5px;"></div>
                     </div>
-                    <span>${item.percentage}%</span>
+                    <span style="font-weight: 600; color: #64748b; font-size: 0.9rem; min-width: 40px; text-align: right;">${item.percentage}%</span>
                 </div>
             </td>
         `;
@@ -188,3 +192,20 @@ function exportToCSV() {
     link.click();
     document.body.removeChild(link);
 }
+// Fetch User Info for Sidebar
+async function fetchUserInfo() {
+    try {
+        const response = await fetch('/api/auth/me');
+        const data = await response.json();
+        if (data.authenticated && data.user) {
+            const userNameElement = document.getElementById('sidebar-username');
+            if (userNameElement) {
+                userNameElement.textContent = data.user.name || data.user.username;
+            }
+        }
+    } catch (error) {
+        console.error('Error fetching user info:', error);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', fetchUserInfo);

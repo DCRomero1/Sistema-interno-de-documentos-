@@ -150,3 +150,21 @@ async function submitForm() {
         });
     }
 }
+// Fetch User Info for Sidebar
+async function fetchUserInfo() {
+    try {
+        const response = await fetch('/api/auth/me');
+        const data = await response.json();
+        if (data.authenticated && data.user) {
+            const userNameElement = document.getElementById('sidebar-username');
+            if (userNameElement) {
+                userNameElement.textContent = data.user.name || data.user.username;
+            }
+        }
+    } catch (error) {
+        console.error('Error fetching user info:', error);
+    }
+}
+
+// Call on startup
+document.addEventListener('DOMContentLoaded', fetchUserInfo);

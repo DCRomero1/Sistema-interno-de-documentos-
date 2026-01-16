@@ -4,9 +4,38 @@ Un sistema web local para la gestión, seguimiento y administración de document
 
 ## 📋 Requisitos Previos
 
-- **Node.js** (Versión 18 o superior).
+- **Node.js** (Versión 18 o superior). [Descargar aquí](https://nodejs.org/es/).
 - **NPM** (Viene incluido con Node.js).
-- **SQLite3** (La base de datos se crea automáticamente, no requiere instalación externa).
+- **Internet** (Solo para la instalación inicial de librerías).
+
+---
+
+## 💻 Guía Para Instalar en Otra PC (Paso a Paso)
+
+Si deseas llevar este sistema a otra computadora (por ejemplo, la del cliente o secretaría), sigue estos 4 pasos exactos:
+
+### 1. Preparar la PC Destino
+Descarga e instala **Node.js (Versión LTS)** en la nueva computadora desde [nodejs.org](https://nodejs.org/es/). Instálalo con todas las opciones por defecto (Next > Next > Finish).
+
+### 2. Copiar los Archivos
+Copia toda la carpeta de tu proyecto (Ej. `Reportes`) a la nueva computadora (Mis Documentos, Escritorio, etc.).
+> **Nota:** No es necesario copiar la carpeta `node_modules` si la vas a regenerar, pero asegúrate de copiar `package.json`, `src/`, `public/`, `views/` y `scripts/`.
+
+### 3. Instalar las Librerías
+1. Abre la carpeta del proyecto en la nueva PC.
+2. Haz clic derecho en un espacio vacío -> **"Abrir en Terminal"** (o escribe `cmd` en la barra de direcciones).
+3. Escribe el siguiente comando y presiona Enter (requiere internet):
+   ```bash
+   npm install
+   ```
+   *Esto descargará `sqlite3`, `express` y todo lo necesario automáticamente.*
+
+### 4. Iniciar el Sistema
+Una vez termine la instalación, escribe:
+   ```bash
+   npm start
+   ```
+   Listo, el sistema abrirá en la dirección local (generalmente mostrada en la consola, ej. `http://localhost:3000`).
 
 ---
 
@@ -42,17 +71,8 @@ npm start
 ```
 El sistema estará disponible en: **http://localhost:3000**
 
+
 *Alternativamente, usa el archivo `INICIAR_SISTEMA.bat` para un arranque rápido.*
-
----
-
-## 🛡️ Credenciales (Por Defecto)
-
-El sistema viene con un usuario administrador preconfigurado si usas los scripts de inicio:
-
-- **Usuario:** `diego`
-- **Contraseña:** `1234`
-- **Rol:** `admin` (Acceso total)
 
 ---
 

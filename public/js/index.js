@@ -1,5 +1,8 @@
 // Load documents on startup
-document.addEventListener('DOMContentLoaded', loadDocuments);
+document.addEventListener('DOMContentLoaded', () => {
+    loadDocuments();
+    fetchUserInfo();
+});
 
 // Helper to format date YYYY-MM-DD -> DD-MM-YYYY
 function formatDate(dateString) {
@@ -93,6 +96,23 @@ async function loadDocuments() {
         console.error('Error loading documents:', error);
     }
 }
+
+// Fetch User Info for Sidebar
+async function fetchUserInfo() {
+    try {
+        const response = await fetch('/api/auth/me');
+        const data = await response.json();
+        if (data.authenticated && data.user) {
+            const userNameElement = document.getElementById('sidebar-username');
+            if (userNameElement) {
+                userNameElement.textContent = data.user.name || data.user.username;
+            }
+        }
+    } catch (error) {
+        console.error('Error fetching user info:', error);
+    }
+}
+
 
 
 function getBadge(status) {
@@ -330,11 +350,12 @@ function viewHistory(docId) {
     const doc = allDocuments.find(d => d.id === docId);
     if (!doc) return;
 
-    const tbody = document.getElementById('historyTableBody');
-    tbody.innerHTML = '';
+    // Use specific container classes
+    const container = document.querySelector('#historyModal .history-container');
+    container.innerHTML = '';
 
-    // If no history exists, create a synthetic one from current data or show empty
-    const history = doc.history || [{
+    // If no history exists, use synthetic
+    const rawHistory = doc.history && doc.history.length > 0 ? doc.history : [{
         date: doc.fecha,
         action: 'Registro Inicial',
         from: 'Exterior',
@@ -343,22 +364,89 @@ function viewHistory(docId) {
         observation: 'Sin historial detallado'
     }];
 
-    // Sort by date descending (newest first) or ascending? Identifying flow usually ascending.
-    // Let's keep it as is (insertion order).
+    // Create Timeline UL
+    const ul = document.createElement('ul');
+    ul.className = 'timeline';
 
-    history.forEach(item => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td>${formatDateTimeStacked(item.date)}</td>
-            <td>${formatEmpty(item.action)}</td>
-            <td>${formatEmpty(item.from)}</td>
-            <td>${formatEmpty(item.to)}</td>
-            <td>${formatEmpty(item.cargo)}</td>
-            <td>${formatEmpty(item.observation)}</td>
+    rawHistory.forEach(item => {
+        const li = document.createElement('li');
+        li.className = 'timeline-item';
+
+        // Parse Date & Time
+        let dateStr = item.date;
+        let timeStr = '';
+        try {
+            if (item.date && item.date.includes('T')) {
+                const d = new Date(item.date);
+                dateStr = d.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
+                timeStr = d.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+            } else if (item.date) {
+                // assume YYYY-MM-DD
+                const parts = item.date.split('-');
+                if (parts.length === 3) dateStr = `${parts[2]}-${parts[1]}-${parts[0]}`;
+            }
+        } catch (e) {
+            console.error(e);
+        }
+
+        // Determine Badge Class based on Action/Status
+        let badgeClass = 'badge-received'; // Default blue
+        let icon = 'fa-arrow-right-to-bracket';
+        const actionLower = (item.action || '').toLowerCase();
+
+        if (actionLower.includes('deriv')) {
+            badgeClass = 'badge-derived'; // Orange
+            icon = 'fa-share';
+        } else if (actionLower.includes('final')) {
+            badgeClass = 'badge-finalized'; // Green
+            icon = 'fa-check';
+        }
+
+        // Build HTML
+        li.innerHTML = `
+            <div class="timeline-marker ${badgeClass}"></div>
+            <div class="timeline-content">
+                <div class="timeline-header">
+                    <div class="timeline-datetime">
+                        <i class="fa-regular fa-calendar"></i> ${dateStr}
+                        ${timeStr ? `<span class="tm-time"><i class="fa-regular fa-clock"></i> ${timeStr}</span>` : ''}
+                    </div>
+                    <span class="timeline-badge ${badgeClass}">${escapeHtml(item.action)}</span>
+                </div>
+                
+                <div class="timeline-body">
+                    <div class="timeline-route">
+                        <div class="route-node source">
+                            <span class="label">Origen</span>
+                            <span class="value" title="${escapeHtml(item.from)}">${escapeHtml(item.from) || '&mdash;'}</span>
+                        </div>
+                        <div class="route-arrow">
+                            <i class="fa-solid fa-arrow-right-long"></i>
+                        </div>
+                        <div class="route-node dest">
+                            <span class="label">Destino</span>
+                            <span class="value" title="${escapeHtml(item.to)}">${escapeHtml(item.to) || '&mdash;'}</span>
+                        </div>
+                    </div>
+
+                    ${item.cargo ? `
+                    <div class="timeline-meta">
+                        <strong><i class="fa-solid fa-file-signature"></i> Cargo / Responsable:</strong> 
+                        <span>${escapeHtml(item.cargo)}</span>
+                    </div>` : ''}
+
+                    ${item.observation ? `
+                    <div class="timeline-obs">
+                        <strong><i class="fa-regular fa-comment-dots"></i> Observaciones:</strong>
+                        <p>${escapeHtml(item.observation)}</p>
+                    </div>` : ''}
+                </div>
+            </div>
         `;
-        tbody.appendChild(row);
+        ul.appendChild(li);
     });
 
+    container.appendChild(ul);
     document.getElementById('historyModal').style.display = 'block';
 }
 

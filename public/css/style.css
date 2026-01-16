@@ -1,28 +1,20 @@
 :root {
-    /* --- Vibrant Tech Palette --- */
-    /* Primary: Bright Royal Blue */
+    /* --- Blue Admin Theme --- */
     --primary-color: #2563eb;
-
-    /* Secondary: Deep Indigo/Blue for contrast */
+    /* Bright Blue */
     --secondary-color: #1e3a8a;
-
-    /* Accent: Vivid Sky Blue for highlights */
+    /* Dark Blue */
     --accent-color: #3b82f6;
+    /* Sky Blue */
 
-    /* Background: Very light cool blue-gray (cleaner than gray) */
-    --bg-color: #f0f4f8;
-
-    /* Paper: Pure White */
-    --paper-color: #ffffff;
-
-    /* Text: Dark Blue-Gray for better readability than pure black */
-    --text-color: #1e293b;
-
-    /* Borders: Light Blue-Gray */
-    --border-color: #e2e8f0;
-
-    /* Hover: Very soft blue */
-    --hover-color: #eff6ff;
+    --header-bg: #1e3a8a;
+    /* Dark Blue Header */
+    --sidebar-bg: #f8f9fa;
+    /* Light Gray/White */
+    --text-color: #333;
+    --sidebar-text: #555;
+    --sidebar-hover-bg: #e9ecef;
+    --border-color: #ddd;
 
     /* Dimensions */
     --sidebar-width: 260px;
@@ -36,223 +28,269 @@
 }
 
 body {
-    font-family: 'Segoe UI', 'Inter', Roboto, Helvetica, Arial, sans-serif;
-    background-color: var(--bg-color);
-    color: var(--text-color);
+    font-family: 'Segoe UI', 'Roboto', Helvetica, Arial, sans-serif;
+    background-color: #ffffff;
     display: flex;
+    flex-direction: column;
     height: 100vh;
     overflow: hidden;
 }
 
-/* Sidebar with Gradient */
+/* --- Top Bar (Red Header) --- */
+.top-bar {
+    height: var(--header-height);
+    background-color: var(--header-bg);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    z-index: 20;
+    /* Above sidebar */
+    position: relative;
+}
+
+.top-bar-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.brand-text {
+    font-family: 'Brush Script MT', cursive;
+    /* Or similar script font */
+    font-size: 1.8rem;
+    font-weight: normal;
+}
+
+.logout-link {
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+}
+
+.logout-link:hover {
+    text-decoration: underline;
+}
+
+
+/* --- Main Container (Sidebar + Content) --- */
+/* We need to restructure body to be column? No, body was flex row. 
+   The image implies top bar spans full width. 
+   So Body should be Column if Top Bar is top.
+   BUT, usually Layout is:
+   Top Bar (Width 100%)
+   Flex Container (Sidebar + Content)
+*/
+/* Let's adjust Body to be Header + FlexRow */
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+.app-container {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    /* To scroll inside content area */
+}
+
+/* Sidebar */
 .sidebar {
     width: var(--sidebar-width);
-    /* Modern Gradient: Deep Blue to Brighter Blue */
-    background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
-    color: white;
+    background-color: var(--sidebar-bg);
+    /* White/Light */
+    border-right: 1px solid var(--border-color);
     display: flex;
     flex-direction: column;
     flex-shrink: 0;
-    box-shadow: 4px 0 25px rgba(0, 0, 0, 0.15);
-    /* Soft shadow over content */
+    transition: width 0.3s ease;
     z-index: 10;
 }
 
-.sidebar-header {
-    height: var(--header-height);
+.sidebar.collapsed {
+    width: 70px;
+}
+
+/* User Profile Section in Sidebar */
+.sidebar-user-profile {
+    display: flex;
+    align-items: center;
+    padding: 20px 15px;
+    border-bottom: 1px solid #eee;
+    background-color: #fff;
+    margin-bottom: 10px;
+}
+
+.user-avatar-circle {
+    width: 45px;
+    height: 45px;
+    background-color: #fce4ec;
+    /* Light pink/redish or maybe yellow/orange icon like image */
+    /* Image has a yellow/orange guy */
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: 700;
-    font-size: 1.2rem;
-    background-color: rgba(255, 255, 255, 0.05);
-    /* Ultra subtle glass */
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    letter-spacing: 0.5px;
+    margin-right: 15px;
+    color: #e65100;
+    /* Dark orange */
+    font-size: 1.5rem;
 }
 
+/* In collapsed mode, hide text, center icon */
+.sidebar.collapsed .sidebar-user-profile {
+    padding: 15px 5px;
+    justify-content: center;
+}
+
+.sidebar.collapsed .user-welcome-text {
+    display: none;
+}
+
+.sidebar.collapsed .user-avatar-circle {
+    margin-right: 0;
+}
+
+.user-welcome-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.welcome-label {
+    font-size: 0.75rem;
+    color: #888;
+    margin-bottom: 2px;
+}
+
+.user-name {
+    font-weight: 700;
+    color: #333;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+}
+
+/* Nav Menu */
 .nav-menu {
     list-style: none;
-    padding-top: 20px;
+    padding: 0;
+    /* Remove padding */
+    flex-grow: 1;
 }
 
 .nav-item {
-    margin-bottom: 8px;
-    /* Slightly more space */
-    padding: 0 10px;
-    /* Indent for rounded look */
+    border-bottom: 1px solid #f0f0f0;
+    /* Separator lines */
 }
 
 .nav-link {
     display: flex;
     align-items: center;
-    padding: 12px 20px;
-    color: #cbd5e1;
-    /* Lighter text for contrast on dark blue */
+    padding: 15px 20px;
+    color: var(--sidebar-text);
     text-decoration: none;
-    transition: all 0.3s ease;
-    border-radius: 8px;
-    /* Modern rounded corners */
-    white-space: nowrap;
-    overflow: hidden;
-    border-left: none;
-    /* Remove old border style */
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: background 0.2s;
 }
 
 .nav-link:hover,
 .nav-link.active {
-    background-color: rgba(255, 255, 255, 0.15);
-    /* Glassy active state */
-    color: white;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    /* Glow */
+    background-color: var(--sidebar-hover-bg);
+    color: #000;
+    border-left: 4px solid transparent;
+}
+
+/* If active, maybe show a border or specific color? Image doesn't show clearly. */
+/* Let's add a small left border for active */
+.nav-link.active {
+    border-left-color: var(--primary-color);
+    background-color: #f1f1f1;
 }
 
 .nav-icon {
-    margin-right: 10px;
-    width: 20px;
+    width: 25px;
     text-align: center;
-    font-size: 1rem;
-    /* Ensure icon has size when parent is 0 */
-}
-
-/* Collapsed Sidebar */
-.sidebar.collapsed {
-    width: 70px;
-    /* Slim width */
-}
-
-.sidebar.collapsed .sidebar-header span {
-    display: none;
-}
-
-.sidebar.collapsed .sidebar-header {
-    justify-content: center;
-    padding: 0;
-}
-
-.sidebar.collapsed .sidebar-header i {
-    margin-right: 0 !important;
-}
-
-.bg-plomito {
-    background-color: #f0f2f5;
-    /* Light gray "plomito" */
-}
-
-.sidebar.collapsed #sidebarIcon {
-    display: none;
+    margin-right: 10px;
+    color: #777;
+    font-size: 1.1rem;
 }
 
 .sidebar.collapsed .nav-link {
     justify-content: center;
-    font-size: 0;
-    /* Hide text */
-    padding: 12px 0;
-    border-left: 0;
-    /* Remove border indicator or adjust it? keeping it might look odd if width is small */
+    padding: 15px 0;
 }
 
-.sidebar.collapsed .nav-link .nav-icon {
+.sidebar.collapsed .nav-icon {
     margin-right: 0;
+}
+
+.sidebar.collapsed .nav-link span:not(.nav-icon) {
+    /* This won't work easily if text is bare. Hopefully text is wrapped if I edit HTML or I rely on flex hiding overflow? */
+    /* Wait, the HTML I wrote has text directly in 'a'. */
+    /* Let's assume text is hidden by font-size 0 trick or display none logic */
+    display: none;
+}
+
+/* Actually, simpler: */
+.sidebar.collapsed .nav-link {
+    font-size: 0;
+}
+
+.sidebar.collapsed .nav-icon {
     font-size: 1.2rem;
-    /* Make icons slightly larger */
 }
 
-/* Sidebar Toggle Button */
-#sidebarToggle {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 1.2rem;
-    color: white;
-    /* White to match sidebar text */
-    transition: color 0.2s;
-}
 
-#sidebarToggle:hover {
-    color: var(--accent-color);
-}
-
-/* Sidebar Footer (Logo) */
+/* Sidebar Footer */
 .sidebar-footer {
-    margin-top: auto;
-    padding: 0 15px 20px 15px;
-    /* Add padding around the card */
+    padding: 20px;
+    border-top: 1px solid #eee;
     text-align: center;
-    background: transparent;
-    border-top: none;
 }
 
 .sidebar-logo {
-    display: block;
-    width: 100%;
     max-width: 100%;
     height: auto;
-    background-color: white;
-    padding: 12px 15px;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
-    /* Strong shadow for pop */
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    /* Bouncy transition */
-    transform-origin: center bottom;
-}
-
-.sidebar-logo:hover {
-    transform: translateY(-3px) scale(1.02);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
 
 .sidebar.collapsed .sidebar-footer {
-    padding: 10px 5px;
-    display: flex;
-    justify-content: center;
-}
-
-.sidebar.collapsed .sidebar-logo {
     display: none;
-    /* Keep hidden on collapse as requested, or we could show a mini icon */
 }
 
-/* Main Content */
+/* Main Content Area adjustments */
 .main-content {
     flex-grow: 1;
     display: flex;
     flex-direction: column;
     overflow: hidden;
-}
-
-.top-bar {
-    height: var(--header-height);
-    background-color: var(--paper-color);
-    border-bottom: 1px solid var(--border-color);
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    /* Push content (user-info) to the right */
-    padding: 0 30px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-    position: relative;
-    /* Needed for absolute positioning of title */
-}
-
-.page-title {
-    font-size: 1.5rem;
-    /* Larger font */
-    color: var(--primary-color);
-    font-weight: 800;
-    /* Bolder */
-    text-transform: uppercase;
-    /* Uppercase */
-    letter-spacing: 1px;
-    /* Spacing */
-    position: absolute;
-    /* Center it */
-    left: 50%;
-    transform: translateX(-50%);
-    white-space: nowrap;
-    text-align: center;
+    /* Since we changed body to flex-col, main-content needs to take remaining height? */
+    /* Wait, I need a wrapper for Sidebar + Content if specific scrolling behavior is desired. */
+    /* Current HTML structure: Body > Sidebar, Main. */
+    /* If I want Top Bar full width first... I need to move Sidebar INSIDE or change HTML structure. */
+    /* The replace_file_content for index.html KEPT Sidebar and Main as siblings. */
+    /* So structure is: Body -> Sidebar, Main. */
+    /* In that case, Sidebar is full height (minus header?), Main is full height. */
+    /* BUT I put header inside Main in replace_file_content. */
+    /* Wait, check previous step output. */
+    /* "    <main class="main-content"> <header class="top-bar">" */
+    /* So Header IS inside Main. */
+    /* That means Sidebar is separate on the left, Main (with Header) is on the right. */
+    /* This matches standard dashboard: Sidebar (full height), Main (Header + Content). */
+    /* So 'Administración' header will be to the right of Sidebar. */
+    /* BUT the image shows Header spanning FULL WIDTH (including above sidebar). */
+    /* Actually look at image: The Red Bar "Administración" seems to be above everything, OR sidebar is below it. */
+    /* The sidebar top starts with User Profile. */
+    /* So header is definitely TOP FULL WIDTH. */
+    /* My Structure: Sidebar | Main(Header + Content). This puts Header next to sidebar. */
+    /* This is NOT what the image shows likely. Image has "Administración" at far left. */
+    /* Wait, if "Administración" is far left, does it cover sidebar area? */
+    /* If Sidebar is BELOW text "Administración", then Top Bar is full width. */
+    /* Let's assume Top Bar is Full Width. */
 }
 
 .content-area {
@@ -1047,3 +1085,230 @@ body {
 }
 
 /*Aguegar: Diseño de cerrar seción*/
+
+/* --- NEW TIMELINE HISTORY STYLES --- */
+.history-container {
+    background-color: #f8fafc;
+    /* Light background for contrast */
+    padding: 20px;
+    border-radius: 8px;
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+.timeline {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    position: relative;
+    padding-left: 30px;
+    /* Space for line */
+}
+
+/* Vertical Line */
+.timeline::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 10px;
+    /* Center of marker */
+    width: 2px;
+    background-color: #e2e8f0;
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 30px;
+}
+
+.timeline-item:last-child {
+    margin-bottom: 0;
+}
+
+/* Marker Dot */
+.timeline-marker {
+    position: absolute;
+    left: -26px;
+    /* Adjust based on padding-left of UL (30px) - (MarkerWidth/2 + LineWidth/2) */
+    /* Wait, ul pad-left is 30px. Line is at 10px from ul left. Marker center should be 10px.
+       Marker width 14px. Left = 10px - 7px = 3px relative to UL.
+       However, item is inside UL. Item is shifted right by 30px padding? No, padding is on UL.
+       So item content starts at 30px.
+       Absolute left of item is 0 (which is 30px from ul edge).
+       So marker needs to be at -20px or so?
+       Let's use left: -27px; (30px - 7px - approx adjustments).
+       Actually easier: left: -26px works fine usually.
+       Let's align strictly: top: 20px (align with header).
+    */
+    top: 15px;
+    left: -27px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 3px solid #fff;
+    /* White ring */
+    box-shadow: 0 0 0 2px #e2e8f0;
+    z-index: 1;
+    background-color: #94a3b8;
+    /* Default gray */
+}
+
+.timeline-marker.badge-received {
+    background-color: var(--primary-color);
+    box-shadow: 0 0 0 2px #bfdbfe;
+}
+
+.timeline-marker.badge-derived {
+    background-color: #f59e0b;
+    box-shadow: 0 0 0 2px #fde68a;
+}
+
+.timeline-marker.badge-finalized {
+    background-color: #10b981;
+    box-shadow: 0 0 0 2px #a7f3d0;
+}
+
+
+/* Content Card */
+.timeline-content {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    border: 1px solid #f1f5f9;
+    font-family: system-ui, -apple-system, sans-serif;
+}
+
+.timeline-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #f8fafc;
+}
+
+.timeline-datetime {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #475569;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.tm-time {
+    font-weight: 400;
+    color: #94a3b8;
+    font-size: 0.85rem;
+    padding-left: 8px;
+    border-left: 1px solid #e2e8f0;
+}
+
+.timeline-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: white;
+}
+
+/* Reusing existing badge colors via classes or explicit */
+.timeline-badge.badge-received {
+    background-color: var(--primary-color);
+}
+
+.timeline-badge.badge-derived {
+    background-color: #f59e0b;
+}
+
+.timeline-badge.badge-finalized {
+    background-color: #10b981;
+}
+
+
+/* Body Route */
+.timeline-route {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background-color: #f8fafc;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.route-node {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.route-node.source {
+    text-align: right;
+}
+
+.route-node.dest {
+    text-align: left;
+}
+
+.route-node .label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    color: #94a3b8;
+    font-weight: 700;
+}
+
+.route-node .value {
+    font-size: 0.95rem;
+    color: #334155;
+    font-weight: 600;
+    text-transform: capitalize;
+    /* Clean capitalization */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+
+.route-arrow {
+    color: #cbd5e1;
+    font-size: 1.2rem;
+}
+
+.timeline-meta {
+    font-size: 0.9rem;
+    color: #64748b;
+    margin-bottom: 8px;
+}
+
+.timeline-meta strong {
+    color: #475569;
+}
+
+.timeline-obs {
+    margin-top: 10px;
+    background-color: #fffbeb;
+    /* Light yellow for note */
+    border-left: 3px solid #fcd34d;
+    padding: 10px 15px;
+    border-radius: 0 8px 8px 0;
+}
+
+.timeline-obs strong {
+    display: block;
+    font-size: 0.8rem;
+    color: #b45309;
+    margin-bottom: 4px;
+}
+
+.timeline-obs p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #78350f;
+    font-style: italic;
+    text-transform: capitalize;
+}

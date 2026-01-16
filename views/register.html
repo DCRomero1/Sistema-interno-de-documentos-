@@ -11,174 +11,192 @@
 
 <body>
 
-    <nav class="sidebar">
-        <div class="sidebar-header">
-            <i class="fa-solid fa-bars" id="sidebarToggle" style="margin-right: 15px; cursor: pointer;"></i>
-            <i class="fa-solid fa-book-open" id="sidebarIcon" style="margin-right: 10px;"></i>
-            <span>Administración</span>
+    <!-- Top Bar (Full Width) -->
+    <header class="top-bar">
+        <div class="top-bar-left">
+            <div class="brand-text">Administración</div>
+            <i class="fa-solid fa-bars" id="sidebarToggle" style="cursor: pointer; font-size: 1.2rem;"></i>
         </div>
-        <ul class="nav-menu">
-            <li class="nav-item">
-                <a href="/" class="nav-link">
-                    <span class="nav-icon"><i class="fa-solid fa-table-list"></i></span>
-                    Registro Diario
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="/register" class="nav-link active">
-                    <span class="nav-icon"><i class="fa-solid fa-plus-circle"></i></span>
-                    Nuevo Documento
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="/reports" class="nav-link">
-                    <span class="nav-icon"><i class="fa-solid fa-chart-line"></i></span>
-                    Reportes
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="/workers" class="nav-link">
-                    <span class="nav-icon"><i class="fa-solid fa-users"></i></span>
-                    Trabajadores
-                </a>
-            </li>
-            <!-- Admin Only Section -->
-            <li class="nav-item" id="nav-admin-users" style="display: none;">
-                <a href="/users" class="nav-link">
-                    <span class="nav-icon"><i class="fa-solid fa-user-shield"></i></span>
-                    Usuarios
-                </a>
-            </li>
-        </ul>
-        <div class="sidebar-footer">
-            <img src="/img/logo_vigil.png" alt="Vigil Tecnológico" class="sidebar-logo">
-        </div>
-    </nav>
 
-    <main class="main-content">
-        <header class="top-bar">
-            <div class="page-title">Registrar Nuevo Documento</div>
-            <div class="user-info" onclick="toggleUserDropdown(event)">
-                <span><i class="fa-solid fa-user-circle"></i> Admin <i class="fa-solid fa-caret-down"></i></span>
-                <div class="dropdown-menu" id="userDropdown">
-                    <a href="/logout" class="dropdown-item">
-                        <i class="fa-solid fa-right-from-bracket"></i> Cerrar Sesión
+        <div class="top-bar-right">
+            <a href="/logout" class="logout-link">
+                Cerrar Sesión
+            </a>
+        </div>
+    </header>
+
+    <div class="app-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-user-profile">
+                <div class="user-avatar-circle">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+                <div class="user-welcome-text">
+                    <span class="welcome-label">Bienvenido sr(a)</span>
+                    <span class="user-name" id="sidebar-username">CARGANDO...</span>
+                </div>
+            </div>
+
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="/" class="nav-link">
+                        <span class="nav-icon"><i class="fa-solid fa-table-list"></i></span>
+                        Panel General
                     </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/register" class="nav-link active">
+                        <span class="nav-icon"><i class="fa-solid fa-plus-circle"></i></span>
+                        Nuevo Documento
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/reports" class="nav-link">
+                        <span class="nav-icon"><i class="fa-solid fa-chart-line"></i></span>
+                        Reporte
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/workers" class="nav-link">
+                        <span class="nav-icon"><i class="fa-solid fa-users"></i></span>
+                        Trabajadores
+                    </a>
+                </li>
+                <!-- Admin Only Section -->
+                <li class="nav-item" id="nav-admin-users" style="display: none;">
+                    <a href="/users" class="nav-link">
+                        <span class="nav-icon"><i class="fa-solid fa-user-shield"></i></span>
+                        Usuarios
+                    </a>
+                </li>
+            </ul>
+            <div class="sidebar-footer">
+                <img src="/img/logo_vigil.png" alt="Vigil Tecnológico" class="sidebar-logo">
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <!-- Page Title Inside Main Content if desired, or remove since Top Bar has brand text. 
+                 The Index page had the title in the top bar but we changed that to 'Administración'.
+                 However, specific page titles like 'Registrar Nuevo Documento' might be useful. 
+                 I'll add a simple h2 at the top of content area or keep it if it fits. 
+                 The previous code had specific titles in the top bar. Now top bar is generic.
+                 I'll add a header inside content-area for the specific page title.
+            -->
+            <div class="content-area">
+                <h2 style="margin-bottom: 20px; color: var(--primary-color);">Registrar Nuevo Documento</h2>
+                <div class="paper-card auto-height bg-plomito">
+                    <div class="form-container">
+                        <form class="form-grid">
+
+                            <!-- Row 1: Datos -->
+                            <div class="form-group">
+                                <label class="form-label">Fecha de Recepción</label>
+                                <input type="date" id="fecha" class="form-input">
+                            </div>
+
+                            <!-- Row 2: Tipo y origen del documento -->
+                            <div class="form-group">
+                                <label class="form-label">Tipo de Documento</label>
+                                <select id="tipo" class="form-select">
+                                    <option>INFORME </option>
+                                    <option>FUT</option>
+                                    <option>CARTA</option>
+                                    <option>OFICIO INTERNO</option>
+                                    <option>OFICIO EXTERNO</option>
+                                    <option>NOTA DE CORDINACION INTERNA</option>
+                                    <option>NOTA DE COODINACION EXTERNA</option>
+                                    <option>RECIBO</option>
+                                    <option>RESOLUCION DIRECTORIAL</option>
+                                    <option>RECIBO ELECTRONICO</option>
+                                    <option value="Otro">Otro</option>
+                                </select>
+                                <input type="text" id="tipoOtro" class="form-input"
+                                    style="display: none; margin-top: 10px;"
+                                    placeholder="Especifique el tipo de documento...">
+                                <input type="text" id="numeroInforme" class="form-input"
+                                    style="display: none; margin-top: 10px;" placeholder="Ingrese N° o Código">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Nombre del Remitente</label>
+                                <input type="text" id="nombre" class="form-input" placeholder="Ej. Juan Pérez">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Área de donde llega (Origen)</label>
+                                <select id="origen" class="form-select">
+                                    <option value="" selected disabled>Seleccione origen...</option>
+                                    <optgroup label="JEFATURA DE UNIDAD DE ADMINISTRACION">
+                                        <option value="JEFATURA DE UNIDAD DE ADMINISTRACION">JEFATURA DE UNIDAD DE
+                                            ADMINISTRACION (Mesa de Partes)</option>
+                                        <option>Abastecimiento</option>
+                                        <option>Patrimonio</option>
+                                        <option>Almacén</option>
+                                        <option>Recursos humanos</option>
+                                        <option>Secretaria académica</option>
+                                        <option>Secretaria de dirección</option>
+                                        <option>Cordinador administrativo fundo calana</option>
+                                        <option>Personal de servicio</option>
+                                        <option>Canal 45(oficina de informatica y comunicación)</option>
+                                        <option>Mantenimiento de software</option>
+                                        <option>Formación continua</option>
+                                        <option>Jefatura de unidad académica</option>
+                                        <option>Asistencia social</option>
+                                        <option>Especialista hadware</option>
+                                        <option>Fablab</option>
+                                        <option>Mesa de partes</option>
+                                        <option>Estudiante Exterior</option>
+                                        <OPtion>Estudiante Interno</OPtion>
+                                        <option>Unidad de bienestar y empleabilidad</option>
+                                    </optgroup>
+                                    <optgroup label="AREAS ACADÉMICAS">
+                                        <option>Arquitectura de plataformas y servicios de tecnologías de informatic
+                                        </option>
+                                        <option>Asistencia administrativa</option>
+                                        <option>Contabilidad</option>
+                                        <option>Construcción civil</option>
+                                        <option>Producción Agropecuaria</option>
+                                        <option>Electricidad Industrial</option>
+                                        <option>Electronica Industrial</option>
+                                        <option>Mecánica de producción industrial</option>
+                                        <option>Mecatrónica Automotriz</option>
+                                    </optgroup>
+                                    <option>Otros</option>
+                                </select>
+                                <input type="text" id="origenOtro" class="form-input"
+                                    style="display: none; margin-top: 10px;" placeholder="Especifique el área...">
+                            </div>
+
+                            <!-- Row 3: Ingresar asusnto -->
+                            <div class="form-group full-width">
+                                <label class="form-label">Concepto / Asunto</label>
+                                <input type="text" id="concepto" class="form-input"
+                                    placeholder="Descripción breve del documento">
+                            </div>
+                            <!-- Row 5: Details -->
+                            <div class="form-group">
+                                <label class="form-label">N° Folios</label>
+                                <input type="number" id="folios" class="form-input" placeholder="Ej. 10">
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="reset" class="btn btn-secondary"
+                                    style="background-color: #95a5a6; margin-right: auto;">
+                                    <i class="fa-solid fa-eraser"></i> Limpiar
+                                </button>
+                                <a href="/" class="btn btn-secondary">Cancelar</a>
+                                <button type="button" class="btn btn-primary" onclick="submitForm()">
+                                    <i class="fa-solid fa-save"></i> Guardar
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
-        </header>
-
-
-        <div class="content-area">
-            <div class="paper-card auto-height bg-plomito">
-                <div class="form-container">
-                    <form class="form-grid">
-
-                        <!-- Row 1: Datos -->
-                        <div class="form-group">
-                            <label class="form-label">Fecha de Recepción</label>
-                            <input type="date" id="fecha" class="form-input">
-                        </div>
-
-                        <!-- Row 2: Tipo y origen del documento -->
-                        <div class="form-group">
-                            <label class="form-label">Tipo de Documento</label>
-                            <select id="tipo" class="form-select">
-                                <option>INFORME </option>
-                                <option>FUT</option>
-                                <option>CARTA</option>
-                                <option>OFICIO INTERNO</option>
-                                <option>OFICIO EXTERNO</option>
-                                <option>NOTA DE CORDINACION INTERNA</option>
-                                <option>NOTA DE COODINACION EXTERNA</option>
-                                <option>RECIBO</option>
-                                <option>RESOLUCION DIRECTORIAL</option>
-                                <option>RECIBO ELECTRONICO</option>
-                                <option value="Otro">Otro</option>
-                            </select>
-                            <input type="text" id="tipoOtro" class="form-input" style="display: none; margin-top: 10px;"
-                                placeholder="Especifique el tipo de documento...">
-                            <input type="text" id="numeroInforme" class="form-input"
-                                style="display: none; margin-top: 10px;" placeholder="Ingrese N° o Código">
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label">Nombre del Remitente</label>
-                            <input type="text" id="nombre" class="form-input" placeholder="Ej. Juan Pérez">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Área de donde llega (Origen)</label>
-                            <select id="origen" class="form-select">
-                                <option value="" selected disabled>Seleccione origen...</option>
-                                <optgroup label="JEFATURA DE UNIDAD DE ADMINISTRACION">
-                                    <option value="JEFATURA DE UNIDAD DE ADMINISTRACION">JEFATURA DE UNIDAD DE
-                                        ADMINISTRACION (Mesa de Partes)</option>
-                                    <option>Abastecimiento</option>
-                                    <option>Patrimonio</option>
-                                    <option>Almacén</option>
-                                    <option>Recursos humanos</option>
-                                    <option>Secretaria académica</option>
-                                    <option>Secretaria de dirección</option>
-                                    <option>Cordinador administrativo fundo calana</option>
-                                    <option>Personal de servicio</option>
-                                    <option>Canal 45(oficina de informatica y comunicación)</option>
-                                    <option>Mantenimiento de software</option>
-                                    <option>Formación continua</option>
-                                    <option>Jefatura de unidad académica</option>
-                                    <option>Asistencia social</option>
-                                    <option>Especialista hadware</option>
-                                    <option>Fablab</option>
-                                    <option>Mesa de partes</option>
-                                    <option>Estudiante Exterior</option>
-                                    <OPtion>Estudiante Interno</OPtion>
-                                    <option>Unidad de bienestar y empleabilidad</option>
-                                </optgroup>
-                                <optgroup label="AREAS ACADÉMICAS">
-                                    <option>Arquitectura de plataformas y servicios de tecnologías de informatic
-                                    </option>
-                                    <option>Asistencia administrativa</option>
-                                    <option>Contabilidad</option>
-                                    <option>Construcción civil</option>
-                                    <option>Producción Agropecuaria</option>
-                                    <option>Electricidad Industrial</option>
-                                    <option>Electronica Industrial</option>
-                                    <option>Mecánica de producción industrial</option>
-                                    <option>Mecatrónica Automotriz</option>
-                                </optgroup>
-                                <option>Otros</option>
-                            </select>
-                            <input type="text" id="origenOtro" class="form-input"
-                                style="display: none; margin-top: 10px;" placeholder="Especifique el área...">
-                        </div>
-
-                        <!-- Row 3: Ingresar asusnto -->
-                        <div class="form-group full-width">
-                            <label class="form-label">Concepto / Asunto</label>
-                            <input type="text" id="concepto" class="form-input"
-                                placeholder="Descripción breve del documento">
-                        </div>
-                        <!-- Row 5: Details -->
-                        <div class="form-group">
-                            <label class="form-label">N° Folios</label>
-                            <input type="number" id="folios" class="form-input" placeholder="Ej. 10">
-                        </div>
-
-                        <div class="form-actions">
-                            <button type="reset" class="btn btn-secondary"
-                                style="background-color: #95a5a6; margin-right: auto;">
-                                <i class="fa-solid fa-eraser"></i> Limpiar
-                            </button>
-                            <a href="/" class="btn btn-secondary">Cancelar</a>
-                            <button type="button" class="btn btn-primary" onclick="submitForm()">
-                                <i class="fa-solid fa-save"></i> Guardar
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-        </div>
+    </div>
     </main>
+    </div>
 
 
 

@@ -5,134 +5,139 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de Registro Documentario</title>
-    <link rel="stylesheet" href="/css/style.css?v=2">
+    <link rel="stylesheet" href="/css/style.css?v=3">
     <!--  Fondes de css actulizados -->
     <link rel="stylesheet" href="/css/fontawesome.all.min.css">
 </head>
 
 <body>
 
-    <!-- Sidebar -->
-    <nav class="sidebar">
-        <div class="sidebar-header">
-            <i class="fa-solid fa-bars" id="sidebarToggle" style="margin-right: 15px; cursor: pointer;"></i>
-            <i class="fa-solid fa-book-open" id="sidebarIcon" style="margin-right: 10px;"></i>
-            <span>Administración</span>
+    <!-- Top Bar (Full Width) -->
+    <header class="top-bar">
+        <div class="top-bar-left">
+            <div class="brand-text">Administración</div>
+            <i class="fa-solid fa-bars" id="sidebarToggle" style="cursor: pointer; font-size: 1.2rem;"></i>
         </div>
-        <ul class="nav-menu">
-            <li class="nav-item">
-                <a href="/" class="nav-link active">
-                    <span class="nav-icon"><i class="fa-solid fa-table-list"></i></span>
-                    Registro Diario
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="/register" class="nav-link">
-                    <span class="nav-icon"><i class="fa-solid fa-plus-circle"></i></span>
-                    Nuevo Documento
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="/reports" class="nav-link">
-                    <span class="nav-icon"><i class="fa-solid fa-chart-line"></i></span>
-                    Reportes
-                </a>
-            </li>
-            <!-- Modulo para ver el cumpleaños de los trabajadores de area -->
-            <li class="nav-item">
-                <a href="/workers" class="nav-link">
-                    <span class="nav-icon"><i class="fa-solid fa-users"></i></span>
-                    Trabajadores
-                </a>
-            </li>
-            <!-- Admin Only Section -->
-            <li class="nav-item" id="nav-admin-users" style="display: none;"> <!-- Hidden by default -->
-                <a href="/users" class="nav-link">
-                    <span class="nav-icon"><i class="fa-solid fa-user-shield"></i></span>
-                    Usuarios
-                </a>
-            </li>
-        </ul>
-        <div class="sidebar-footer">
-            <img src="/img/logo_vigil.png" alt="Vigil Tecnológico" class="sidebar-logo">
-        </div>
-    </nav>
 
-    <!-- Contenido principal -->
-    <main class="main-content">
-        <!-- Top Bar -->
-        <header class="top-bar">
-            <div class="page-title">Registro Diario de Documentos</div>
-            <div class="user-info" onclick="toggleUserDropdown(event)">
-                <span><i class="fa-solid fa-user-circle"></i> Admin <i class="fa-solid fa-caret-down"></i></span>
-                <div class="dropdown-menu" id="userDropdown">
-                    <a href="/logout" class="dropdown-item">
-                        <i class="fa-solid fa-right-from-bracket"></i> Cerrar Sesión
+        <div class="top-bar-right">
+            <a href="/logout" class="logout-link">
+                Cerrar Sesión
+            </a>
+        </div>
+    </header>
+
+    <div class="app-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-user-profile">
+                <div class="user-avatar-circle">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+                <div class="user-welcome-text">
+                    <span class="welcome-label">Bienvenido sr(a)</span>
+                    <span class="user-name" id="sidebar-username">CARGANDO...</span>
+                </div>
+            </div>
+
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="/" class="nav-link active">
+                        <span class="nav-icon"><i class="fa-solid fa-table-list"></i></span>
+                        Panel General
                     </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/register" class="nav-link">
+                        <span class="nav-icon"><i class="fa-solid fa-plus-circle"></i></span>
+                        Nuevo Documento
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/reports" class="nav-link">
+                        <span class="nav-icon"><i class="fa-solid fa-chart-line"></i></span>
+                        Reporte
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/workers" class="nav-link">
+                        <span class="nav-icon"><i class="fa-solid fa-users"></i></span>
+                        Trabajadores
+                    </a>
+                </li>
+                <!-- Admin Only Section -->
+                <li class="nav-item" id="nav-admin-users" style="display: none;">
+                    <a href="/users" class="nav-link">
+                        <span class="nav-icon"><i class="fa-solid fa-user-shield"></i></span>
+                        Usuarios
+                    </a>
+                </li>
+            </ul>
+            <div class="sidebar-footer">
+                <img src="/img/logo_vigil.png" alt="Vigil Tecnológico" class="sidebar-logo">
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <div class="content-area">
+                <div class="paper-card">
+                    <!-- Search and Filter Section -->
+                    <div class="search-section">
+                        <div class="search-box">
+                            <i class="fa-solid fa-search search-icon"></i>
+                            <input type="text" id="searchInput" placeholder="Buscar por remite, concepto o cargo..."
+                                class="search-input">
+                        </div>
+                        <div class="filter-box">
+                            <select id="filterStatus" class="filter-select">
+                                <option value="">Todos los Estados</option>
+                                <option value="Recibido">Recibido</option>
+                                <option value="Derivado">Derivado</option>
+                                <option value="Finalizado">Finalizado</option>
+                            </select>
+
+                            <select id="filterType" class="filter-select">
+                                <option value="">Todos los Tipos</option>
+                                <!-- Populated Dynamically -->
+                            </select>
+                            <select id="filterArea" class="filter-select">
+                                <option value="">Todas las Áreas</option>
+                                <!-- Populated Dynamically -->
+                            </select>
+                            <button class="btn btn-secondary btn-icon-only" onclick="applyFilters()"
+                                title="Aplicar Filtros">
+                                <i class="fa-solid fa-filter"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="registry-container">
+                        <table class="registry-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 50px;">N°</th>
+                                    <th style="width: 90px;">Recepción</th>
+                                    <th style="width: 80px;">Tipo</th>
+                                    <th style="width: 150px;">Remitente</th>
+                                    <th style="width: 150px;">Área Origen</th>
+                                    <th>Concepto</th>
+                                    <th style="width: 90px;">Despacho</th>
+                                    <th style="width: 150px;">Área de derivacion</th>
+                                    <th style="width: 60px;">Folios</th>
+                                    <th style="width: 100px;">Cargo</th>
+                                    <th style="width: 100px;">Estado</th>
+                                    <th style="width: 100px;">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="documentsTableBody">
+                                <!-- Data will be loaded via JS -->
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
-        </header>
-
-        <!-- Contenido de  Area -->
-        <div class="content-area">
-
-            <div class="paper-card">
-                <!-- Search and Filter Section -->
-                <div class="search-section">
-                    <div class="search-box">
-                        <i class="fa-solid fa-search search-icon"></i>
-                        <input type="text" id="searchInput" placeholder="Buscar por remite, concepto o cargo..."
-                            class="search-input">
-                    </div>
-                    <div class="filter-box">
-                        <select id="filterStatus" class="filter-select">
-                            <option value="">Todos los Estados</option>
-                            <option value="Recibido">Recibido</option>
-                            <option value="Derivado">Derivado</option>
-                            <option value="Finalizado">Finalizado</option>
-                        </select>
-
-                        <select id="filterType" class="filter-select">
-                            <option value="">Todos los Tipos</option>
-                            <!-- Populated Dynamically -->
-                        </select>
-                        <select id="filterArea" class="filter-select">
-                            <option value="">Todas las Áreas</option>
-                            <!-- Populated Dynamically -->
-                        </select>
-                        <button class="btn btn-secondary btn-icon-only" onclick="applyFilters()"
-                            title="Aplicar Filtros">
-                            <i class="fa-solid fa-filter"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="registry-container">
-                    <table class="registry-table">
-                        <thead>
-                            <tr>
-                                <th style="width: 50px;">N° Corr.</th>
-                                <th style="width: 90px;">Recepción</th>
-                                <th style="width: 80px;">Tipo</th>
-                                <th style="width: 150px;">Remitente</th>
-                                <th style="width: 150px;">Área Origen</th>
-                                <th>Concepto</th>
-                                <th style="width: 90px;">Despacho</th>
-                                <th style="width: 150px;">Área de derivacion</th>
-                                <th style="width: 60px;">Folios</th>
-                                <th style="width: 100px;">Cargo</th>
-                                <th style="width: 100px;">Estado</th>
-                                <th style="width: 100px;">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody id="documentsTableBody">
-                            <!-- Data will be loaded via JS -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </main>
+        </main>
+    </div>
 
     <!-- Modal para actulizar el documento -->
     <div id="updateModal" class="modal">
@@ -254,30 +259,28 @@
                 </div>
             </div>
         </div>
+    </div>
 
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <script src="/js/common.js?v=2"></script>
-        <script src="/js/index.js"></script>
-        <script>
-            // Sidebar Toggle Logic
-            document.addEventListener('DOMContentLoaded', () => {
-                const toggleBtn = document.getElementById('sidebarToggle');
-                const sidebar = document.querySelector('.sidebar');
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="/js/common.js?v=2"></script>
+    <script src="/js/index.js"></script>
+    <script>
+        // Sidebar Toggle Logic
+        document.addEventListener('DOMContentLoaded', () => {
+            const toggleBtn = document.getElementById('sidebarToggle');
+            const sidebar = document.querySelector('.sidebar');
 
-                // Restore state
-                if (localStorage.getItem('sidebarCollapsed') === 'true') {
-                    sidebar.classList.add('collapsed');
-                }
+            // Restore state
+            if (localStorage.getItem('sidebarCollapsed') === 'true') {
+                sidebar.classList.add('collapsed');
+            }
 
-                toggleBtn.addEventListener('click', () => {
-                    sidebar.classList.toggle('collapsed');
-                    localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
-                });
+            toggleBtn.addEventListener('click', () => {
+                sidebar.classList.toggle('collapsed');
+                localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
             });
-
-            // Futuras actualiaciones futuras
-            // vamos a derivas las congregaciones 
-        </script>
+        });
+    </script>
 </body>
 
 </html>

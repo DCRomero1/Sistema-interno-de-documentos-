@@ -134,147 +134,160 @@
 
 <body>
 
-    <nav class="sidebar">
-        <div class="sidebar-header">
-            <i class="fa-solid fa-bars" id="sidebarToggle" style="margin-right: 15px; cursor: pointer;"></i>
-            <i class="fa-solid fa-book-open" id="sidebarIcon" style="margin-right: 10px;"></i>
-            <span>Mesa de Partes</span>
+    <!-- Top Bar (Full Width) -->
+    <header class="top-bar">
+        <div class="top-bar-left">
+            <div class="brand-text">Administración</div>
+            <i class="fa-solid fa-bars" id="sidebarToggle" style="cursor: pointer; font-size: 1.2rem;"></i>
         </div>
-        <ul class="nav-menu">
-            <li class="nav-item">
-                <a href="/" class="nav-link">
-                    <span class="nav-icon"><i class="fa-solid fa-table-list"></i></span>
-                    Registro Diario
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="/register" class="nav-link">
-                    <span class="nav-icon"><i class="fa-solid fa-plus-circle"></i></span>
-                    Nuevo Documento
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="/reports" class="nav-link">
-                    <span class="nav-icon"><i class="fa-solid fa-chart-line"></i></span>
-                    Reportes
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="/workers" class="nav-link active">
-                    <span class="nav-icon"><i class="fa-solid fa-users"></i></span>
-                    Trabajadores
-                </a>
-            </li>
-            <!-- Admin Only Section -->
-            <li class="nav-item" id="nav-admin-users" style="display: none;">
-                <a href="/users" class="nav-link">
-                    <span class="nav-icon"><i class="fa-solid fa-user-shield"></i></span>
-                    Usuarios
-                </a>
-            </li>
-        </ul>
-        <div class="sidebar-footer">
-            <img src="/img/logo_vigil.png" alt="Vigil Tecnológico" class="sidebar-logo">
-        </div>
-    </nav>
 
-    <main class="main-content">
-        <header class="top-bar">
-            <div class="page-title">Gestión de Personal</div>
-            <div class="user-info" onclick="toggleUserDropdown(event)">
-                <span><i class="fa-solid fa-user-circle"></i> Admin <i class="fa-solid fa-caret-down"></i></span>
-                <div class="dropdown-menu" id="userDropdown">
-                    <a href="/logout" class="dropdown-item">
-                        <i class="fa-solid fa-right-from-bracket"></i> Cerrar Sesión
+        <div class="top-bar-right">
+            <a href="/logout" class="logout-link">
+                Cerrar Sesión
+            </a>
+        </div>
+    </header>
+
+    <div class="app-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-user-profile">
+                <div class="user-avatar-circle">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+                <div class="user-welcome-text">
+                    <span class="welcome-label">Bienvenido sr(a)</span>
+                    <span class="user-name" id="sidebar-username">CARGANDO...</span>
+                </div>
+            </div>
+
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="/" class="nav-link">
+                        <span class="nav-icon"><i class="fa-solid fa-table-list"></i></span>
+                        Panel General
                     </a>
-                </div>
+                </li>
+                <li class="nav-item">
+                    <a href="/register" class="nav-link">
+                        <span class="nav-icon"><i class="fa-solid fa-plus-circle"></i></span>
+                        Nuevo Documento
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/reports" class="nav-link">
+                        <span class="nav-icon"><i class="fa-solid fa-chart-line"></i></span>
+                        Reporte
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/workers" class="nav-link active">
+                        <span class="nav-icon"><i class="fa-solid fa-users"></i></span>
+                        Trabajadores
+                    </a>
+                </li>
+                <!-- Admin Only Section -->
+                <li class="nav-item" id="nav-admin-users" style="display: none;">
+                    <a href="/users" class="nav-link">
+                        <span class="nav-icon"><i class="fa-solid fa-user-shield"></i></span>
+                        Usuarios
+                    </a>
+                </li>
+            </ul>
+            <div class="sidebar-footer">
+                <img src="/img/logo_vigil.png" alt="Vigil Tecnológico" class="sidebar-logo">
             </div>
-        </header>
+        </nav>
 
-        <div class="content-area">
+        <main class="main-content">
+            <!-- Page Title inside content if needed. 'Gestión de Personal' was in top bar. -->
+            <div class="content-area">
 
-            <!-- Workers Grid Layout -->
-            <div style="display: grid; grid-template-columns: 3fr 1fr; gap: 20px;">
+                <!-- Workers Grid Layout -->
+                <div style="display: grid; grid-template-columns: 3fr 1fr; gap: 20px;">
 
-                <!-- Main Column: Personnel Grid -->
-                <div>
-                    <div
-                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                        <div>
-                            <h2 style="color: var(--primary-color); font-weight: 800; letter-spacing: -0.5px;">
-                                Directorio de Personal</h2>
-                            <p style="color: #64748b; font-size: 0.9rem;">Gestión de docentes y personal administrativo
-                            </p>
+                    <!-- Main Column: Personnel Grid -->
+                    <div>
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <div>
+                                <h2 style="color: var(--primary-color); font-weight: 800; letter-spacing: -0.5px;">
+                                    Directorio de Personal</h2>
+                                <p style="color: #64748b; font-size: 0.9rem;">Gestión de docentes y personal
+                                    administrativo
+                                </p>
+                            </div>
+                            <button class="btn btn-primary" onclick="openWorkerModal()"
+                                style="box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);">
+                                <i class="fa-solid fa-plus"></i> Nuevo
+                            </button>
                         </div>
-                        <button class="btn btn-primary" onclick="openWorkerModal()"
-                            style="box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);">
-                            <i class="fa-solid fa-plus"></i> Nuevo
-                        </button>
-                    </div>
 
-                    <!-- Workers Grid -->
-                    <div id="workersGrid"
-                        style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;">
-                        <!-- Dynamic Cards Here -->
-                        <!-- Loading State -->
-                        <div class="worker-card" style="opacity: 0.7; pointer-events: none;">
-                            <div class="worker-avatar" style="background: #e2e8f0;"></div>
-                            <div class="worker-info">
-                                <div
-                                    style="height: 15px; width: 120px; background: #e2e8f0; border-radius: 4px; margin-bottom: 5px;">
+                        <!-- Workers Grid -->
+                        <div id="workersGrid"
+                            style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;">
+                            <!-- Dynamic Cards Here -->
+                            <!-- Loading State -->
+                            <div class="worker-card" style="opacity: 0.7; pointer-events: none;">
+                                <div class="worker-avatar" style="background: #e2e8f0;"></div>
+                                <div class="worker-info">
+                                    <div
+                                        style="height: 15px; width: 120px; background: #e2e8f0; border-radius: 4px; margin-bottom: 5px;">
+                                    </div>
+                                    <div style="height: 10px; width: 80px; background: #e2e8f0; border-radius: 4px;">
+                                    </div>
                                 </div>
-                                <div style="height: 10px; width: 80px; background: #e2e8f0; border-radius: 4px;"></div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Right Column: Sidebar Widgets -->
-                <div style="display: flex; flex-direction: column; gap: 20px;">
+                    <!-- Right Column: Sidebar Widgets -->
+                    <div style="display: flex; flex-direction: column; gap: 20px;">
 
-                    <!-- Birthday Widget -->
-                    <div class="birthday-widget"
-                        style="background: linear-gradient(135deg, #8e44ad, #9b59b6); box-shadow: 0 8px 20px rgba(142, 68, 173, 0.3);">
-                        <div class="birthday-header"
-                            style="border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 15px; margin-bottom: 15px;">
-                            <i class="fa-solid fa-cake-candles"
-                                style="font-size: 1.8rem; background: rgba(255,255,255,0.2); padding: 10px; border-radius: 50%;"></i>
-                            <div style="margin-left: 10px;">
-                                <h3 style="margin: 0; font-size: 1.1rem; font-weight: 700;">Cumpleaños</h3>
-                                <span style="font-size: 0.8rem; opacity: 0.9;">Próximos eventos</span>
+                        <!-- Birthday Widget -->
+                        <div class="birthday-widget"
+                            style="background: linear-gradient(135deg, #8e44ad, #9b59b6); box-shadow: 0 8px 20px rgba(142, 68, 173, 0.3);">
+                            <div class="birthday-header"
+                                style="border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 15px; margin-bottom: 15px;">
+                                <i class="fa-solid fa-cake-candles"
+                                    style="font-size: 1.8rem; background: rgba(255,255,255,0.2); padding: 10px; border-radius: 50%;"></i>
+                                <div style="margin-left: 10px;">
+                                    <h3 style="margin: 0; font-size: 1.1rem; font-weight: 700;">Cumpleaños</h3>
+                                    <span style="font-size: 0.8rem; opacity: 0.9;">Próximos eventos</span>
+                                </div>
+                            </div>
+                            <div class="birthday-list" id="birthdayList">
+                                <!-- Dynamic Birthday Items -->
+                            </div>
+                            <div
+                                style="text-align: center; margin-top: 15px; font-size: 0.8rem; background: rgba(0,0,0,0.1); padding: 8px; border-radius: 20px;">
+                                <i class="fa-solid fa-calendar-check"></i> Actualizado hoy
                             </div>
                         </div>
-                        <div class="birthday-list" id="birthdayList">
-                            <!-- Dynamic Birthday Items -->
-                        </div>
-                        <div
-                            style="text-align: center; margin-top: 15px; font-size: 0.8rem; background: rgba(0,0,0,0.1); padding: 8px; border-radius: 20px;">
-                            <i class="fa-solid fa-calendar-check"></i> Actualizado hoy
-                        </div>
-                    </div>
 
-                    <!-- Stats / Summary Card -->
-                    <div class="paper-card" style="padding: 20px;">
-                        <h4
-                            style="color: var(--text-color); margin-bottom: 15px; border-left: 3px solid var(--accent-color); padding-left: 10px;">
-                            Resumen</h4>
-                        <div
-                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #f1f5f9;">
-                            <span style="color: #64748b;">Total Personal</span>
-                            <span style="font-weight: 800; color: var(--primary-color); font-size: 1.2rem;"
-                                id="statTotal">--</span>
+                        <!-- Stats / Summary Card -->
+                        <div class="paper-card" style="padding: 20px;">
+                            <h4
+                                style="color: var(--text-color); margin-bottom: 15px; border-left: 3px solid var(--accent-color); padding-left: 10px;">
+                                Resumen</h4>
+                            <div
+                                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #f1f5f9;">
+                                <span style="color: #64748b;">Total Personal</span>
+                                <span style="font-weight: 800; color: var(--primary-color); font-size: 1.2rem;"
+                                    id="statTotal">--</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span style="color: #64748b;">Docentes</span>
+                                <span style="font-weight: 600; color: var(--text-color);" id="statDocentes">--</span>
+                            </div>
                         </div>
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <span style="color: #64748b;">Docentes</span>
-                            <span style="font-weight: 600; color: var(--text-color);" id="statDocentes">--</span>
-                        </div>
-                    </div>
 
+                    </div>
                 </div>
+
             </div>
-
-        </div>
-    </main>
+        </main>
+    </div>
 
     <!-- Modal for Adding Worker -->
     <div id="workerModal" class="modal">
