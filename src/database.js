@@ -2,7 +2,7 @@ const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const bcrypt = require('bcrypt');
 
-// Create/Open database file
+// Crear/Abrir archivo de base de datos
 const dbPath = path.join(__dirname, 'database.sqlite');
 const db = new sqlite3.Database(dbPath, (err) => {
     if (err) {
@@ -14,7 +14,7 @@ const db = new sqlite3.Database(dbPath, (err) => {
 });
 
 function initializeTables() {
-    // Users Table (for System Access)
+    // Tabla de Usuarios (para Acceso al Sistema)
     db.run(`CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         username TEXT UNIQUE NOT NULL,
@@ -25,7 +25,7 @@ function initializeTables() {
     )`, (err) => {
         if (err) console.error('Error creating users table:', err);
         else {
-            // Migration: Add role column if not exists
+            // Migración: Agregar columna de rol si no existe
             db.run(`ALTER TABLE users ADD COLUMN role TEXT DEFAULT 'user'`, (err) => {
                 if (err && !err.message.includes('duplicate column')) {
                     // console.error('Migration note:', err.message);
@@ -35,7 +35,7 @@ function initializeTables() {
         }
     });
 
-    // Workers Table (Docentes/Personal)
+    // Tabla de Trabajadores (Docentes/Personal)
     db.run(`CREATE TABLE IF NOT EXISTS workers (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         fullName TEXT NOT NULL,
@@ -49,7 +49,7 @@ function initializeTables() {
         if (err) console.error('Error creating workers table:', err);
     });
 
-    // Documents Table
+    // Tabla de Documentos
     db.run(`CREATE TABLE IF NOT EXISTS documents (
         id TEXT PRIMARY KEY,
         fecha TEXT,
@@ -68,7 +68,7 @@ function initializeTables() {
     )`, (err) => {
         if (err) console.error('Error creating documents table:', err);
         else {
-            // Migration: Attempt to add the column if it's missing (for existing databases)
+            // Migración: Intentar agregar la columna si falta (para bases de datos existentes)
             // SQLite doesn't support "IF NOT EXISTS" in ADD COLUMN directly in all versions comfortably without check,
             // but running it and ignoring the "duplicate column" error is a common simple pattern.
             db.run(`ALTER TABLE documents ADD COLUMN nombre TEXT`, (err) => {
@@ -80,7 +80,7 @@ function initializeTables() {
         }
     });
 
-    // Document History Table
+    // Tabla de Historial de Documentos
     db.run(`CREATE TABLE IF NOT EXISTS document_history (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         docId TEXT,
@@ -101,7 +101,7 @@ function createDefaultAdmin() {
     db.get(checkSql, ['admin'], (err, row) => {
         if (err) return console.error(err.message);
         if (!row) {
-            // Create default admin: admin / admin (hashed)
+            // Crear admin por defecto: admin / admin (hasheado)
             // hash of 'admin' is approx: $2b$10$YourSalt...
             // For simplicity in this async init, we'll hash it now.
             const saltRounds = 10;

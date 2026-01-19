@@ -25,7 +25,7 @@ exports.getAllDocuments = (req, res) => {
                     from: h.from_area,
                     to: h.to_area,
                     cargo: h.cargo,
-                    observation: h.observation
+                    observation: h.observation  // Observaciones
                 }));
                 return { ...doc, history: docHistory };
             });
@@ -59,8 +59,8 @@ exports.createDocument = (req, res) => {
         const fechaDespacho = newDoc.fechaDespacho || '';
         const cargo = newDoc.cargo || '';
         const status = 'Recibido';
-        const observaciones = tempObs || ''; // There was a bug in original code using 'observaciones' vs empty string. Let's fix it.
-        // Wait, looking at original code: const observaciones = ''; was hardcoded for new docs.
+        // Error corregido respecto al código original: usar cadena vacía si no hay observaciones.
+        // Espera, mirando el código original: const observaciones = ''; estaba "hardcoded" para nuevos documentos.
         const initialObs = '';
 
         db.run(`INSERT INTO documents (id, fecha, tipo, nombre, origen, destino, ubicacion, folios, concepto, fechaDespacho, cargo, status, observaciones) 
@@ -69,7 +69,7 @@ exports.createDocument = (req, res) => {
             function (err) {
                 if (err) return res.status(500).json({ error: err.message });
 
-                // Insert Initial History
+                // Insertar Historial Inicial
                 const historyDate = newDoc.fecha;
                 const action = 'Recepción';
                 const from = origen;

@@ -38,7 +38,7 @@ exports.createUser = (req, res) => {
 
 exports.deleteUser = (req, res) => {
     const id = req.params.id;
-    // Prevent self-deletion if logged in as admin (simple check by username in session)
+    // Prevenir auto-eliminación si está logueado como admin (verificación simple por usuario en sesión)
     if (req.session.user && req.session.user.username === 'diego' && id == 1) {
         // Validation logic can be improved here
     }

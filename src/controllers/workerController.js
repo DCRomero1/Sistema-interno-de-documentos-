@@ -42,11 +42,13 @@ exports.getUpcomingBirthdays = (req, res) => {
 
             w.nextBirthday = nextBirthday;
             w.daysUntil = Math.ceil((nextBirthday - today) / (1000 * 60 * 60 * 24));
+
+            // Formatear fecha legible
             w.birthDateStr = nextBirthday.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
             return w;
         })
             .sort((a, b) => a.daysUntil - b.daysUntil)
-            .slice(0, 5);
+            .slice(0, 5); // Obtener los 5 próximos
 
         res.json(upcoming);
     });

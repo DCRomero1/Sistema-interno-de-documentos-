@@ -1,4 +1,4 @@
-require('dotenv').config(); // Load environment variables first
+require('dotenv').config(); // Cargar variables de entorno primero
 
 const express = require('express');
 const path = require('path');
@@ -6,26 +6,26 @@ const session = require('express-session');
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Import Routes
+// Importar Rutas
 const authRoutes = require('./routes/authRoutes');
 const documentRoutes = require('./routes/documentRoutes');
 const userRoutes = require('./routes/userRoutes');
 const workerRoutes = require('./routes/workerRoutes');
 const reportRoutes = require('./routes/reportRoutes');
 
-// Middleware for parsing JSON and form data
+// Middleware para procesar JSON y datos de formularios
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Session Configuration
+// Configuración de Sesión
 app.use(session({
-    secret: process.env.SESSION_SECRET || 'fallback-secret-key', // Use .env or fallback
+    secret: process.env.SESSION_SECRET || 'fallback-secret-key', // Usar .env o valor por defecto
     resave: false,
     saveUninitialized: false,
     cookie: {
-        maxAge: 3600000, // 1 hour
-        httpOnly: true, // Prevent XSS theft
-        secure: process.env.NODE_ENV === 'production' // Secure only in production (HTTPS)
+        maxAge: 3600000, // 1 hora
+        httpOnly: true, // Prevenir robo por XSS
+        secure: process.env.NODE_ENV === 'production' // Seguro solo en producción (HTTPS)
     }
 }));
 
@@ -33,7 +33,7 @@ app.use(session({
 // Nota: Express busca aquí primero. Si no encuentra, sigue a las rutas.
 app.use(express.static(path.join(__dirname, '../public')));
 
-// Middleware to prevent caching (Fixes "Back" button issue)
+// Middleware para prevenir caché (Arregla problema del botón "Atrás")
 app.use((req, res, next) => {
     res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
     res.set('Pragma', 'no-cache');

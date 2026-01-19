@@ -9,15 +9,11 @@ router.get('/register', isAuthenticated, documentController.showRegisterPage);
 
 // API
 router.get('/api/documents', isAuthenticated, documentController.getAllDocuments);
-router.post('/api/documents', documentController.createDocument); // Note: Original was not auth protected, should it be? Let's leave as is but commonly register requires auth? No, register usually open or auth. The original app.post('/api/documents') didn't have isAuthenticated middleware explicitly in app.js? Wait, let's check app.js again.
-// Line 408: app.post('/api/documents', (req, res) => { ... no isAdmin or isAuthenticated.
-// We should probably protect it, but let's stick to original behavior or protect it if it makes sense. 
-// Given the other routes are protected, this probably should be too, but to be safe and avoid breaking "public" submission if intended,
-// I will keep it as is, or add isAuthenticated if the user is submitting from within the app.
-// The user "register.html" page IS protected: app.get('/register', isAuthenticated...).
-// So the API call comes from an authenticated page. I will add isAuthenticated for consistency and security.
+// Nota: El original no estaba protegido, ¿debería estarlo? Comúnmente el registro requiere auth.
+// La línea 408 original no tenía middleware.
+// Protegeremos esto para mantener la consistencia dado que la página register.html está protegida.
 router.post('/api/documents', isAuthenticated, documentController.createDocument);
 
-router.post('/api/documents/update-location', documentController.updateLocation); // Same logic, probably safe to protect.
+router.post('/api/documents/update-location', documentController.updateLocation); // Misma lógica, seguro protegerlo.
 
 module.exports = router;
