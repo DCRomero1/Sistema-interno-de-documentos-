@@ -141,3 +141,43 @@ exports.updateLocation = (req, res) => {
         );
     });
 };
+
+// Configuración de Multer
+const multer = require('multer');
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, path.join(__dirname, '../../public/uploads'));
+    },
+    filename: function (req, file, cb) {
+        const docId = req.params.id;
+        const uniqueSuffix = Date.now() + Math.round(Math.random() * 1E9);
+        cb(null, `doc_${docId}_${uniqueSuffix}${path.extname(file.originalname)}`);
+    }
+});
+
+exports.upload = multer({
+    storage: storage,
+    fileFilter: (req, file, cb) => {
+        if (file.mimetype === 'application/pdf') {
+            cb(null, true);
+        } else {
+            cb(new Error('Solo se permiten archivos PDF'), false);
+        }
+    }
+});
+
+exports.uploadPdf = (req, res) => {
+    const docId = req.params.id;
+    if (!req.file) {
+        return res.status(400).json({ success: false, message: 'No se subió ningún archivo' });
+    }
+
+    const pdfPath = '/uploads/' + req.file.filename;
+
+    db.run(`UPDATE documents SET pdf_path = ? WHERE id = ?`, [pdfPath, docId], function (err) {
+        if (err) {
+            return res.status(500).json({ success: false, error: err.message });
+        }
+        res.json({ success: true, pdfPath: pdfPath });
+    });
+};

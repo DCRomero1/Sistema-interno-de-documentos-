@@ -135,9 +135,16 @@ async function loadBirthdays() {
                     <div style="font-weight: 600; font-size: 0.95rem;">${escapeHtml(b.fullName)}</div>
                     <div style="font-size: 0.8rem; opacity: 0.8;">${escapeHtml(b.position)}</div>
                 </div>
-                <div style="text-align: right;">
-                    <div style="font-weight: 700; font-size: 1.1rem;">${b.birthDateStr.split(' ')[0]}</div>
-                    <div style="font-size: 0.75rem; text-transform: uppercase;">${b.birthDateStr.split(' ')[1]}</div>
+                <div style="text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: 5px;">
+                    <div>
+                        <span style="font-weight: 700; font-size: 1.1rem;">${b.birthDateStr.split(' ')[0]}</span>
+                        <span style="font-size: 0.75rem; text-transform: uppercase;">${b.birthDateStr.split(' ')[1]}</span>
+                    </div>
+                    ${b.position === 'Docente' ?
+                    `<button onclick="openGreetingModal('${escapeHtml(b.fullName)}')" style="background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4); color: white; border-radius: 4px; padding: 2px 8px; cursor: pointer; font-size: 0.7rem; transition: background 0.2s;" title="Crear Felicitación Formal">
+                            <i class="fa-solid fa-envelope-open-text"></i> Saludo
+                        </button>` : ''
+                }
                 </div>
             `;
             listContainer.appendChild(item);
@@ -145,6 +152,65 @@ async function loadBirthdays() {
     } catch (error) {
         console.error('Error loading birthdays:', error);
     }
+}
+
+// Greeting Modal Logic
+function openGreetingModal(name) {
+    const modal = document.getElementById('greetingModal');
+    const nameElement = document.getElementById('greetingName');
+    const dateElement = document.getElementById('greetingDate');
+
+    // Set Name
+    nameElement.textContent = name;
+
+    // Set Date to Today in Spanish
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    const today = new Date().toLocaleDateString('es-ES', options);
+    // Capitalize first letter
+    const formattedDate = "Tacna, " + today.charAt(0).toUpperCase() + today.slice(1);
+
+    dateElement.textContent = formattedDate;
+
+    modal.style.display = 'block';
+}
+
+function closeGreetingModal() {
+    document.getElementById('greetingModal').style.display = 'none';
+}
+
+// Close modal when clicking outside
+window.addEventListener('click', function (event) {
+    const modal = document.getElementById('greetingModal');
+    if (event.target == modal) {
+        closeGreetingModal();
+    }
+});
+
+// Download Greeting as Image
+function downloadGreeting() {
+    const card = document.getElementById('captureCard');
+    html2canvas(card).then(canvas => {
+        const link = document.createElement('a');
+        link.download = 'Saludo_' + document.getElementById('greetingName').textContent + '.png';
+        link.href = canvas.toDataURL();
+        link.click();
+    });
+}
+
+// Share via WhatsApp
+function shareWhatsApp() {
+    const name = document.getElementById('greetingName').textContent;
+    const text = `🎉 *Feliz Cumpleaños a ${name}* 🎉\n\nEl I.E.S.T.P. "Francisco de Paula Gonzales Vigil" le desea un excelente día lleno de éxitos y prosperidad. 🎂✨`;
+    const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
+    window.open(url, '_blank');
+}
+
+// Share via Email
+function shareEmail() {
+    const name = document.getElementById('greetingName').textContent;
+    const subject = `Feliz Cumpleaños ${name}`;
+    const body = `Estimado(a) ${name},\n\nEl equipo directivo y la comunidad educativa del I.E.S.T.P. "Francisco de Paula Gonzales Vigil" le desean un muy feliz cumpleaños.\n\nQue este nuevo año esté lleno de éxitos, salud y prosperidad.\n\nAtentamente,\nLa Administración`;
+    window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }
 
 async function saveWorker() {

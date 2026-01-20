@@ -1,22 +1,22 @@
 :root {
-    /* --- Blue Admin Theme --- */
+    /* --- Tema Azul Administrativo --- */
     --primary-color: #2563eb;
-    /* Bright Blue */
+    /* Azul Brillante */
     --secondary-color: #1e3a8a;
-    /* Dark Blue */
+    /* Azul Oscuro */
     --accent-color: #3b82f6;
-    /* Sky Blue */
+    /* Azul Cielo */
 
     --header-bg: #1e3a8a;
-    /* Dark Blue Header */
+    /* Encabezado Azul Oscuro */
     --sidebar-bg: #f8f9fa;
-    /* Light Gray/White */
+    /* Gris Claro/Blanco */
     --text-color: #333;
     --sidebar-text: #555;
     --sidebar-hover-bg: #e9ecef;
     --border-color: #ddd;
 
-    /* Dimensions */
+    /* Dimensiones */
     --sidebar-width: 260px;
     --header-height: 60px;
 }
@@ -36,7 +36,7 @@ body {
     overflow: hidden;
 }
 
-/* --- Top Bar (Red Header) --- */
+/* --- Barra Superior (Encabezado Rojo) --- */
 .top-bar {
     height: var(--header-height);
     background-color: var(--header-bg);
@@ -47,7 +47,7 @@ body {
     padding: 0 20px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     z-index: 20;
-    /* Above sidebar */
+    /* Sobre la barra lateral */
     position: relative;
 }
 
@@ -59,7 +59,7 @@ body {
 
 .brand-text {
     font-family: 'Brush Script MT', cursive;
-    /* Or similar script font */
+    /* O fuente script similar */
     font-size: 1.8rem;
     font-weight: normal;
 }
@@ -77,7 +77,7 @@ body {
 }
 
 
-/* --- Main Container (Sidebar + Content) --- */
+/* --- Contenedor Principal (Barra Lateral + Contenido) --- */
 /* We need to restructure body to be column? No, body was flex row. 
    The image implies top bar spans full width. 
    So Body should be Column if Top Bar is top.
@@ -85,7 +85,7 @@ body {
    Top Bar (Width 100%)
    Flex Container (Sidebar + Content)
 */
-/* Let's adjust Body to be Header + FlexRow */
+/* Ajustar el cuerpo para ser Header + Fila Flexible */
 
 body {
     display: flex;
@@ -96,14 +96,14 @@ body {
     display: flex;
     flex: 1;
     overflow: hidden;
-    /* To scroll inside content area */
+    /* Para hacer scroll dentro del área de contenido */
 }
 
-/* Sidebar */
+/* Barra Lateral */
 .sidebar {
     width: var(--sidebar-width);
     background-color: var(--sidebar-bg);
-    /* White/Light */
+    /* Blanco/Claro */
     border-right: 1px solid var(--border-color);
     display: flex;
     flex-direction: column;
@@ -116,7 +116,7 @@ body {
     width: 70px;
 }
 
-/* User Profile Section in Sidebar */
+/* Sección de Perfil de Usuario en Barra Lateral */
 .sidebar-user-profile {
     display: flex;
     align-items: center;
@@ -131,18 +131,18 @@ body {
     height: 45px;
     background-color: #fce4ec;
     /* Light pink/redish or maybe yellow/orange icon like image */
-    /* Image has a yellow/orange guy */
+    /* La imagen tiene un chico amarillo/naranja */
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     margin-right: 15px;
     color: #e65100;
-    /* Dark orange */
+    /* Naranja Oscuro */
     font-size: 1.5rem;
 }
 
-/* In collapsed mode, hide text, center icon */
+/* En modo colapsado, ocultar texto, centrar icono */
 .sidebar.collapsed .sidebar-user-profile {
     padding: 15px 5px;
     justify-content: center;
@@ -174,17 +174,17 @@ body {
     text-transform: uppercase;
 }
 
-/* Nav Menu */
+/* Menú de Navegación */
 .nav-menu {
     list-style: none;
     padding: 0;
-    /* Remove padding */
+    /* Eliminar relleno */
     flex-grow: 1;
 }
 
 .nav-item {
     border-bottom: 1px solid #f0f0f0;
-    /* Separator lines */
+    /* Líneas separadoras */
 }
 
 .nav-link {
@@ -206,7 +206,7 @@ body {
 }
 
 /* If active, maybe show a border or specific color? Image doesn't show clearly. */
-/* Let's add a small left border for active */
+/* Agregar un pequeño borde izquierdo para el activo */
 .nav-link.active {
     border-left-color: var(--primary-color);
     background-color: #f1f1f1;
@@ -236,7 +236,7 @@ body {
     display: none;
 }
 
-/* Actually, simpler: */
+/* De hecho, más simple: */
 .sidebar.collapsed .nav-link {
     font-size: 0;
 }
@@ -246,7 +246,7 @@ body {
 }
 
 
-/* Sidebar Footer */
+/* Pie de Página de Barra Lateral */
 .sidebar-footer {
     padding: 20px;
     border-top: 1px solid #eee;
@@ -262,7 +262,7 @@ body {
     display: none;
 }
 
-/* Main Content Area adjustments */
+/* Ajustes del Área de Contenido Principal */
 .main-content {
     flex-grow: 1;
     display: flex;
@@ -300,7 +300,7 @@ body {
     background-color: var(--bg-color);
 }
 
-/* Dashboard & Reports Stats */
+/* Estadísticas del Panel y Reportes */
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -352,12 +352,12 @@ body {
     font-weight: 500;
 }
 
-/* Card/Paper Effect */
+/* Efecto de Tarjeta/Papel */
 .paper-card {
     background-color: var(--paper-color);
     border-radius: 12px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-    /* Stronger shadow for floating effect */
+    /* Sombra más fuerte para efecto flotante */
     border: none;
     overflow: hidden;
     height: 100%;
@@ -368,12 +368,12 @@ body {
 .paper-card.auto-height {
     height: auto;
     min-height: auto;
-    /* Allow it to shrink if neat */
+    /* Permitir que se encoja si es necesario */
     overflow: visible;
 }
 
 
-/* Search and Filter Section */
+/* Sección de Búsqueda y Filtro */
 .search-section {
     padding: 20px;
     background-color: white;
@@ -383,7 +383,7 @@ body {
     align-items: center;
     flex-wrap: wrap;
     justify-content: space-between;
-    /* Push filters to the right */
+    /* Empujar filtros a la derecha */
 }
 
 .search-box {
@@ -391,7 +391,7 @@ body {
     position: relative;
     min-width: 250px;
     max-width: 600px;
-    /* Limit search box width so it doesn't look too stretched */
+    /* Limitar ancho de caja de búsqueda */
 }
 
 .search-icon {
@@ -421,7 +421,7 @@ body {
 .filter-box {
     display: flex;
     gap: 16px;
-    /* More breathing room */
+    /* Más espacio */
     align-items: center;
 }
 
@@ -461,34 +461,34 @@ body {
     }
 }
 
-/* Registry Book Table */
-/* Registry Book Table - Clean Enterprise Style */
+/* Tabla del Libro de Registro */
+/* Tabla de Registro - Estilo Empresarial Limpio */
 .registry-container {
     flex-grow: 1;
     overflow: auto;
     position: relative;
     border-radius: 8px;
-    /* Smooth corners for the container */
+    /* Bordes suaves para el contenedor */
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-    /* Subtle container shadow */
+    /* Sombra sutil del contenedor */
 }
 
 .registry-table {
     width: 100%;
     border-collapse: separate;
-    /* Allows for border-radius on rows if needed */
+    /* Permite border-radius en filas si es necesario */
     border-spacing: 0;
-    /* But keeps them close */
+    /* Pero los mantiene cerca */
     min-width: 800px;
 }
 
 .registry-table thead th {
     background-color: rgba(248, 250, 252, 0.95);
-    /* Semi-transparent */
+    /* Semitransparente */
     backdrop-filter: blur(8px);
-    /* Glass effect */
+    /* Efecto de vidrio */
     color: #475569;
-    /* Slate 600 */
+    /* Pizarra 600 */
     text-transform: uppercase;
     font-size: 0.75rem;
     letter-spacing: 0.05em;
@@ -504,17 +504,17 @@ body {
 .registry-table tbody td {
     padding: 16px;
     border-bottom: 1px solid #f1f5f9;
-    /* Very light border */
+    /* Borde muy claro */
     vertical-align: middle;
     font-size: 0.9rem;
     color: #334155;
-    /* Slate 700 */
+    /* Pizarra 700 */
     transition: color 0.2s;
     text-transform: capitalize;
-    /* User request: Capitalize text */
+    /* Solicitud de usuario: Capitalizar texto */
 }
 
-/* Specific alignment for long text columns as requested */
+/* Alineación específica para columnas de texto largo */
 .registry-table td:nth-child(4),
 /* Remitente */
 .registry-table td:nth-child(6) {
@@ -522,7 +522,7 @@ body {
     text-align: left;
 }
 
-/* Row Hover Effect */
+/* Efecto Hover en Fila */
 .registry-table tbody tr {
     transition: all 0.2s ease;
     background-color: white;
@@ -530,22 +530,22 @@ body {
 
 .registry-table tbody tr:hover {
     background-color: #f8fafc;
-    /* Very light blue/gray */
+    /* Azul/Gris muy claro */
     transform: scale(1.002);
-    /* Micro-interaction to feel tactile */
+    /* Micro-interacción para sensación táctil */
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-    /* Lift effect */
+    /* Efecto de elevación */
     z-index: 1;
     position: relative;
 }
 
-/* Remove odd/even striping for a cleaner look, or keep it very subtle. 
-   Let's remove it to favor the clean look with hover. */
+/* Eliminar rayado par/impar para un aspecto más limpio, o mantenerlo muy sutil. 
+   Vamos a eliminarlo para favorecer el aspecto limpio. */
 .registry-table tbody tr:nth-child(even) {
     background-color: white;
 }
 
-/* Concept Truncation */
+/* Truncamiento de Concepto */
 .truncate-concept {
     white-space: nowrap;
     overflow: hidden;
@@ -553,7 +553,7 @@ body {
     max-width: 250px;
     display: block;
     cursor: help;
-    /* Hint that hover reveals more */
+    /* Pista de que hover revela más */
 }
 
 .registry-table tbody tr:nth-child(even) {
@@ -566,17 +566,17 @@ body {
 }
 
 /* Center Actions Column */
-/* Center Actions Column */
+/* Columna de Acciones Centrada */
 .registry-table th:last-child,
 .registry-table td:last-child {
     text-align: center !important;
 }
 
-/* Buttons */
+/* Botones */
 .btn {
     padding: 10px 24px;
     border-radius: 8px;
-    /* Softer rounded */
+    /* Redondeado más suave */
     border: none;
     font-weight: 600;
     cursor: pointer;
@@ -589,7 +589,7 @@ body {
 }
 
 .btn-primary {
-    /* Vibrant Electric Gradient */
+    /* Gradiente Eléctrico Vibrante */
     background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
     color: white;
     box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.3), 0 2px 4px -1px rgba(37, 99, 235, 0.15);
@@ -610,7 +610,7 @@ body {
     background-color: #7f8c8d;
 }
 
-/* Forms */
+/* Formularios */
 .form-container {
     padding: 30px;
     max-width: 800px;
@@ -636,14 +636,14 @@ body {
     margin-bottom: 5px;
 }
 
-/* User Info & Dropdown */
+/* Información de Usuario y Desplegable */
 .user-info {
     font-weight: 600;
     color: var(--primary-color);
     position: relative;
     cursor: pointer;
     background-color: #f1f5f9;
-    /* Light background pill */
+    /* Píldora de fondo claro */
     padding: 8px 20px;
     border-radius: 30px;
     transition: all 0.2s ease;
@@ -664,7 +664,7 @@ body {
     display: none;
     position: absolute;
     top: 120%;
-    /* Slightly separated */
+    /* Ligeramente separado */
     right: 0;
     background-color: white;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
@@ -674,7 +674,7 @@ body {
     margin-top: 5px;
     border: 1px solid #f0f0f0;
     overflow: hidden;
-    /* For smooth corners */
+    /* Para esquinas suaves */
 }
 
 .dropdown-menu.show {
@@ -704,16 +704,16 @@ body {
 .form-textarea {
     width: 100%;
     padding: 12px;
-    /* Slightly more padding */
+    /* Un poco más de relleno */
     border: 1px solid var(--border-color);
     border-radius: 8px;
-    /* Softer corners */
+    /* Esquinas más suaves */
     font-family: inherit;
     font-size: 0.95rem;
     background-color: #f8fafc;
-    /* Pale gray bg */
+    /* Fondo gris pálido */
     transition: all 0.3s ease;
-    /* Fluid transition */
+    /* Transición fluida */
 }
 
 .form-input:focus,
@@ -721,11 +721,11 @@ body {
 .form-textarea:focus {
     outline: none;
     background-color: #ffffff;
-    /* White on focus */
+    /* Blanco al enfocar */
     border-color: #3b82f6;
-    /* Vibrant blue */
+    /* Azul vibrante */
     box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
-    /* Soft glow */
+    /* Resplandor suave */
 }
 
 .input-error {
@@ -741,7 +741,7 @@ body {
     justify-content: flex-end;
 }
 
-/* Responsive */
+/* Responsivo */
 @media (max-width: 768px) {
     body {
         flex-direction: column;
@@ -757,7 +757,7 @@ body {
         height: 100vh;
     }
 
-    /* Table responsive - Card View */
+    /* Tabla responsiva - Vista de Tarjeta */
     .registry-table thead {
         display: none;
     }
@@ -788,7 +788,7 @@ body {
     .registry-table td:last-child {
         border-bottom: 0;
         text-align: center;
-        /* Actions centered */
+        /* Acciones centradas */
         padding-left: 15px;
     }
 
@@ -803,74 +803,74 @@ body {
         color: var(--secondary-color);
     }
 
-    /* Mobile Title Adjustment */
+    /* Ajuste de Título Móvil */
     .page-title {
         position: static;
-        /* Stack normally */
+        /* Apilar normalmente */
         transform: none;
         width: 100%;
         text-align: center;
         margin-bottom: 5px;
         font-size: 1.1rem;
         white-space: normal;
-        /* Allow wrapping */
+        /* Permitir ajuste de línea */
     }
 
     .top-bar {
         padding: 10px 15px;
         height: auto;
-        /* Allow growing */
+        /* Permitir crecimiento */
         flex-direction: column;
-        /* Stack items */
+        /* Apilar elementos */
         justify-content: center;
         gap: 5px;
     }
 
     .user-info {
         align-self: center;
-        /* Center user pill */
+        /* Centrar píldora de usuario */
         width: 100%;
         justify-content: center;
     }
 
-    /* Table Mobile Card View Refinement */
+    /* Refinamiento de Vista de Tarjeta Móvil para Tabla */
     .registry-table td {
         display: flex;
-        /* Use flex for better control */
+        /* Usar flex para mejor control */
         justify-content: space-between;
-        /* Space between label and value */
+        /* Espacio entre etiqueta y valor */
         text-align: right;
         padding: 10px 15px;
         position: relative;
         border-bottom: 1px solid #eee;
         min-height: 40px;
-        /* Ensure height */
+        /* Asegurar altura */
         align-items: center;
     }
 
     .registry-table td::before {
         content: attr(data-label);
         position: static;
-        /* Not absolute */
+        /* No absoluto */
         width: auto;
-        /* Auto width */
+        /* Ancho automático */
         padding-right: 15px;
         text-align: left;
         font-weight: 700;
         color: var(--secondary-color);
         flex-shrink: 0;
-        /* Don't shrink label */
+        /* No encoger etiqueta */
         flex-basis: 40%;
-        /* Target width for label */
+        /* Ancho objetivo para etiqueta */
     }
 
-    /* Override previous padding-left hack */
+    /* Sobreescribir hack anterior de padding-left */
     .registry-table td {
         padding-left: 15px;
     }
 }
 
-/* Area Button */
+/* Botón de Área */
 .btn-area {
     background-color: #e8f4f8;
     color: #2980b9;
@@ -895,7 +895,7 @@ body {
     margin-right: 6px;
 }
 
-/* Action Buttons */
+/* Botones de Acción */
 .btn-icon {
     background: none;
     border: none;
@@ -917,7 +917,7 @@ body {
 /* Modal */
 .modal {
     display: none;
-    /* Hidden by default */
+    /* Oculto por defecto */
     position: fixed;
     z-index: 100;
     left: 0;
@@ -989,7 +989,7 @@ body {
     border-top: 1px solid #eee;
 }
 
-/* History Modal Styles */
+/* Estilos del Modal de Historial */
 .history-container {
     overflow-x: auto;
 }
@@ -1014,12 +1014,12 @@ body {
     padding: 12px;
     border-bottom: 1px solid #eee;
     font-size: 0.85rem;
-    /* Slightly smaller for better fit */
+    /* Ligeramente más pequeño para mejor ajuste */
     vertical-align: top;
-    /* Align text to top for better multi-line readability */
+    /* Alinear texto arriba para mejor legibilidad multilínea */
 }
 
-/* Specific column adjustments */
+/* Ajustes específicos de columna */
 .history-table td:nth-child(1),
 /* Fecha */
 .history-table td:nth-child(2)
@@ -1037,11 +1037,11 @@ body {
     background-color: #f0f0f0;
 }
 
-/* Status Badges - Modern Pills */
+/* Insignias de Estado - Píldoras Modernas */
 .badge {
     padding: 6px 12px;
     border-radius: 9999px;
-    /* Full pill */
+    /* Píldora completa */
     font-size: 0.75rem;
     font-weight: 700;
     text-transform: uppercase;
@@ -1051,10 +1051,10 @@ body {
     justify-content: center;
     white-space: nowrap;
     box-shadow: none;
-    /* Cleaner flat look */
+    /* Aspecto plano más limpio */
 }
 
-/* Status: Received (Blue) */
+/* Estado: Recibido (Azul) */
 .badge-received {
     background-color: #eff6ff;
     /* Blue 50 */
@@ -1064,7 +1064,7 @@ body {
     /* Blue 100 */
 }
 
-/* Status: Derived (Amber/Orange) */
+/* Estado: Derivado (Ámbar/Naranja) */
 .badge-derived {
     background-color: #fffbeb;
     /* Amber 50 */
@@ -1074,7 +1074,7 @@ body {
     /* Amber 100 */
 }
 
-/* Status: Finalized (Green) */
+/* Estado: Finalizado (Verde) */
 .badge-finalized {
     background-color: #f0fdf4;
     /* Green 50 */
@@ -1084,12 +1084,12 @@ body {
     /* Green 100 */
 }
 
-/*Aguegar: Diseño de cerrar seción*/
+/* Agregar: Diseño de cerrar sesión */
 
-/* --- NEW TIMELINE HISTORY STYLES --- */
+/* --- NUEVOS ESTILOS DE HISTORIAL DE LÍNEA DE TIEMPO --- */
 .history-container {
     background-color: #f8fafc;
-    /* Light background for contrast */
+    /* Fondo claro para contraste */
     padding: 20px;
     border-radius: 8px;
     max-height: 60vh;
@@ -1102,17 +1102,17 @@ body {
     margin: 0;
     position: relative;
     padding-left: 30px;
-    /* Space for line */
+    /* Espacio para línea */
 }
 
-/* Vertical Line */
+/* Línea Vertical */
 .timeline::before {
     content: '';
     position: absolute;
     top: 0;
     bottom: 0;
     left: 10px;
-    /* Center of marker */
+    /* Centro del marcador */
     width: 2px;
     background-color: #e2e8f0;
 }
@@ -1126,20 +1126,20 @@ body {
     margin-bottom: 0;
 }
 
-/* Marker Dot */
+/* Punto Marcador */
 .timeline-marker {
     position: absolute;
     left: -26px;
-    /* Adjust based on padding-left of UL (30px) - (MarkerWidth/2 + LineWidth/2) */
-    /* Wait, ul pad-left is 30px. Line is at 10px from ul left. Marker center should be 10px.
-       Marker width 14px. Left = 10px - 7px = 3px relative to UL.
-       However, item is inside UL. Item is shifted right by 30px padding? No, padding is on UL.
-       So item content starts at 30px.
-       Absolute left of item is 0 (which is 30px from ul edge).
-       So marker needs to be at -20px or so?
-       Let's use left: -27px; (30px - 7px - approx adjustments).
-       Actually easier: left: -26px works fine usually.
-       Let's align strictly: top: 20px (align with header).
+    /* Ajustar basado en padding-left de UL (30px) - (AnchoMarcador/2 + AnchoLínea/2) */
+    /* Espera, el padding-left de ul es 30px. La línea está a 10px de la izquierda de ul. El centro del marcador debe ser 10px.
+       Ancho del marcador 14px. Izquierda = 10px - 7px = 3px relativo a UL.
+       Sin embargo, el elemento está dentro de UL. ¿El elemento se desplaza a la derecha por el padding de 30px? No, el padding está en UL.
+       Así que el contenido del elemento comienza en 30px.
+       Izquierda absoluta del elemento es 0 (que es 30px desde el borde de ul).
+       Así que el marcador necesita estar a -20px o así?
+       Usemos left: -27px; (30px - 7px - ajustes aproximados).
+       De hecho más fácil: left: -26px funciona bien usualmente.
+       Alineemos estrictamente: top: 20px (alinear con encabezado).
     */
     top: 15px;
     left: -27px;
@@ -1147,11 +1147,11 @@ body {
     height: 16px;
     border-radius: 50%;
     border: 3px solid #fff;
-    /* White ring */
+    /* Anillo blanco */
     box-shadow: 0 0 0 2px #e2e8f0;
     z-index: 1;
     background-color: #94a3b8;
-    /* Default gray */
+    /* Gris por defecto */
 }
 
 .timeline-marker.badge-received {
@@ -1170,7 +1170,7 @@ body {
 }
 
 
-/* Content Card */
+/* Tarjeta de Contenido */
 .timeline-content {
     background: white;
     border-radius: 12px;
@@ -1216,7 +1216,7 @@ body {
     color: white;
 }
 
-/* Reusing existing badge colors via classes or explicit */
+/* Reutilizando colores de insignias existentes */
 .timeline-badge.badge-received {
     background-color: var(--primary-color);
 }
@@ -1230,7 +1230,7 @@ body {
 }
 
 
-/* Body Route */
+/* Ruta del Cuerpo */
 .timeline-route {
     display: flex;
     align-items: center;
@@ -1267,7 +1267,7 @@ body {
     color: #334155;
     font-weight: 600;
     text-transform: capitalize;
-    /* Clean capitalization */
+    /* Capitalización limpia */
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -1292,7 +1292,7 @@ body {
 .timeline-obs {
     margin-top: 10px;
     background-color: #fffbeb;
-    /* Light yellow for note */
+    /* Amarillo claro para nota */
     border-left: 3px solid #fcd34d;
     padding: 10px 15px;
     border-radius: 0 8px 8px 0;

@@ -12,3 +12,5 @@ router.get('/api/auth/me', authController.checkAuth);
 router.post('/api/recover-password', authController.recoverPassword);
 
 module.exports = router;
+
+//modificacion de rutas

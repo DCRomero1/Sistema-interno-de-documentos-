@@ -68,13 +68,18 @@ function initializeTables() {
     )`, (err) => {
         if (err) console.error('Error creating documents table:', err);
         else {
-            // Migración: Intentar agregar la columna si falta (para bases de datos existentes)
-            // SQLite doesn't support "IF NOT EXISTS" in ADD COLUMN directly in all versions comfortably without check,
-            // but running it and ignoring the "duplicate column" error is a common simple pattern.
+            // Migración: Intentar agregar la columna nombre si falta
             db.run(`ALTER TABLE documents ADD COLUMN nombre TEXT`, (err) => {
                 // Ignore error if column already exists
                 if (err && !err.message.includes('duplicate column')) {
                     // console.error('Migration note:', err.message); 
+                }
+            });
+
+            // Migración: Agregar columna pdf_path
+            db.run(`ALTER TABLE documents ADD COLUMN pdf_path TEXT`, (err) => {
+                if (err && !err.message.includes('duplicate column')) {
+                    // console.error('Migration note:', err.message);
                 }
             });
         }

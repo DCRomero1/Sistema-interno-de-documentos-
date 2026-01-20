@@ -14,6 +14,17 @@ router.get('/api/documents', isAuthenticated, documentController.getAllDocuments
 // Protegeremos esto para mantener la consistencia dado que la página register.html está protegida.
 router.post('/api/documents', isAuthenticated, documentController.createDocument);
 
-router.post('/api/documents/update-location', documentController.updateLocation); // Misma lógica, seguro protegerlo.
+router.post('/api/documents/update-location', documentController.updateLocation);
+
+// Ruta para subir PDF
+router.post('/api/documents/:id/upload', isAuthenticated, documentController.upload.single('pdfFile'), documentController.uploadPdf); // 'pdfFile' must match input name
 
 module.exports = router;
+
+
+
+
+
+
+
+

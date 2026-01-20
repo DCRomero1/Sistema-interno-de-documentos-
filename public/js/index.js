@@ -161,6 +161,11 @@ function renderTable(documents) {
                     <button class="btn-icon edit" onclick="openModal('${safeId}', '${safeFecha}', '${safeUbicacion}', '${safeCargo}')" title="Editar">
                         <i class="fa-solid fa-pen-to-square"></i>
                     </button>
+                    ${doc.pdf_path ?
+                `<a href="${doc.pdf_path}" target="_blank" class="btn-icon" style="color: #e74c3c;" title="Ver PDF"><i class="fa-solid fa-file-pdf"></i></a>`
+                :
+                `<button class="btn-icon" onclick="openUploadModal('${safeId}')" style="color: #3498db;" title="Subir PDF"><i class="fa-solid fa-cloud-arrow-up"></i></button>`
+            }
                     <button class="btn-icon view" onclick="viewHistory('${safeId}')" title="Ver Ruta / Seguimiento" style="color: var(--accent-color);">
                         <i class="fa-solid fa-eye"></i>
                     </button>
@@ -170,6 +175,58 @@ function renderTable(documents) {
         tbody.appendChild(row);
     });
 }
+
+// Upload Modal Functions
+function openUploadModal(docId) {
+    document.getElementById('uploadModal').style.display = 'block';
+    document.getElementById('uploadDocId').value = docId;
+    document.getElementById('pdfFile').value = ''; // Reset file input
+}
+
+function closeUploadModal() {
+    document.getElementById('uploadModal').style.display = 'none';
+}
+
+async function submitUpload() {
+    const docId = document.getElementById('uploadDocId').value;
+    const fileInput = document.getElementById('pdfFile');
+    const file = fileInput.files[0];
+
+    if (!file) {
+        alert('Por favor seleccione un archivo PDF');
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('pdfFile', file);
+
+    try {
+        const response = await fetch(`/api/documents/${docId}/upload`, {
+            method: 'POST',
+            body: formData
+        });
+
+        const result = await response.json();
+        if (result.success) {
+            alert('Archivo subido correctamente');
+            closeUploadModal();
+            loadDocuments(); // Reload table to show View icon
+        } else {
+            alert('Error al subir: ' + (result.message || result.error));
+        }
+    } catch (error) {
+        console.error('Error uploading:', error);
+        alert('Error de conexión');
+    }
+}
+
+// Close upload modal when clicking outside
+window.addEventListener('click', function (event) {
+    const um = document.getElementById('uploadModal');
+    if (event.target == um) {
+        closeUploadModal();
+    }
+});
 
 // Generar los eventos 
 document.addEventListener('DOMContentLoaded', () => {
