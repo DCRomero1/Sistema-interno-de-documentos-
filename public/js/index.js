@@ -191,7 +191,7 @@ function closeUploadModal() {
 }
 
 async function submitUpload() {
-    const docId = document.getElementById('uploadDocId').value;
+    const docId = document.getElementById('uploadDocId');
     const fileInput = document.getElementById('pdfFile');
     const file = fileInput.files[0];
 
@@ -204,7 +204,7 @@ async function submitUpload() {
     formData.append('pdfFile', file);
 
     try {
-        const response = await fetch(`/api/documents/${docId}/upload`, {
+        const response = await fetch(`/api/documents/${docId.value}/upload`, {
             method: 'POST',
             body: formData
         });
@@ -279,23 +279,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // Populate Dynamic Filters
+    // Populate Dynamic Filters
     function populateFilters(documents) {
-        // Extract unique types and origins
-        const types = [...new Set(documents.map(d => d.tipo ? d.tipo.split(':')[0].trim() : '').filter(t => t))].sort();
-        const areas = [...new Set(documents.map(d => d.origen ? d.origen.trim() : '').filter(a => a))].sort();
+        // Defined official areas
+        const officialAreas = [
+            "Consejo Asesor",
+            "Area de Administración",
+            "Area de Calidad",
+            "Secretaría Académica",
+            "Unidad Académica",
+            "Unidad de Formación Continua",
+            "Unidad de Bienestar y Empleabilidad",
+            "Unidad de investigación"
+        ];
 
-        // Populate Type Select
-        filterType.innerHTML = '<option value="">Todos los Tipos</option>';
-        types.forEach(t => {
-            const opt = document.createElement('option');
-            opt.value = t;
-            opt.textContent = t;
-            filterType.appendChild(opt);
-        });
-
-        // Populate Area Select
+        // Populate Area Select with Official Areas
         filterArea.innerHTML = '<option value="">Áreas</option>';
-        areas.forEach(a => {
+        officialAreas.forEach(a => {
             const opt = document.createElement('option');
             opt.value = a;
             opt.textContent = a;
@@ -308,27 +308,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Unified Filter Function
     function applyFilters() {
-        const selectedType = filterType ? filterType.value.toLowerCase() : '';
         const selectedArea = filterArea ? filterArea.value.toLowerCase() : '';
         const selectedStatus = filterStatus ? filterStatus.value : '';
         const searchValue = searchInput ? searchInput.value.toLowerCase() : '';
 
-
-
         const filtered = allDocuments.filter(doc => {
-            // 1. Filter by Type (Partial match logic to catch subtypes handled by split above)
-            // But detailed match: if doc.tipo is "INFORME: N 123", select value "INFORME" matches
-            const docType = doc.tipo ? doc.tipo.toLowerCase() : '';
-            const matchesType = selectedType === '' || docType.includes(selectedType);
-
             // 2. Filter by Area
             const matchesArea = selectedArea === '' || (doc.origen && doc.origen.toLowerCase().includes(selectedArea));
 
             // 3. Filter by Status
             const docStatus = doc.status || 'Recibido'; // Default
             const matchesStatus = selectedStatus === '' || docStatus === selectedStatus;
-
-
 
             // 5. Global Search (ID, Remitente, Concepto, Cargo, Origen)
             const matchesSearch = searchValue === '' ||
@@ -339,14 +329,88 @@ document.addEventListener('DOMContentLoaded', () => {
                 (doc.cargo && doc.cargo.toLowerCase().includes(searchValue)) ||
                 (doc.tipo && doc.tipo.toLowerCase().includes(searchValue));
 
-            return matchesType && matchesArea && matchesStatus && matchesSearch;
+            return matchesArea && matchesStatus && matchesSearch;
         });
 
         renderTable(filtered);
     }
 
-    // Attach listeners
-    if (filterType) filterType.addEventListener('change', applyFilters);
+    // Auto-select area based on cargo
+    const cargoToAreaMap = {
+        // Consejo Asesor
+        "Consejo Asesor": "Consejo Asesor",
+
+        // Area de Administración
+        "Especialista administrativo": "Area de Administración",
+        "Contador": "Area de Administración",
+        "Recursos Humanos": "Area de Administración",
+        "Administrador": "Area de Administración",
+        "Abastecimiento": "Area de Administración",
+        "Almacén": "Area de Administración",
+        "Patrimonio": "Area de Administración",
+        "Producción": "Area de Administración",
+        "Técnico de campo": "Area de Administración",
+        "Especialista en comunicaciones y software": "Area de Administración",
+        "Especialista en Hardware": "Area de Administración",
+        "Técnico Administrativo": "Area de Administración",
+        "Técnico de biblioteca": "Area de Administración",
+        "Auxiliar de biblioteca": "Area de Administración",
+        "Mesa de partes": "Area de Administración",
+        "Asistente administrativo": "Area de Administración",
+        "Seguridad y vigilancia": "Area de Administración",
+        "Limpieza y mantenimiento": "Area de Administración",
+        "Caja": "Area de Administración",
+        "Tesorero": "Area de Administración",
+        "Secretaria": "Area de Administración",
+        "Oficinista II": "Area de Administración",
+
+        // Area de Calidad
+        "Area de Calidad": "Area de Calidad",
+
+        // Secretaría Académica
+        "Programador de Sistemas PAD": "Secretaría Académica",
+
+        // Unidad Académica
+        "Coordinadores de Área Académica de los programas de estudio": "Unidad Académica",
+        "Docente extraordiario": "Unidad Académica",
+        "Docente Altamente especializado": "Unidad Académica",
+        "Docente Regular de Competencias especificas": "Unidad Académica",
+        "Docente Regular de Competencias para la Empleabilidad": "Unidad Académica",
+
+        // Unidad de Formación Continua
+        "Unidad de Formación Continua": "Unidad de Formación Continua",
+
+        // Unidad de Bienestar y Empleabilidad
+        "Servicio Médico(Tópico)": "Unidad de Bienestar y Empleabilidad",
+        "Servicio de Bienestar(Consejeria)": "Unidad de Bienestar y Empleabilidad",
+        "Servicio psicopedagógico": "Unidad de Bienestar y Empleabilidad",
+        "Servicio de Empleabilidad": "Unidad de Bienestar y Empleabilidad",
+        "Servicio de Asistente Social": "Unidad de Bienestar y Empleabilidad",
+
+        // Unidad de investigación
+        "Fabricacion Digital": "Unidad de investigación"
+    };
+
+    const modalCargo = document.getElementById('modalCargo');
+    const modalNewLocation = document.getElementById('modalNewLocation');
+
+    if (modalCargo && modalNewLocation) {
+        modalCargo.addEventListener('change', function () {
+            const selectedCargo = this.value;
+            const targetArea = cargoToAreaMap[selectedCargo];
+
+            if (targetArea) {
+                // Check if the area exists in the dropdown to avoid errors
+                const optionExists = Array.from(modalNewLocation.options).some(opt => opt.value === targetArea);
+                if (optionExists) {
+                    modalNewLocation.value = targetArea;
+                    // Remove error class if present
+                    modalNewLocation.classList.remove('input-error');
+                }
+            }
+        });
+    }
+
     if (filterArea) filterArea.addEventListener('change', applyFilters);
     if (filterStatus) filterStatus.addEventListener('change', applyFilters);
 
@@ -374,6 +438,7 @@ function openModal(docId, fecha, ubicacion, cargo) {
 
     fFecha.value = fecha;
     fUbicacion.value = ubicacion;
+
     fCargo.value = cargo;
     document.getElementById('modalObs').value = '';
     // Reset Checkbox
@@ -538,14 +603,14 @@ function viewHistory(docId) {
                         </div>
                         <div class="route-node dest">
                             <span class="label">Destino</span>
-                            <span class="value" title="${escapeHtml(item.to)}">${escapeHtml(item.to) || '&mdash;'}</span>
+                            <span class="value" title="${escapeHtml(item.cargo)}">${escapeHtml(item.cargo) || escapeHtml(item.to) || '&mdash;'}</span>
                         </div>
                     </div>
 
-                    ${item.cargo ? `
+                    ${item.to ? `
                     <div class="timeline-meta">
-                        <strong><i class="fa-solid fa-file-signature"></i> Cargo / Responsable:</strong> 
-                        <span>${escapeHtml(item.cargo)}</span>
+                        <strong><i class="fa-solid fa-building"></i> Área:</strong> 
+                        <span>${escapeHtml(item.to)}</span>
                     </div>` : ''}
 
                     ${item.observation ? `

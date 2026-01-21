@@ -96,10 +96,7 @@
                                 <option value="Finalizado">Finalizado</option>
                             </select>
 
-                            <select id="filterType" class="filter-select">
-                                <option value="">Todos los Tipos</option>
-                                <!-- Populated Dynamically -->
-                            </select>
+
                             <select id="filterArea" class="filter-select">
                                 <option value="">Áreas</option>
                                 <!-- Populated Dynamically -->
@@ -156,103 +153,81 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">Área de Derivación (Destino)</label>
-                        <select class="form-select" id="modalNewLocation">
-                            <option value="" selected disabled>Seleccione nueva ubicación...</option>
-                            <optgroup label="JEFATURA DE UNIDAD DE ADMINISTRACION">
-                                <option value="JEFATURA DE UNIDAD DE ADMINISTRACION">AREA DE ADMINISTRACIÓN</option>
+                        <label class="form-label">Cargos (Persona)</label>
+                        <select id="modalCargo" class="form-select">
+                            <option value="" disabled selected>Seleccione cargo...</option>
+                            <option>Dirección General</option>
+                            <option>Consejo Asesor</option>
+
+                            <optgroup label="Area de Administración">
+                                <option>Especialista administrativo</option>
+                                <option>Contador</option>
+                                <option>Recursos Humanos</option>
+                                <option>Administrador</option>
                                 <option>Abastecimiento</option>
-                                <option>Patrimonio</option>
                                 <option>Almacén</option>
-                                <option>Recursos humanos</option>
-                                <option>Secretaria académica</option>
-                                <option>Secretaria de dirección</option>
-                                <option>Cordinador administrativo fundo calana</option>
-                                <option>Personal de servicio</option>
-                                <option>Canal 45(oficina de informatica y comunicación)</option>
-                                <option>Mantenimiento de software</option>
-                                <option>Formación continua</option>
-                                <option>Jefatura de unidad académica</option>
-                                <option>Asistencia social</option>
-                                <option>Especialista hadware</option>
-                                <option>Fablab</option>
-                                <option>Unidad de bienestar y empleabilidad</option>
+                                <option>Patrimonio</option>
+                                <option>Producción</option>
+                                <option>Técnico de campo</option>
+                                <option>Especialista en comunicaciones y software</option>
+                                <option>Especialista en Hardware</option>
+                                <option>Técnico Administrativo</option>
+                                <option>Técnico de biblioteca</option>
+                                <option>Auxiliar de biblioteca</option>
+                                <option>Mesa de partes</option>
+                                <option>Asistente administrativo</option>
+                                <option>Seguridad y vigilancia</option>
+                                <option>Limpieza y mantenimiento</option>
+                                <option>Caja</option>
+                                <option>Tesorero</option>
+                                <option>Secretaria</option>
+                                <option>Oficinista II</option>
                             </optgroup>
-                            <optgroup label="AREAS ACADÉMICAS">
-                                <option>Arquitectura de plataformas y servicios de tecnologías de informatic</option>
-                                <option>Asistencia administrativa</option>
-                                <option>Contabilidad</option>
-                                <option>Construcción civil</option>
-                                <option>Producción Agropecuaria</option>
-                                <option>Electricidad Industrial</option>
-                                <option>Electronica Industrial</option>
-                                <option>Mecánica de producción industrial</option>
-                                <option>Mecatrónica Automotriz</option>
+
+                            <option>Area de Calidad</option>
+
+                            <optgroup label="Secretaría Académica">
+                                <option>Programador de Sistemas PAD</option>
                             </optgroup>
-                            <option>Otros</option>
+
+                            <optgroup label="Unidad Académica">
+                                <option>Coordinadores de Área Académica de los programas de estudio</option>
+                                <option>Docente extraordiario</option>
+                                <option>Docente Altamente especializado</option>
+                                <option>Docente Regular de Competencias especificas</option>
+                                <option>Docente Regular de Competencias para la Empleabilidad</option>
+                            </optgroup>
+
+                            <option>Unidad de Formación Continua</option>
+
+                            <optgroup label="Unidad de Bienestar y Empleabilidad">
+                                <option>Servicio Médico(Tópico)</option>
+                                <option>Servicio de Bienestar(Consejeria)</option>
+                                <option>Servicio psicopedagógico</option>
+                                <option>Servicio de Empleabilidad</option>
+                                <option>Servicio de Asistente Social</option>
+                            </optgroup>
+
+                            <optgroup label="Unidad de investigación">
+                                <option>Fabricacion Digital</option>
+                            </optgroup>
                         </select>
                     </div>
 
-                    <label class="form-label">Cargos (Persona)</label>
-                    <select id="modalCargo" class="form-select">
-                        <option value="" disabled selected>Seleccione cargo...</option>
-                        <option>Dirección General</option>
-                        <option>Consejo Asesor</option>
-
-                        <optgroup label="Área de Administración">
-                            <option>Especialista administrativo</option>
-                            <option>Contador</option>
-                            <option>Recursos Humanos</option>
-                            <option>Abastecimiento</option>
-                            <option>Almacén</option>
-                            <option>Patrimonio</option>
-                            <option>Producción</option>
-                            <option>Técnico de campo</option>
-                            <option>Especialista en comunicaciones y software</option>
-                            <option>Especialista en Hardware</option>
-                            <option>Técnico Administrativo</option>
-                            <option>Técnico de biblioteca</option>
-                            <option>Auxiliar de biblioteca</option>
-                            <option>Mesa de partes</option>
-                            <option>Asistente administrativo</option>
-                            <option>Seguridad y vigilancia</option>
-                            <option>Limpieza y mantenimiento</option>
-                            <option>Caja</option>
-                            <option>Tesorero</option>
-                            <option>Secretaria</option>
-                            <option>Oficinista II</option>
-                        </optgroup>
-
-                        <option>Área de Calidad</option>
-
-                        <optgroup label="Secretaría Académica">
-                            <option>Programador de Sistemas PAD</option>
-                        </optgroup>
-
-                        <optgroup label="Unidad Académica">
-                            <option>Coordinadores de Área Académica de los programas de estudio</option>
-                            <option>Docente extraordinario</option>
-                            <option>Docente Altamente especializado</option>
-                            <option>Docente Regular de Competencias especificas</option>
-                            <option>Docente Regular de Competencias para la Empleabilidad</option>
-                        </optgroup>
-
-                        <option>Unidad de Formación Continua</option>
-
-                        <optgroup label="Unidad de Bienestar y Empleabilidad">
-                            <option>Servicio Médico(Tópico)</option>
-                            <option>Servicio de Bienestar(Consejeria)</option>
-                            <option>Servicio psicopedagógico</option>
-                            <option>Servicio de Empleabilidad</option>
-                            <option>Servicio de Asistente Social</option>
-                        </optgroup>
-
-                        <optgroup label="Unidad de investigación">
-                            <option>Fabricacion Digital</option>
-                        </optgroup>
-
-                        <option>Otro</option>
-                    </select>
+                    <div class="form-group">
+                        <label class="form-label">Área de Derivación (Destino)</label>
+                        <select class="form-select" id="modalNewLocation">
+                            <option value="" selected disabled>Seleccione nueva ubicación...</option>
+                            <option>Consejo Asesor</option>
+                            <option>Area de Administración</option>
+                            <option>Area de Calidad</option>
+                            <option>Secretaría Académica</option>
+                            <option>Unidad Académica</option>
+                            <option>Unidad de Formación Continua</option>
+                            <option>Unidad de Bienestar y Empleabilidad</option>
+                            <option>Unidad de investigación</option>
+                        </select>
+                    </div>
 
                     <div class="form-group">
                         <label class="form-label">Observaciones</label>
