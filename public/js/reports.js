@@ -164,6 +164,7 @@ function exportToCSV() {
     }
 
     // Define CSV content: ONLY Document Details
+
     let csvContent = "data:text/csv;charset=utf-8,";
 
     // Header Row
