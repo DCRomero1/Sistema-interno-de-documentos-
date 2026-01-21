@@ -173,8 +173,19 @@
                     </div>
                 </div>
 
-                <div class="report-toolbar" style="justify-content: center;">
-                    <button id="btn-export" class="btn btn-primary" style="background-color: #27ae60;">
+                <div class="report-toolbar"
+                    style="justify-content: center; align-items: flex-end; gap: 10px; flex-wrap: wrap;">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label for="export-start-date"
+                            style="display: block; margin-bottom: 5px; font-weight: bold;">Desde:</label>
+                        <input type="date" id="export-start-date" class="form-input" style="padding: 8px;">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label for="export-end-date"
+                            style="display: block; margin-bottom: 5px; font-weight: bold;">Hasta:</label>
+                        <input type="date" id="export-end-date" class="form-input" style="padding: 8px;">
+                    </div>
+                    <button id="btn-export" class="btn btn-primary" style="background-color: #27ae60; height: 42px;">
                         <i class="fa-solid fa-file-excel"></i> Exportar a Excel (CSV)
                     </button>
                 </div>

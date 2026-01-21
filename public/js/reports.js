@@ -145,41 +145,58 @@ function exportToCSV() {
         return;
     }
 
+    const startDate = document.getElementById('export-start-date').value;
+    const endDate = document.getElementById('export-end-date').value;
+
+    // Filter documents based on date range
+    const filteredDocs = reportData.documents.filter(doc => {
+        if (!doc.fecha) return false;
+        // String comparison works for YYYY-MM-DD
+        const docDate = doc.fecha;
+        if (startDate && docDate < startDate) return false;
+        if (endDate && docDate > endDate) return false;
+        return true;
+    });
+
+    if (filteredDocs.length === 0) {
+        alert('No hay documentos en el rango de fechas seleccionado.');
+        return;
+    }
+
     // Define CSV content: ONLY Document Details
     let csvContent = "data:text/csv;charset=utf-8,";
 
     // Header Row
     csvContent += "ID,Fecha Recepcion,Tipo,Remitente,Area Origen,Concepto,Fecha Despacho,Destino,Folios,Cargo,Estado,Observaciones\n";
 
-    if (reportData.documents) {
-        reportData.documents.forEach(doc => {
-            // Escape commas in fields to prevent CSV breakage
-            const clean = (text) => text ? `"${text.toString().replace(/"/g, '""')}"` : '';
+    filteredDocs.forEach(doc => {
+        // Escape commas in fields to prevent CSV breakage
+        const clean = (text) => text ? `"${text.toString().replace(/"/g, '""')}"` : '';
 
-            const row = [
-                doc.id,
-                doc.fecha,
-                doc.tipo,
-                doc.nombre,
-                doc.origen,
-                clean(doc.concepto),
-                doc.fechaDespacho || '',
-                doc.destino || '',
-                doc.folios,
-                doc.cargo,
-                doc.status,
-                clean(doc.observaciones)
-            ];
-            csvContent += row.join(",") + "\n";
-        });
-    }
+        const row = [
+            doc.id,
+            doc.fecha,
+            doc.tipo,
+            doc.nombre,
+            doc.origen,
+            clean(doc.concepto),
+            doc.fechaDespacho || '',
+            doc.destino || '',
+            doc.folios,
+            doc.cargo,
+            doc.status,
+            clean(doc.observaciones)
+        ];
+        csvContent += row.join(",") + "\n";
+    });
 
     // Create Download Link
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
     const dateStr = new Date().toISOString().split('T')[0];
-    link.setAttribute("download", `registro_documentos_${dateStr}.csv`);
+    const rangeSuffix = (startDate || endDate) ? `_${startDate || 'inio'}_al_${endDate || 'final'}` : '';
+    link.setAttribute("download", `registro_documentos_${dateStr}${rangeSuffix}.csv`);
     document.body.appendChild(link); // Required for FF
     link.click();
     document.body.removeChild(link);
