@@ -1,5 +1,6 @@
 const db = require('../database');
 const path = require('path');
+const fs = require('fs');
 
 // Vistas
 exports.showDashboard = (req, res) => {
@@ -35,9 +36,34 @@ exports.getAllDocuments = (req, res) => {
     });
 };
 
+// Configuración de Multer
+const multer = require('multer');
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, path.join(__dirname, '../../public/uploads'));
+    },
+    filename: function (req, file, cb) {
+        // Use timestamp to avoid collision and remove dependency on docId which isn't available yet for new docs
+        const uniqueSuffix = Date.now() + Math.round(Math.random() * 1E9);
+        cb(null, `doc_${uniqueSuffix}${path.extname(file.originalname)}`);
+    }
+});
+
+exports.upload = multer({
+    storage: storage,
+    fileFilter: (req, file, cb) => {
+        if (file.mimetype === 'application/pdf') {
+            cb(null, true);
+        } else {
+            cb(new Error('Solo se permiten archivos PDF'), false);
+        }
+    }
+});
+
 // Crear nuevo documento
 exports.createDocument = (req, res) => {
     const newDoc = req.body;
+    const pdfPath = req.file ? '/uploads/' + req.file.filename : null;
 
     db.get('SELECT MAX(id) as maxId FROM documents', [], (err, row) => {
         if (err) return res.status(500).json({ error: err.message });
@@ -59,13 +85,11 @@ exports.createDocument = (req, res) => {
         const fechaDespacho = newDoc.fechaDespacho || '';
         const cargo = newDoc.cargo || '';
         const status = 'Recibido';
-        // Error corregido respecto al código original: usar cadena vacía si no hay observaciones.
-        // Espera, mirando el código original: const observaciones = ''; estaba "hardcoded" para nuevos documentos.
         const initialObs = '';
 
-        db.run(`INSERT INTO documents (id, fecha, tipo, nombre, origen, destino, ubicacion, folios, concepto, fechaDespacho, cargo, status, observaciones) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-            [newId, fecha, tipo, nombre, origen, destino, ubicacion, folios, concepto, fechaDespacho, cargo, status, initialObs],
+        db.run(`INSERT INTO documents (id, fecha, tipo, nombre, origen, destino, ubicacion, folios, concepto, fechaDespacho, cargo, status, observaciones, pdf_path) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [newId, fecha, tipo, nombre, origen, destino, ubicacion, folios, concepto, fechaDespacho, cargo, status, initialObs, pdfPath],
             function (err) {
                 if (err) return res.status(500).json({ error: err.message });
 
@@ -84,16 +108,18 @@ exports.createDocument = (req, res) => {
                     }
                 );
 
-                newDoc.id = newId;
-                newDoc.status = status;
-                newDoc.history = [{
+                const responseDoc = { ...newDoc };
+                responseDoc.id = newId;
+                responseDoc.status = status;
+                responseDoc.pdf_path = pdfPath;
+                responseDoc.history = [{
                     date: historyDate,
                     action: action,
                     from: from,
                     to: to,
                     observation: obs
                 }];
-                res.status(201).json(newDoc);
+                res.status(201).json(responseDoc);
             });
     });
 };
@@ -142,30 +168,6 @@ exports.updateLocation = (req, res) => {
     });
 };
 
-// Configuración de Multer
-const multer = require('multer');
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, path.join(__dirname, '../../public/uploads'));
-    },
-    filename: function (req, file, cb) {
-        const docId = req.params.id;
-        const uniqueSuffix = Date.now() + Math.round(Math.random() * 1E9);
-        cb(null, `doc_${docId}_${uniqueSuffix}${path.extname(file.originalname)}`);
-    }
-});
-
-exports.upload = multer({
-    storage: storage,
-    fileFilter: (req, file, cb) => {
-        if (file.mimetype === 'application/pdf') {
-            cb(null, true);
-        } else {
-            cb(new Error('Solo se permiten archivos PDF'), false);
-        }
-    }
-});
-
 exports.uploadPdf = (req, res) => {
     const docId = req.params.id;
     if (!req.file) {
@@ -179,5 +181,37 @@ exports.uploadPdf = (req, res) => {
             return res.status(500).json({ success: false, error: err.message });
         }
         res.json({ success: true, pdfPath: pdfPath });
+    });
+};
+
+exports.deletePdf = (req, res) => {
+    const docId = req.params.id;
+
+    db.get('SELECT pdf_path FROM documents WHERE id = ?', [docId], (err, row) => {
+        if (err) return res.status(500).json({ success: false, error: err.message });
+        if (!row || !row.pdf_path) {
+            return res.status(404).json({ success: false, message: 'PDF no encontrado o ya eliminado' });
+        }
+
+        try {
+            // Construct full path to file
+            const filePath = path.join(__dirname, '../../public', row.pdf_path);
+
+            // Delete file from filesystem
+            fs.unlink(filePath, (err) => {
+                if (err && err.code !== 'ENOENT') {
+                    console.error('Error deleting file from disk:', err);
+                    // Continue to update DB to maintain consistency
+                }
+
+                db.run('UPDATE documents SET pdf_path = NULL WHERE id = ?', [docId], (err) => {
+                    if (err) return res.status(500).json({ success: false, error: err.message });
+                    res.json({ success: true });
+                });
+            });
+        } catch (error) {
+            console.error('Critical error in deletePdf:', error);
+            res.status(500).json({ success: false, error: 'Internal Server Error during file deletion' });
+        }
     });
 };

@@ -48,6 +48,27 @@ document.querySelectorAll('.form-input, .form-select').forEach(input => {
     });
 });
 
+// PDF File Input Logic
+const pdfInput = document.getElementById('pdfFile');
+const fileNameDisplay = document.getElementById('fileNameDisplay');
+const clearFileBtn = document.getElementById('clearFileBtn');
+
+pdfInput.addEventListener('change', function () {
+    if (this.files && this.files.length > 0) {
+        fileNameDisplay.textContent = this.files[0].name;
+        clearFileBtn.style.display = 'inline-block';
+    } else {
+        fileNameDisplay.textContent = 'Ningún archivo seleccionado';
+        clearFileBtn.style.display = 'none';
+    }
+});
+
+clearFileBtn.addEventListener('click', function () {
+    pdfInput.value = ''; // Clear the input
+    fileNameDisplay.textContent = 'Ningún archivo seleccionado';
+    clearFileBtn.style.display = 'none';
+});
+
 async function submitForm() {
     let hasError = false;
 
@@ -107,21 +128,26 @@ async function submitForm() {
         return;
     }
 
-    // Collect data
-    const data = {
-        fecha: document.getElementById('fecha').value,
-        tipo: tipoVal,
-        nombre: nombre.value,
-        origen: origenVal,
-        concepto: concepto.value,
-        folios: folios.value
-    };
+    // Collect data using FormData for multipart/form-data
+    const formData = new FormData();
+    formData.append('fecha', document.getElementById('fecha').value);
+    formData.append('tipo', tipoVal);
+    formData.append('nombre', nombre.value);
+    formData.append('origen', origenVal);
+    formData.append('concepto', concepto.value);
+    formData.append('folios', folios.value);
+
+    // Append file if selected
+    const pdfFile = document.getElementById('pdfFile').files[0];
+    if (pdfFile) {
+        formData.append('pdfFile', pdfFile);
+    }
 
     try {
         const response = await fetch('/api/documents', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
+            // headers: { 'Content-Type': 'application/json' }, // Remove Content-Type for FormData
+            body: formData
         });
 
         if (response.ok) {
@@ -145,8 +171,8 @@ async function submitForm() {
         console.error(error);
         Swal.fire({
             icon: 'error',
-            title: 'Error de Conexión',
-            text: 'No se pudo contactar con el servidor.'
+            title: 'Error en la conexion',
+            text: 'No se puedo conectar con el servidor'
         });
     }
 }

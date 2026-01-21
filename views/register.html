@@ -100,6 +100,7 @@
                             <div class="form-group">
                                 <label class="form-label">Tipo de Documento</label>
                                 <select id="tipo" class="form-select">
+                                    <option value="" disabled selected>Elija tipo de documento...</option>
                                     <option>INFORME </option>
                                     <option>FUT</option>
                                     <option>CARTA</option>
@@ -128,8 +129,9 @@
                                 <select id="origen" class="form-select">
                                     <option value="" selected disabled>Seleccione origen...</option>
                                     <optgroup label="JEFATURA DE UNIDAD DE ADMINISTRACION">
-                                        <option value="JEFATURA DE UNIDAD DE ADMINISTRACION">JEFATURA DE UNIDAD DE
-                                            ADMINISTRACION (Mesa de Partes)</option>
+                                        <option value="JEFATURA DE UNIDAD DE ADMINISTRACION">AREA DE ADMINISTRACIÓN
+                                        </option>
+
                                         <option>Abastecimiento</option>
                                         <option>Patrimonio</option>
                                         <option>Almacén</option>
@@ -178,6 +180,23 @@
                             <div class="form-group">
                                 <label class="form-label">N° Folios</label>
                                 <input type="number" id="folios" class="form-input" placeholder="Ej. 10">
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label class="form-label"><i class="fa-solid fa-file-pdf"></i> Adjuntar PDF</label>
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <label for="pdfFile" class="btn btn-secondary" style="margin: 0; cursor: pointer;">
+                                        <i class="fa-solid fa-upload"></i> Seleccionar Archivo
+                                    </label>
+                                    <input type="file" id="pdfFile" accept=".pdf" style="display: none;">
+                                    <span id="fileNameDisplay" style="font-style: italic; color: #555;">Ningún archivo
+                                        seleccionado</span>
+                                    <button type="button" id="clearFileBtn" class="btn btn-danger"
+                                        style="display: none; padding: 5px 10px; font-size: 0.9em;"
+                                        title="Quitar archivo">
+                                        <i class="fa-solid fa-times"></i>
+                                    </button>
+                                </div>
                             </div>
 
                             <div class="form-actions">

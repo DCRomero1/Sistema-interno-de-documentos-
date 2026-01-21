@@ -29,7 +29,9 @@ function clearDatabase() {
         db.run('DELETE FROM workers', (err) => {
             if (err) console.error('Error clearing workers:', err);
             else console.log('Workers table cleared.');
+
         });
+
 
         // We specifically DO NOT clear 'users' to prevent locking the user out of the system.
         // If they want to reset users, they would need to restart the server to trigger createDefaultAdmin() or do it manually.

@@ -374,6 +374,7 @@ body {
 
 
 /* Sección de Búsqueda y Filtro */
+/* Sección de Búsqueda y Filtro */
 .search-section {
     padding: 20px;
     background-color: white;
@@ -381,71 +382,134 @@ body {
     display: flex;
     gap: 20px;
     align-items: center;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    /* Empujar filtros a la derecha */
+    flex-wrap: nowrap;
+    /* Forzar una sola línea por defecto */
+    justify-content: flex-start;
+    /* Alinear a la izquierda inicialmente */
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    /* Sombra suave */
+    border-radius: 12px 12px 0 0;
+    /* Bordes superiores redondeados */
+    z-index: 5;
+    position: relative;
+    margin-bottom: 0;
+    /* Pegado a la tabla */
 }
 
+/* Caja de Búsqueda */
 .search-box {
     flex-grow: 1;
     position: relative;
-    min-width: 250px;
+    /* min-width: 300px;  Removed to allow shrinking */
     max-width: 600px;
-    /* Limitar ancho de caja de búsqueda */
+    /* Reduced max width slightly to give space */
+    margin-right: auto;
+    /* Push filters to right */
 }
 
 .search-icon {
     position: absolute;
-    left: 12px;
+    left: 15px;
     top: 50%;
     transform: translateY(-50%);
-    color: #95a5a6;
+    color: var(--primary-color);
+    /* Color activo */
+    font-size: 1.1rem;
+    pointer-events: none;
 }
 
 .search-input {
     width: 100%;
-    padding: 10px 10px 10px 35px;
-    border: 1px solid var(--border-color);
-    border-radius: 20px;
-    background-color: #f9f9f9;
-    transition: all 0.3s;
+    padding: 12px 15px 12px 45px;
+    /* Más espacio */
+    border: 1px solid #e2e8f0;
+    /* Borde sutil */
+    border-radius: 8px;
+    /* Bordes cuadrados suaves */
+    background-color: #f8fafc;
+    transition: all 0.2s ease;
+    font-size: 0.95rem;
+    color: var(--text-color);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+
+.search-input::placeholder {
+    color: #94a3b8;
 }
 
 .search-input:focus {
     background-color: white;
-    border-color: var(--accent-color);
-    box-shadow: 0 0 0 3px rgba(41, 128, 185, 0.1);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    /* Resplandor azul */
     outline: none;
 }
 
+/* Caja de Filtros */
 .filter-box {
     display: flex;
-    gap: 16px;
-    /* Más espacio */
+    gap: 12px;
     align-items: center;
 }
 
 .filter-select {
-    padding: 8px 15px;
-    border-radius: 20px;
-    border: 1px solid var(--border-color);
+    padding: 11px 35px 11px 15px;
+    /* Espacio para flecha custom si se añade */
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
     background-color: white;
     cursor: pointer;
     font-size: 0.9rem;
-    min-width: 140px;
-    /* Consistent width for order */
+    color: var(--text-color);
+    min-width: 160px;
+    transition: all 0.2s ease;
+    appearance: none;
+    /* Quitar estilo nativo */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2364748b' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .filter-select:hover {
-    border-color: #bdc3c7;
+    border-color: #cbd5e1;
+    background-color: #f8fafc;
 }
 
+.filter-select:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+/* Botón de Icono */
 .btn-icon-only {
-    padding: 8px 12px;
-    border-radius: 50%;
+    padding: 12px;
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
+    background-color: white;
+    border: 1px solid #e2e8f0;
+    color: #64748b;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    height: 42px;
+    /* Igualar altura a inputs */
+    width: 42px;
+}
+
+.btn-icon-only:hover {
+    background-color: #f1f5f9;
+    color: var(--primary-color);
+    border-color: #cbd5e1;
+}
+
+.btn-icon-only:active {
+    transform: translateY(1px);
+    box-shadow: none;
 }
 
 @media (max-width: 768px) {

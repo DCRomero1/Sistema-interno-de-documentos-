@@ -12,12 +12,13 @@ router.get('/api/documents', isAuthenticated, documentController.getAllDocuments
 // Nota: El original no estaba protegido, ¿debería estarlo? Comúnmente el registro requiere auth.
 // La línea 408 original no tenía middleware.
 // Protegeremos esto para mantener la consistencia dado que la página register.html está protegida.
-router.post('/api/documents', isAuthenticated, documentController.createDocument);
+router.post('/api/documents', isAuthenticated, documentController.upload.single('pdfFile'), documentController.createDocument);
 
 router.post('/api/documents/update-location', documentController.updateLocation);
 
 // Ruta para subir PDF
 router.post('/api/documents/:id/upload', isAuthenticated, documentController.upload.single('pdfFile'), documentController.uploadPdf); // 'pdfFile' must match input name
+router.delete('/api/documents/:id/pdf', isAuthenticated, documentController.deletePdf);
 
 module.exports = router;
 

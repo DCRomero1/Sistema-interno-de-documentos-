@@ -197,12 +197,63 @@ function downloadGreeting() {
     });
 }
 
-// Share via WhatsApp
-function shareWhatsApp() {
+async function shareWhatsApp() {
+    const card = document.getElementById('captureCard');
     const name = document.getElementById('greetingName').textContent;
     const text = `🎉 *Feliz Cumpleaños a ${name}* 🎉\n\nEl I.E.S.T.P. "Francisco de Paula Gonzales Vigil" le desea un excelente día lleno de éxitos y prosperidad. 🎂✨`;
-    const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
-    window.open(url, '_blank');
+
+    // Show loading state
+    const btn = document.querySelector('button[onclick="shareWhatsApp()"]');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Copiando...';
+
+    try {
+        const canvas = await html2canvas(card);
+
+        // Convert to blob and copy to clipboard
+        canvas.toBlob(async (blob) => {
+            try {
+                // Try to write to clipboard
+                const item = new ClipboardItem({ 'image/png': blob });
+                await navigator.clipboard.write([item]);
+
+                Swal.fire({
+                    title: '¡Imagen Copiada!',
+                    text: 'La tarjeta se ha copiado al portapapeles. Ahora se abrirá WhatsApp, simplemente presiona "Ctrl + V" (Pegar) en el chat.',
+                    icon: 'success',
+                    confirmButtonText: 'Abrir WhatsApp'
+                }).then(() => {
+                    const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
+                    window.open(url, '_blank');
+                });
+
+            } catch (err) {
+                console.error('Clipboard failed:', err);
+                // Fallback: Download image
+                const link = document.createElement('a');
+                link.download = `Saludo_${name}.png`;
+                link.href = canvas.toDataURL();
+                link.click();
+
+                Swal.fire({
+                    title: 'Imagen Descargada',
+                    text: 'No pudimos copiar la imagen automáticamente (bloqueo del navegador). La imagen se ha descargado. Abre WhatsApp y adjúntala manualmenete.',
+                    icon: 'info',
+                    confirmButtonText: 'Abrir WhatsApp'
+                }).then(() => {
+                    const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
+                    window.open(url, '_blank');
+                });
+            }
+            // Restore button
+            btn.innerHTML = originalText;
+        });
+
+    } catch (error) {
+        console.error('Error sharing:', error);
+        btn.innerHTML = originalText;
+        alert('Error al generar la imagen');
+    }
 }
 
 // Share via Email

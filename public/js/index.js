@@ -162,7 +162,10 @@ function renderTable(documents) {
                         <i class="fa-solid fa-pen-to-square"></i>
                     </button>
                     ${doc.pdf_path ?
-                `<a href="${doc.pdf_path}" target="_blank" class="btn-icon" style="color: #e74c3c;" title="Ver PDF"><i class="fa-solid fa-file-pdf"></i></a>`
+                `<div style="display: flex; gap: 5px;">
+                    <a href="${doc.pdf_path}" target="_blank" class="btn-icon" style="color: #e74c3c;" title="Ver PDF"><i class="fa-solid fa-file-pdf"></i></a>
+                    <button class="btn-icon" onclick="deletePdf('${safeId}')" style="color: #c0392b;" title="Eliminar PDF"><i class="fa-solid fa-trash-can"></i></button>
+                 </div>`
                 :
                 `<button class="btn-icon" onclick="openUploadModal('${safeId}')" style="color: #3498db;" title="Subir PDF"><i class="fa-solid fa-cloud-arrow-up"></i></button>`
             }
@@ -193,7 +196,7 @@ async function submitUpload() {
     const file = fileInput.files[0];
 
     if (!file) {
-        alert('Por favor seleccione un archivo PDF');
+        Swal.fire('Error', 'Por favor seleccione un archivo PDF', 'warning');
         return;
     }
 
@@ -208,15 +211,57 @@ async function submitUpload() {
 
         const result = await response.json();
         if (result.success) {
-            alert('Archivo subido correctamente');
+            Swal.fire({
+                icon: 'success',
+                title: '¡Subido!',
+                text: 'Archivo subido correctamente',
+                timer: 1500,
+                showConfirmButton: false
+            });
             closeUploadModal();
             loadDocuments(); // Reload table to show View icon
         } else {
-            alert('Error al subir: ' + (result.message || result.error));
+            Swal.fire('Error', 'Error al subir: ' + (result.message || result.error), 'error');
         }
     } catch (error) {
         console.error('Error uploading:', error);
-        alert('Error de conexión');
+        Swal.fire('Error', 'Error de conexión', 'error');
+    }
+}
+
+async function deletePdf(docId) {
+    const result = await Swal.fire({
+        title: '¿Eliminar PDF?',
+        text: "Esta acción no se puede deshacer.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar'
+    });
+
+    if (result.isConfirmed) {
+        try {
+            const response = await fetch(`/api/documents/${docId}/pdf`, {
+                method: 'DELETE'
+            });
+
+            const data = await response.json();
+            if (response.ok && data.success) {
+                Swal.fire(
+                    '¡Eliminado!',
+                    'El archivo PDF ha sido eliminado.',
+                    'success'
+                );
+                loadDocuments(); // Reload table
+            } else {
+                Swal.fire('Error', data.error || 'No se pudo eliminar', 'error');
+            }
+        } catch (error) {
+            console.error(error);
+            Swal.fire('Error', 'Error de conexión', 'error');
+        }
     }
 }
 
@@ -249,7 +294,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         // Populate Area Select
-        filterArea.innerHTML = '<option value="">Todas las Áreas</option>';
+        filterArea.innerHTML = '<option value="">Áreas</option>';
         areas.forEach(a => {
             const opt = document.createElement('option');
             opt.value = a;
@@ -369,7 +414,12 @@ async function saveLocationUpdate() {
     }
 
     if (hasError) {
-        alert('Por favor, complete todos los campos marcados en rojo para actualizar.');
+        Swal.fire({
+            icon: 'error',
+            title: 'Campos incompletos',
+            text: 'Por favor, complete todos los campos marcados en rojo para actualizar.',
+            confirmButtonText: 'Aceptar'
+        });
         return;
     }
 
@@ -388,15 +438,21 @@ async function saveLocationUpdate() {
         });
 
         if (response.ok) {
-            alert('Ubicación actualizada correctamente');
+            Swal.fire({
+                icon: 'success',
+                title: '¡Actualizado!',
+                text: 'Ubicación actualizada correctamente',
+                timer: 1500,
+                showConfirmButton: false
+            });
             closeModal();
             loadDocuments(); // cargar tabla de datos 
         } else {
-            alert('Error al actualizar');
+            Swal.fire('Error', 'Error al actualizar', 'error');
         }
     } catch (error) {
         console.error(error);
-        alert('Error de conexión');
+        Swal.fire('Error', 'Error de conexión', 'error');
     }
 }
 

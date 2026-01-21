@@ -62,14 +62,6 @@ function updateTable(typeData) {
             <td style="text-align: center; font-weight: 700; color: #0f172a; padding-top: 15px; padding-bottom: 15px;">
                 ${item.count}
             </td>
-            <td style="width: 45%; vertical-align: middle; padding-top: 15px; padding-bottom: 15px;">
-                <div style="display: flex; align-items: center; width: 100%;">
-                    <div style="flex: 1; background-color: #e2e8f0; height: 10px; border-radius: 5px; overflow: hidden; margin-right: 15px;">
-                        <div style="width: ${item.percentage}%; background-color: var(--primary-color); height: 100%; border-radius: 5px;"></div>
-                    </div>
-                    <span style="font-weight: 600; color: #64748b; font-size: 0.9rem; min-width: 40px; text-align: right;">${item.percentage}%</span>
-                </div>
-            </td>
         `;
         tbody.appendChild(row);
     });
