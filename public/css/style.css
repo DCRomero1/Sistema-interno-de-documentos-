@@ -1103,7 +1103,7 @@ body {
 
 /* Insignias de Estado - Píldoras Modernas */
 .badge {
-    padding: 6px 12px;
+    padding: 4px 8px;
     border-radius: 9999px;
     /* Píldora completa */
     font-size: 0.75rem;

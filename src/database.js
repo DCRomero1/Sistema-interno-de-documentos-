@@ -47,6 +47,15 @@ function initializeTables() {
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )`, (err) => {
         if (err) console.error('Error creating workers table:', err);
+        else {
+            // Migration: Add email and phone if missing
+            db.run(`ALTER TABLE workers ADD COLUMN email TEXT`, (err) => {
+                // Ignore if exists
+            });
+            db.run(`ALTER TABLE workers ADD COLUMN phone TEXT`, (err) => {
+                // Ignore if exists
+            });
+        }
     });
 
     // Tabla de Documentos

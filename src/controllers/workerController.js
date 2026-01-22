@@ -13,9 +13,9 @@ exports.getAllWorkers = (req, res) => {
 };
 
 exports.createWorker = (req, res) => {
-    const { fullName, dni, birthDate, position } = req.body;
-    db.run(`INSERT INTO workers (fullName, dni, birthDate, position) VALUES (?, ?, ?, ?)`,
-        [fullName, dni, birthDate, position],
+    const { fullName, dni, birthDate, position, email, phone } = req.body;
+    db.run(`INSERT INTO workers (fullName, dni, birthDate, position, email, phone) VALUES (?, ?, ?, ?, ?, ?)`,
+        [fullName, dni, birthDate, position, email, phone],
         function (err) {
             if (err) return res.status(400).json({ error: err.message });
             res.json({ id: this.lastID, success: true });
@@ -27,29 +27,66 @@ exports.getUpcomingBirthdays = (req, res) => {
     db.all('SELECT fullName, birthDate, position FROM workers', [], (err, rows) => {
         if (err) return res.status(500).json({ error: err.message });
 
-        const today = new Date();
-        const currentYear = today.getFullYear();
-        const currentMonth = today.getMonth();
-        const currentDay = today.getDate();
+        // Normalize "Today" to start of day (00:00:00) to avoid time issues
+        const now = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
         const upcoming = rows.map(w => {
-            const dob = new Date(w.birthDate);
-            let nextBirthday = new Date(currentYear, dob.getMonth(), dob.getDate() + 1);
+            if (!w.birthDate) return null;
 
-            if (nextBirthday < new Date(currentYear, currentMonth, currentDay)) {
-                nextBirthday.setFullYear(currentYear + 1);
+            // Parse birthdate appropriately (Assuming YYYY-MM-DD string from SQLite)
+            // Note: "2000-01-22" parsed as UTC might be previous day in local time depending on timezone.
+            // Better to parse manually to ensure local date.
+            const parts = w.birthDate.split('-');
+            // parts[0] = YYYY, parts[1] = MM, parts[2] = DD
+            const birthMonth = parseInt(parts[1], 10) - 1;
+            const birthDay = parseInt(parts[2], 10);
+
+            let nextBirthday = new Date(today.getFullYear(), birthMonth, birthDay);
+
+            // If birthday has passed this year (strictly less), move to next year.
+            // If it is EQUAL (today), it stays this year.
+            if (nextBirthday < today) {
+                nextBirthday.setFullYear(today.getFullYear() + 1);
             }
 
             w.nextBirthday = nextBirthday;
             w.daysUntil = Math.ceil((nextBirthday - today) / (1000 * 60 * 60 * 24));
 
-            // Formatear fecha legible
-            w.birthDateStr = nextBirthday.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
+            // Format for display
+            const day = nextBirthday.getDate();
+            const monthNames = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
+            w.birthDateStr = `${day} ${monthNames[nextBirthday.getMonth()]}`;
+
             return w;
         })
+            .filter(w => w !== null)
             .sort((a, b) => a.daysUntil - b.daysUntil)
-            .slice(0, 5); // Obtener los 5 próximos
+            .slice(0, 5);
 
         res.json(upcoming);
+    });
+};
+
+exports.updateWorker = (req, res) => {
+    const { id } = req.params;
+    const { fullName, dni, birthDate, position, email, phone } = req.body;
+
+    // Only update fields that are present (simple approach, or update all)
+    // Here we update all for simplicity as the form sends all
+    const sql = `UPDATE workers SET fullName = ?, dni = ?, birthDate = ?, position = ?, email = ?, phone = ? WHERE id = ?`;
+
+    db.run(sql, [fullName, dni, birthDate, position, email, phone, id], function (err) {
+        if (err) return res.status(400).json({ error: err.message });
+        if (this.changes === 0) return res.status(404).json({ error: 'Trabajador no encontrado' });
+        res.json({ success: true, changes: this.changes });
+    });
+};
+
+exports.deleteWorker = (req, res) => {
+    const { id } = req.params;
+    db.run('DELETE FROM workers WHERE id = ?', id, function (err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ success: true, changes: this.changes });
     });
 };
