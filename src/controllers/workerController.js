@@ -13,11 +13,25 @@ exports.getAllWorkers = (req, res) => {
 };
 
 exports.createWorker = (req, res) => {
-    const { fullName, dni, birthDate, position, email, phone } = req.body;
+    let { fullName, dni, birthDate, position, email, phone } = req.body;
+
+    // Validation
+    if (!fullName || !dni) {
+        return res.status(400).json({ error: 'El nombre y el DNI son campos obligatorios.' });
+    }
+
+    // Force Uppercase for Name
+    fullName = fullName.toUpperCase();
+
     db.run(`INSERT INTO workers (fullName, dni, birthDate, position, email, phone) VALUES (?, ?, ?, ?, ?, ?)`,
         [fullName, dni, birthDate, position, email, phone],
         function (err) {
-            if (err) return res.status(400).json({ error: err.message });
+            if (err) {
+                if (err.message.includes('UNIQUE constraint failed')) {
+                    return res.status(400).json({ error: 'El DNI ya se encuentra registrado en el sistema.' });
+                }
+                return res.status(400).json({ error: 'Error al registrar el trabajador.' });
+            }
             res.json({ id: this.lastID, success: true });
         }
     );
@@ -70,14 +84,24 @@ exports.getUpcomingBirthdays = (req, res) => {
 
 exports.updateWorker = (req, res) => {
     const { id } = req.params;
-    const { fullName, dni, birthDate, position, email, phone } = req.body;
+    let { fullName, dni, birthDate, position, email, phone } = req.body;
 
-    // Only update fields that are present (simple approach, or update all)
-    // Here we update all for simplicity as the form sends all
+    if (!fullName || !dni) {
+        return res.status(400).json({ error: 'El nombre y el DNI son campos obligatorios.' });
+    }
+
+    // Force Uppercase for Name
+    fullName = fullName.toUpperCase();
+
     const sql = `UPDATE workers SET fullName = ?, dni = ?, birthDate = ?, position = ?, email = ?, phone = ? WHERE id = ?`;
 
     db.run(sql, [fullName, dni, birthDate, position, email, phone, id], function (err) {
-        if (err) return res.status(400).json({ error: err.message });
+        if (err) {
+            if (err.message.includes('UNIQUE constraint failed')) {
+                return res.status(400).json({ error: 'El DNI ya se encuentra registrado en el sistema.' });
+            }
+            return res.status(400).json({ error: 'Error al actualizar el trabajador.' });
+        }
         if (this.changes === 0) return res.status(404).json({ error: 'Trabajador no encontrado' });
         res.json({ success: true, changes: this.changes });
     });

@@ -586,6 +586,7 @@ body {
     text-align: left;
 }
 
+
 /* Efecto Hover en Fila */
 .registry-table tbody tr {
     transition: all 0.2s ease;
@@ -795,6 +796,111 @@ body {
 .input-error {
     border: 1px solid #e74c3c !important;
     background-color: #fdf2f2;
+}
+
+/* --- Themed Modal Styles (Global) --- */
+.modal-content-themed {
+    background-color: #f6f6f6;
+    background-image: radial-gradient(#e0e0e0 1px, transparent 1px);
+    background-size: 10px 10px;
+    /* Dot texture simulation */
+    border: none;
+    border-radius: 4px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    padding: 40px !important;
+    max-width: 500px;
+    position: relative;
+}
+
+.themed-header-title {
+    font-family: 'Arial', sans-serif;
+    /* Fallback */
+    font-weight: 900;
+    font-style: italic;
+    text-transform: uppercase;
+    text-align: center;
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    color: #1a1a1a;
+    letter-spacing: 1px;
+}
+
+.themed-label {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #333;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.themed-input {
+    width: 100%;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 2px;
+    background: white;
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+}
+
+.themed-input:focus {
+    outline: none;
+    border-color: #cbd5e1;
+}
+
+.themed-btn-primary {
+    background: #8b5cf6;
+    /* Purple */
+    background: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%);
+    color: white;
+    border: none;
+    padding: 12px 40px;
+    font-size: 1.2rem;
+    font-weight: 800;
+    font-style: italic;
+    text-transform: uppercase;
+    cursor: pointer;
+    transform: skewX(-10deg);
+    /* Slanted Look */
+    display: block;
+    margin: 20px auto 0;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+}
+
+.themed-btn-primary span {
+    display: block;
+    transform: skewX(10deg);
+    /* Un-skew text */
+}
+
+.themed-btn-primary:hover {
+    transform: skewX(-10deg) scale(1.05);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.themed-close {
+    position: absolute;
+    top: -15px;
+    right: -15px;
+    background: #666;
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-weight: bold;
+    border: 2px solid white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.themed-close:hover {
+    background: #333;
 }
 
 .form-actions {

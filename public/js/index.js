@@ -411,10 +411,17 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    if (filterArea) filterArea.addEventListener('change', applyFilters);
     if (filterStatus) filterStatus.addEventListener('change', applyFilters);
-
     if (searchInput) searchInput.addEventListener('input', applyFilters);
+
+    // Escape listener
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.style.display = 'none';
+            });
+        }
+    });
 });
 
 function openModal(docId, fecha, ubicacion, cargo) {

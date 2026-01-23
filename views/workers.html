@@ -315,6 +315,111 @@
         .modal-body {
             padding: 20px;
         }
+
+        /* Themed Modal Styles */
+        .modal-content-themed {
+            background-color: #f6f6f6;
+            background-image: radial-gradient(#e0e0e0 1px, transparent 1px);
+            background-size: 10px 10px;
+            /* Dot texture simulation */
+            border: none;
+            border-radius: 4px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            padding: 40px !important;
+            max-width: 500px;
+            position: relative;
+        }
+
+        .themed-header-title {
+            font-family: 'Arial', sans-serif;
+            /* Fallback, maybe use a Google Font later if strictly needed */
+            font-weight: 900;
+            font-style: italic;
+            text-transform: uppercase;
+            text-align: center;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #1a1a1a;
+            letter-spacing: 1px;
+        }
+
+        .themed-label {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #333;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .themed-input {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 2px;
+            background: white;
+            font-size: 1rem;
+            color: #555;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+        }
+
+        .themed-input:focus {
+            outline: none;
+            border-color: #cbd5e1;
+        }
+
+        .themed-btn-primary {
+            background: #ff9900;
+            /* Orange */
+            background: linear-gradient(135deg, #ffaf38 0%, #ff9900 100%);
+            color: white;
+            border: none;
+            padding: 12px 40px;
+            font-size: 1.2rem;
+            font-weight: 800;
+            font-style: italic;
+            text-transform: uppercase;
+            cursor: pointer;
+            transform: skewX(-10deg);
+            /* Slanted Look */
+            display: block;
+            margin: 20px auto 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+
+        .themed-btn-primary span {
+            display: block;
+            transform: skewX(10deg);
+            /* Un-skew text */
+        }
+
+        .themed-btn-primary:hover {
+            transform: skewX(-10deg) scale(1.05);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .themed-close {
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            background: #666;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-weight: bold;
+            border: 2px solid white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .themed-close:hover {
+            background: #333;
+        }
     </style>
 </head>
 
@@ -533,50 +638,54 @@
         </main>
     </div>
 
-    <!-- Modal for Adding Worker -->
+    <!-- Modal for Adding Worker (Themed) -->
     <div id="workerModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3><i class="fa-solid fa-user-plus"></i> Registrar Trabajador</h3>
-                <span class="close-modal" onclick="closeWorkerModal()">&times;</span>
+        <div class="modal-content modal-content-themed">
+            <div class="themed-close" onclick="closeWorkerModal()">&times;</div>
+
+            <div class="themed-header-title">
+                <i class="fa-solid fa-user-plus" style="margin-right: 8px;"></i> REGISTRAR TRABAJADOR
             </div>
-            <div class="modal-body">
-                <form id="workerForm">
-                    <div class="form-group">
-                        <label class="form-label">Nombre Completo</label>
-                        <input type="text" class="form-input" placeholder="Ej. Juan Perez">
+
+            <form id="workerForm">
+                <div class="form-group">
+                    <label class="themed-label">Nombre Completo <span style="color:red">*</span></label>
+                    <input type="text" class="themed-input" placeholder="Ej. Juan Perez"
+                        style="text-transform: uppercase;">
+                </div>
+                <div class="form-group">
+                    <label class="themed-label">DNI <span style="color:red">*</span></label>
+                    <input type="text" class="themed-input" placeholder="8 dígitos">
+                </div>
+
+                <div class="form-group">
+                    <label class="themed-label">Correo Institucional</label>
+                    <input type="email" class="themed-input" placeholder="usuario@institucion.edu.pe">
+                </div>
+                <div class="form-group">
+                    <label class="themed-label">Número de Celular</label>
+                    <input type="tel" class="themed-input" placeholder="999 999 999">
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div>
+                        <label class="themed-label">Fecha de Nacimiento</label>
+                        <input type="date" class="themed-input">
                     </div>
-                    <div class="form-group">
-                        <label class="form-label">DNI</label>
-                        <input type="text" class="form-input" placeholder="8 dígitos">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Correo Institucional</label>
-                        <input type="email" class="form-input" placeholder="usuario@institucion.edu.pe">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Número de Celular</label>
-                        <input type="tel" class="form-input" placeholder="999 999 999">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Fecha de Nacimiento</label>
-                        <input type="date" class="form-input">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Cargo / Puesto</label>
-                        <select class="form-select">
+                    <div>
+                        <label class="themed-label">Cargo / Puesto</label>
+                        <select class="themed-input form-select">
+                            <!-- kept form-select for any JS reliance, but styled with themed-input -->
                             <option>Docente</option>
                             <option>Administrativo</option>
-                            <option>Dirección</option>
-                            <option>Servicios</option>
                         </select>
                     </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="closeWorkerModal()">Cancelar</button>
-                <button class="btn btn-primary" onclick="saveWorker()">Guardar</button>
-            </div>
+                </div>
+
+                <button type="button" class="themed-btn-primary" onclick="saveWorker()">
+                    <span>GUARDAR</span>
+                </button>
+            </form>
         </div>
     </div>
 
@@ -664,7 +773,7 @@
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <!-- Common JS for Sidebar -->
     <script src="/js/common.js?v=2"></script>
-    <script src="/js/workers.js"></script>
+    <script src="/js/workers.js?v=3"></script>
     <script>
         // Inline Modal Logic Helpers
         // openWorkerModal moved to workers.js to handle Edit state

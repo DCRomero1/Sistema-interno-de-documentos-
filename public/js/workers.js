@@ -8,6 +8,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // Search and Filter Listeners
     document.getElementById('searchInput').addEventListener('input', filterWorkers);
     document.getElementById('deptFilter').addEventListener('change', filterWorkers);
+
+    // Escape key to close modals
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.style.display = 'none';
+            });
+        }
+    });
 });
 
 let allWorkers = []; // Store for filtering
@@ -398,12 +407,19 @@ function changePage(page) {
     updateDisplay();
 }
 
+function normalizeText(text) {
+    return text.toString().normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+}
+
 function filterWorkers() {
-    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    const searchTerm = normalizeText(document.getElementById('searchInput').value);
     const deptFilter = document.getElementById('deptFilter').value;
 
     currentFiltered = allWorkers.filter(w => {
-        const matchesSearch = w.fullName.toLowerCase().includes(searchTerm) || w.dni.includes(searchTerm);
+        const normalizedName = normalizeText(w.fullName);
+        const normalizedDni = normalizeText(w.dni);
+
+        const matchesSearch = normalizedName.includes(searchTerm) || normalizedDni.includes(searchTerm);
         const matchesDept = deptFilter === 'all' || w.position === deptFilter;
         return matchesSearch && matchesDept;
     });
@@ -510,8 +526,16 @@ async function deleteWorker(id) {
 
 function openWorkerModal() {
     editingWorkerId = null;
-    document.getElementById('workerForm').reset();
-    document.querySelector('#workerModal h3').innerHTML = '<i class="fa-solid fa-user-plus"></i> Registrar Trabajador';
+    const form = document.getElementById('workerForm');
+    form.reset();
+
+    // Force Uppercase on Name Input
+    const nameInput = form.querySelectorAll('input')[0];
+    nameInput.oninput = function () {
+        this.value = this.value.toUpperCase();
+    };
+
+    document.querySelector('.themed-header-title').innerHTML = '<i class="fa-solid fa-user-plus" style="margin-right: 8px;"></i> REGISTRAR TRABAJADOR';
     document.getElementById('workerModal').style.display = 'block';
 }
 
@@ -536,17 +560,17 @@ function openEditModal(id) {
     inputs[4].value = worker.birthDate || '';
     inputs[5].value = worker.position || 'Docente';
 
-    document.querySelector('#workerModal h3').innerHTML = '<i class="fa-solid fa-pen-to-square"></i> Editar Trabajador';
+    document.querySelector('.themed-header-title').innerHTML = '<i class="fa-solid fa-pen-to-square" style="margin-right: 8px;"></i> EDITAR TRABAJADOR';
     document.getElementById('workerModal').style.display = 'block';
 }
 
 async function saveWorker() {
     const form = document.getElementById('workerForm');
     const inputs = form.querySelectorAll('input, select');
-    // Inputs: Name, DNI, Email, Phone, BirthDate, Position
+    // Inputs MUST be in this order: Name, DNI, Email, Phone, BirthDate, Position
 
     const data = {
-        fullName: inputs[0].value,
+        fullName: inputs[0].value.toUpperCase(), // Force Uppercase
         dni: inputs[1].value,
         email: inputs[2].value,
         phone: inputs[3].value,

@@ -117,7 +117,7 @@
                                     <th style="width: 80px;">Tipo</th>
                                     <th style="width: 150px;">Remitente</th>
                                     <th style="width: 150px;">Área Origen</th>
-                                    <th>Concepto</th>
+                                    <th style="min-width: 300px;">Concepto</th>
                                     <th style="width: 90px;">Despacho</th>
                                     <th style="width: 150px;">Área de derivacion</th>
                                     <th style="width: 60px;">Folios</th>
@@ -136,122 +136,122 @@
         </main>
     </div>
 
-    <!-- Modal para actulizar el documento -->
+    <!-- Modal para actualizar el documento (Themed) -->
     <div id="updateModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3><i class="fa-solid fa-pen-to-square"></i> Actualizar Documento</h3>
-                <span class="close-modal" onclick="closeModal()">&times;</span>
+        <div class="modal-content modal-content-themed">
+            <div class="themed-close" onclick="closeModal()">&times;</div>
+
+            <div class="themed-header-title">
+                <i class="fa-solid fa-pen-to-square" style="margin-right: 8px;"></i> ACTUALIZAR DOCUMENTO
             </div>
-            <div class="modal-body">
-                <form id="updateForm">
-                    <input type="hidden" id="modalDocId">
 
-                    <div class="form-group">
-                        <label class="form-label">Fecha de Despacho</label>
-                        <input type="date" id="modalFechaDespacho" class="form-input">
-                    </div>
+            <form id="updateForm">
+                <input type="hidden" id="modalDocId">
 
-                    <div class="form-group">
-                        <label class="form-label">Cargos (Persona)</label>
-                        <select id="modalCargo" class="form-select">
-                            <option value="" disabled selected>Seleccione cargo...</option>
-                            <option>Dirección General</option>
-                            <option>Consejo Asesor</option>
+                <div class="form-group">
+                    <label class="themed-label">Fecha de Despacho</label>
+                    <input type="date" id="modalFechaDespacho" class="themed-input">
+                </div>
 
-                            <optgroup label="Area de Administración">
-                                <option>Especialista administrativo</option>
-                                <option>Contador</option>
-                                <option>Recursos Humanos</option>
-                                <option>Administrador</option>
-                                <option>Abastecimiento</option>
-                                <option>Almacén</option>
-                                <option>Patrimonio</option>
-                                <option>Producción</option>
-                                <option>Técnico de campo</option>
-                                <option>Especialista en comunicaciones y software</option>
-                                <option>Especialista en Hardware</option>
-                                <option>Técnico Administrativo</option>
-                                <option>Técnico de biblioteca</option>
-                                <option>Auxiliar de biblioteca</option>
-                                <option>Mesa de partes</option>
-                                <option>Asistente administrativo</option>
-                                <option>Seguridad y vigilancia</option>
-                                <option>Limpieza y mantenimiento</option>
-                                <option>Caja</option>
-                                <option>Tesorero</option>
-                                <option>Secretaria</option>
-                                <option>Oficinista II</option>
-                            </optgroup>
+                <div class="form-group">
+                    <label class="themed-label">Cargos (Persona)</label>
+                    <select id="modalCargo" class="themed-input form-select">
+                        <option value="" disabled selected>Seleccione cargo...</option>
+                        <option>Dirección General</option>
+                        <option>Consejo Asesor</option>
 
-                            <option>Area de Calidad</option>
+                        <optgroup label="Area de Administración">
+                            <option>Especialista administrativo</option>
+                            <option>Contador</option>
+                            <option>Recursos Humanos</option>
+                            <option>Administrador</option>
+                            <option>Abastecimiento</option>
+                            <option>Almacén</option>
+                            <option>Patrimonio</option>
+                            <option>Producción</option>
+                            <option>Técnico de campo</option>
+                            <option>Especialista en comunicaciones y software</option>
+                            <option>Especialista en Hardware</option>
+                            <option>Técnico Administrativo</option>
+                            <option>Técnico de biblioteca</option>
+                            <option>Auxiliar de biblioteca</option>
+                            <option>Mesa de partes</option>
+                            <option>Asistente administrativo</option>
+                            <option>Seguridad y vigilancia</option>
+                            <option>Limpieza y mantenimiento</option>
+                            <option>Caja</option>
+                            <option>Tesorero</option>
+                            <option>Secretaria</option>
+                            <option>Oficinista II</option>
+                        </optgroup>
 
-                            <optgroup label="Secretaría Académica">
-                                <option>Programador de Sistemas PAD</option>
-                            </optgroup>
+                        <option>Area de Calidad</option>
 
-                            <optgroup label="Unidad Académica">
-                                <option>Coordinadores de Área Académica de los programas de estudio</option>
-                                <option>Docente extraordiario</option>
-                                <option>Docente Altamente especializado</option>
-                                <option>Docente Regular de Competencias especificas</option>
-                                <option>Docente Regular de Competencias para la Empleabilidad</option>
-                            </optgroup>
+                        <optgroup label="Secretaría Académica">
+                            <option>Programador de Sistemas PAD</option>
+                        </optgroup>
 
-                            <option>Unidad de Formación Continua</option>
+                        <optgroup label="Unidad Académica">
+                            <option>Coordinadores de Área Académica de los programas de estudio</option>
+                            <option>Docente extraordiario</option>
+                            <option>Docente Altamente especializado</option>
+                            <option>Docente Regular de Competencias especificas</option>
+                            <option>Docente Regular de Competencias para la Empleabilidad</option>
+                        </optgroup>
 
-                            <optgroup label="Unidad de Bienestar y Empleabilidad">
-                                <option>Servicio Médico(Tópico)</option>
-                                <option>Servicio de Bienestar(Consejeria)</option>
-                                <option>Servicio psicopedagógico</option>
-                                <option>Servicio de Empleabilidad</option>
-                                <option>Servicio de Asistente Social</option>
-                            </optgroup>
+                        <option>Unidad de Formación Continua</option>
 
-                            <optgroup label="Unidad de investigación">
-                                <option>Fabricacion Digital</option>
-                            </optgroup>
-                        </select>
-                    </div>
+                        <optgroup label="Unidad de Bienestar y Empleabilidad">
+                            <option>Servicio Médico(Tópico)</option>
+                            <option>Servicio de Bienestar(Consejeria)</option>
+                            <option>Servicio psicopedagógico</option>
+                            <option>Servicio de Empleabilidad</option>
+                            <option>Servicio de Asistente Social</option>
+                        </optgroup>
 
-                    <div class="form-group">
-                        <label class="form-label">Área de Derivación (Destino)</label>
-                        <select class="form-select" id="modalNewLocation">
-                            <option value="" selected disabled>Seleccione nueva ubicación...</option>
-                            <option>Consejo Asesor</option>
-                            <option>Area de Administración</option>
-                            <option>Area de Calidad</option>
-                            <option>Secretaría Académica</option>
-                            <option>Unidad Académica</option>
-                            <option>Unidad de Formación Continua</option>
-                            <option>Unidad de Bienestar y Empleabilidad</option>
-                            <option>Unidad de investigación</option>
-                        </select>
-                    </div>
+                        <optgroup label="Unidad de investigación">
+                            <option>Fabricacion Digital</option>
+                        </optgroup>
+                    </select>
+                </div>
 
-                    <div class="form-group">
-                        <label class="form-label">Observaciones</label>
-                        <textarea id="modalObs" class="form-textarea" rows="2"
-                            placeholder="Ingrese nuevas observaciones . . ."></textarea>
-                    </div>
+                <div class="form-group">
+                    <label class="themed-label">Área de Derivación (Destino)</label>
+                    <select class="themed-input form-select" id="modalNewLocation">
+                        <option value="" selected disabled>Seleccione nueva ubicación...</option>
+                        <option>Consejo Asesor</option>
+                        <option>Area de Administración</option>
+                        <option>Area de Calidad</option>
+                        <option>Secretaría Académica</option>
+                        <option>Unidad Académica</option>
+                        <option>Unidad de Formación Continua</option>
+                        <option>Unidad de Bienestar y Empleabilidad</option>
+                        <option>Unidad de investigación</option>
+                    </select>
+                </div>
 
-                    <div class="form-group"
-                        style="background-color: #e8f5e9; padding: 10px; border-radius: 4px; border: 1px solid #c8e6c9;">
-                        <label
-                            style="display: flex; align-items: center; gap: 10px; cursor: pointer; color: #2e7d32; font-weight: 600;">
-                            <input type="checkbox" id="modalFinalize" style="width: 18px; height: 18px;">
-                            Archivar / Finalizar Documento
-                        </label>
-                        <small style="display: block; margin-top: 5px; color: #666; margin-left: 28px;">
-                            Marque esto si el trámite ha concluido. El estado cambiará a "Finalizado".
-                        </small>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
-                <button class="btn btn-primary" onclick="saveLocationUpdate()">Guardar Cambios</button>
-            </div>
+                <div class="form-group">
+                    <label class="themed-label">Observaciones</label>
+                    <textarea id="modalObs" class="themed-input form-textarea" rows="2"
+                        placeholder="Ingrese nuevas observaciones . . ."></textarea>
+                </div>
+
+                <div class="form-group"
+                    style="background-color: #e8f5e9; padding: 10px; border-radius: 4px; border: 1px solid #c8e6c9;">
+                    <label
+                        style="display: flex; align-items: center; gap: 10px; cursor: pointer; color: #2e7d32; font-weight: 600;">
+                        <input type="checkbox" id="modalFinalize" style="width: 18px; height: 18px;">
+                        Archivar / Finalizar Documento
+                    </label>
+                    <small style="display: block; margin-top: 5px; color: #666; margin-left: 28px;">
+                        Marque esto si el trámite ha concluido. El estado cambiará a "Finalizado".
+                    </small>
+                </div>
+
+                <button type="button" class="themed-btn-primary" onclick="saveLocationUpdate()">
+                    <span>GUARDAR CAMBIOS</span>
+                </button>
+            </form>
         </div>
     </div>
 
