@@ -80,7 +80,10 @@ async function loadWorkers() {
             return nextA - nextB;
         });
 
-        renderWorkers(allWorkers);
+        // Initialize pagination
+        currentFiltered = allWorkers;
+        updateDisplay();
+        // renderWorkers(allWorkers); // Removed to enforce pagination on load
         updateStats(allWorkers);
 
     } catch (error) {
@@ -331,7 +334,7 @@ function renderWorkers(workers) {
                     <i class="fa-solid fa-wand-magic-sparkles"></i> Saludar
                 </button>
                 
-                <button class="action-btn" onclick="window.location.href='mailto:${escapeHtml(worker.email)}'" title="Enviar Correo">
+                <button class="action-btn" onclick="sendBirthdayEmail(${worker.id})" title="Enviar Correo con Tarjeta">
                     <i class="fa-regular fa-envelope"></i>
                 </button>
 
@@ -483,6 +486,68 @@ function downloadGreeting() {
 
 
 
+
+
+async function sendBirthdayEmail(workerId) {
+    const worker = allWorkers.find(w => w.id === workerId);
+    if (!worker) return;
+
+    // 1. Setup the Card
+    openGreetingModal(worker.fullName);
+
+    // Slight delay to ensure rendering
+    await new Promise(r => setTimeout(r, 500));
+
+    const card = document.getElementById('captureCard');
+
+    try {
+        const canvas = await html2canvas(card, { scale: 2, backgroundColor: null });
+
+        // Convert to blob
+        canvas.toBlob(async (blob) => {
+            if (!blob) {
+                console.error('Canvas is empty');
+                return;
+            }
+
+            try {
+                // Copy to clipboard
+                await navigator.clipboard.write([
+                    new ClipboardItem({
+                        [blob.type]: blob
+                    })
+                ]);
+
+                // Notify User
+                Swal.fire({
+                    title: '¡Tarjeta Copiada!',
+                    html: 'La tarjeta de cumpleaños ha sido copiada al portapapeles.<br><br><b>Presiona Ctrl + V</b> en el cuerpo del correo para pegarla.',
+                    icon: 'success',
+                    timer: 4000,
+                    showConfirmButton: false
+                });
+
+                // Open Gmail
+                setTimeout(() => {
+                    window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${escapeHtml(worker.email)}&su=Saludos%20institucionales%20por%20su%20cumplea%C3%B1os`, '_blank');
+                    closeGreetingModal();
+                }, 1500);
+
+            } catch (err) {
+                console.error('Failed to copy: ', err);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error al copiar',
+                    text: 'No se pudo copiar la imagen automáticamente (Permiso denegado o no soportado).',
+                    showConfirmButton: true
+                });
+            }
+        });
+
+    } catch (error) {
+        console.error('Html2Canvas Error:', error);
+    }
+}
 
 async function deleteWorker(id) {
     const result = await Swal.fire({

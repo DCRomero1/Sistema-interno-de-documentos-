@@ -46,7 +46,6 @@ function toggleUserDropdown(event) {
 }
 
 // Close dropdown when clicking outside
-// Close dropdown when clicking outside
 window.addEventListener('click', function (event) {
     const dropdown = document.getElementById('userDropdown');
     const userInfo = document.querySelector('.user-info');
@@ -55,6 +54,16 @@ window.addEventListener('click', function (event) {
         if (userInfo && !userInfo.contains(event.target)) {
             dropdown.classList.remove('show');
         }
+    }
+});
+
+// Clear session storage on logout
+document.addEventListener('DOMContentLoaded', () => {
+    const logoutLink = document.querySelector('.logout-link');
+    if (logoutLink) {
+        logoutLink.addEventListener('click', () => {
+            sessionStorage.removeItem('birthdayShown');
+        });
     }
 });
 
