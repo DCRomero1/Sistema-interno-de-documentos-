@@ -476,7 +476,7 @@ function closeGreetingModal() {
 
 function downloadGreeting() {
     const card = document.getElementById('captureCard');
-    html2canvas(card).then(canvas => {
+    html2canvas(card, { useCORS: true }).then(canvas => {
         const link = document.createElement('a');
         link.download = 'Saludo_' + document.getElementById('greetingName').textContent + '.png';
         link.href = canvas.toDataURL();
@@ -501,51 +501,74 @@ async function sendBirthdayEmail(workerId) {
     const card = document.getElementById('captureCard');
 
     try {
-        const canvas = await html2canvas(card, { scale: 2, backgroundColor: null });
+        console.log('Generating canvas...');
+        // Removed allowTaint:true to prevent security blocking
+        const canvas = await html2canvas(card, {
+            scale: 2,
+            backgroundColor: null,
+            useCORS: true
+        });
 
         // Convert to blob
         canvas.toBlob(async (blob) => {
             if (!blob) {
-                console.error('Canvas is empty');
+                console.error('Canvas returned empty blob');
+                Swal.fire('Error', 'No se pudo generar la imagen.', 'error');
+                closeGreetingModal();
                 return;
             }
 
+            // Try to Copy to Clipboard
             try {
-                // Copy to clipboard
                 await navigator.clipboard.write([
-                    new ClipboardItem({
-                        [blob.type]: blob
-                    })
+                    new ClipboardItem({ [blob.type]: blob })
                 ]);
 
-                // Notify User
                 Swal.fire({
                     title: '¡Tarjeta Copiada!',
-                    html: 'La tarjeta de cumpleaños ha sido copiada al portapapeles.<br><br><b>Presiona Ctrl + V</b> en el cuerpo del correo para pegarla.',
+                    html: 'Imagen copiada.<br>Se abrirá tu correo predeterminado.',
                     icon: 'success',
-                    timer: 4000,
+                    timer: 3000,
                     showConfirmButton: false
                 });
-
-                // Open Gmail
-                setTimeout(() => {
-                    window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${escapeHtml(worker.email)}&su=Saludos%20institucionales%20por%20su%20cumplea%C3%B1os`, '_blank');
-                    closeGreetingModal();
-                }, 1500);
-
             } catch (err) {
-                console.error('Failed to copy: ', err);
+                console.warn('Clipboard write failed:', err);
                 Swal.fire({
-                    icon: 'error',
-                    title: 'Error al copiar',
-                    text: 'No se pudo copiar la imagen automáticamente (Permiso denegado o no soportado).',
-                    showConfirmButton: true
+                    icon: 'warning',
+                    title: 'Imagen no copiada',
+                    text: 'Usa "Descargar Tarjeta" si la necesitas.',
+                    timer: 3000,
+                    showConfirmButton: false
                 });
             }
+
+            // 2. Open Email Client
+            // Check if user likely has Gmail (could be inferred or just ask, but here we default to mailto for broad support)
+            // Or provide both options? For now, the user mentioned success with Google accounts, so we can stick to Gmail 
+            // BUT the specific error "descarga archivo corrupto" when NOT logged in suggests the 'window.open' failed or behaved oddly.
+
+            // Let's use a standard mailto for SAFETY. This works for Outlook, Thunderbird, and System Default.
+            const subject = encodeURIComponent("Saludos institucionales por su cumpleaños");
+            const body = encodeURIComponent("Estimado(a) " + worker.fullName + ",\n\nReciba un cordial saludo...\n(Pegue la tarjeta aquí con Ctrl+V)");
+
+            // Allow user to choose or just default to Gmail web if they insist, but standard mailto is safer for "Outlook" users.
+            // Given the user wants "Gmail defaults", we keep the Gmail link but maybe handle the "not logged in" case better?
+            // Actually, the user said "when I open with a non-Google account it happens". 
+            // So let's provide a Mailto fallback or just switch to Mailto.
+
+            const gmailLink = `https://mail.google.com/mail/?view=cm&fs=1&to=${escapeHtml(worker.email)}&su=${subject}`;
+
+            // Open immediately
+            setTimeout(() => {
+                window.open(gmailLink, '_blank');
+                closeGreetingModal();
+            }, 1000);
+
         });
 
     } catch (error) {
         console.error('Html2Canvas Error:', error);
+        closeGreetingModal();
     }
 }
 
