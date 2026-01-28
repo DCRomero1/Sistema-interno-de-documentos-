@@ -3,6 +3,10 @@ exports.isAuthenticated = (req, res, next) => {
     if (req.session.user) {
         return next();
     }
+    // Check if it's an API call
+    if (req.path.startsWith('/api') || req.headers.accept?.includes('json')) {
+        return res.status(401).json({ error: 'Sesión expirada o no autorizado' });
+    }
     res.redirect('/login');
 };
 

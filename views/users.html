@@ -300,6 +300,33 @@
         </div>
     </div>
 
+    <!-- Modal Reset Password -->
+    <div id="resetPassModal" class="modal">
+        <div class="modal-content" style="max-width: 400px;">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-key"></i> Cambiar Contraseña</h3>
+                <span class="close-modal" onclick="closeResetPassModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="resetPassForm" onsubmit="event.preventDefault(); submitResetPass();">
+                    <input type="hidden" id="resetUserId">
+                    <p id="resetUserName" style="margin-bottom: 20px; color: #64748b; text-align: center;"></p>
+
+                    <div class="form-group">
+                        <label class="form-label">Nueva Contraseña</label>
+                        <input type="text" id="newResetPass" class="form-input" required
+                            placeholder="Ingrese nueva contraseña" autofocus>
+                    </div>
+
+                    <div class="modal-footer" style="padding-bottom: 0;">
+                        <button class="btn btn-secondary" onclick="closeResetPassModal()">Cancelar</button>
+                        <button class="btn btn-primary" type="submit">Guardar Cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <script src="/js/common.js?v=2"></script>
     <script>
         // Check for common.js sidebar logic or implement simpler toggle here if missing in common.js for this page specifically
@@ -365,6 +392,13 @@
                     </button>
                 `;
 
+                // Reset Password Button (Blue/Key)
+                const resetBtn = `
+                    <button class="delete-btn" style="background: #e0e7ff; color: #4338ca; margin-right: 5px;" onclick="openResetPassModal(${user.id}, '${user.name}', '${user.username}')" title="Cambiar Contraseña">
+                        <i class="fa-solid fa-key"></i>
+                    </button>
+                `;
+
                 card.innerHTML = `
                     <div class="user-avatar ${isAdmin ? 'admin' : ''}">
                         ${escapeHtml(initial)}
@@ -374,7 +408,10 @@
                     <div class="role-badge ${isAdmin ? 'admin' : 'user'}">
                         ${isAdmin ? 'Administrador' : 'Personal'}
                     </div>
-                    ${deleteBtn}
+                    <div style="display: flex; justify-content: center;">
+                        ${resetBtn}
+                        ${deleteBtn}
+                    </div>
                 `;
                 grid.appendChild(card);
             });
@@ -436,6 +473,56 @@
                 await fetch(`/api/users/${id}`, { method: 'DELETE' });
                 loadUsers();
             } catch (e) { console.error(e); }
+        }
+
+        // --- Logic for Reset Password ---
+        function openResetPassModal(id, name, username) {
+            document.getElementById('resetUserId').value = id;
+            document.getElementById('resetUserName').textContent = `Usuario: ${name} (@${username})`;
+            document.getElementById('newResetPass').value = '';
+            document.getElementById('resetPassModal').style.display = 'block';
+            document.getElementById('newResetPass').focus();
+        }
+
+        function closeResetPassModal() {
+            document.getElementById('resetPassModal').style.display = 'none';
+        }
+
+        async function submitResetPass() {
+            const id = document.getElementById('resetUserId').value;
+            const password = document.getElementById('newResetPass').value;
+
+            try {
+                const response = await fetch(`/api/users/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password })
+                });
+                const result = await response.json();
+                if (result.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Contraseña Actualizada',
+                        text: 'El usuario ya puede ingresar con la nueva clave.',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                    closeResetPassModal();
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: result.error || 'No se pudo actualizar'
+                    });
+                }
+            } catch (err) {
+                console.error(err);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error de Conexión',
+                    text: 'Revise su conexión o intente nuevamente.'
+                });
+            }
         }
         // Fetch User Info for Sidebar
         async function fetchUserInfo() {

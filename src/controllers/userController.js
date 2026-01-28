@@ -48,3 +48,22 @@ exports.deleteUser = (req, res) => {
         res.json({ success: true });
     });
 };
+
+exports.updateUser = (req, res) => {
+    const { id } = req.params;
+    const { password } = req.body;
+
+    if (!password) {
+        return res.status(400).json({ success: false, error: 'La nueva contraseña es requerida' });
+    }
+
+    const saltRounds = 10;
+    bcrypt.hash(password, saltRounds, function (err, hash) {
+        if (err) return res.status(500).json({ success: false, error: 'Error procesando contraseña' });
+
+        db.run('UPDATE users SET password = ? WHERE id = ?', [hash, id], function (err) {
+            if (err) return res.status(500).json({ success: false, error: err.message });
+            res.json({ success: true });
+        });
+    });
+};

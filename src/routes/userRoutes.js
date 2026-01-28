@@ -10,5 +10,6 @@ router.get('/users', isAdmin, userController.showUsersPage);
 router.get('/api/users', isAdmin, userController.getAllUsers);
 router.post('/api/users', isAdmin, userController.createUser);
 router.delete('/api/users/:id', isAdmin, userController.deleteUser);
+router.put('/api/users/:id', isAdmin, userController.updateUser);
 
 module.exports = router;

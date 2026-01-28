@@ -773,11 +773,13 @@
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <!-- Common JS for Sidebar -->
     <script src="/js/common.js?v=2"></script>
-    <script src="/js/workers.js?v=4"></script>
+    <script src="/js/workers.js?v=5"></script>
     <script>
         // Inline Modal Logic Helpers
         // openWorkerModal moved to workers.js to handle Edit state
         function closeWorkerModal() { document.getElementById('workerModal').style.display = 'none'; }
+
+        //Selcionamos 
 
         // Sidebar Toggle logic (Redundant if in common.js but safe here)
         document.addEventListener('DOMContentLoaded', () => {
@@ -800,6 +802,7 @@
             if (event.target == document.getElementById('historyModal')) closeHistoryModal();
         }
     </script>
+
 </body>
 
 </html>

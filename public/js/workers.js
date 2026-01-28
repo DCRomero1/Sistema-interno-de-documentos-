@@ -341,6 +341,10 @@ function renderWorkers(workers) {
                 <button class="action-btn" onclick="openEditModal(${worker.id})" title="Editar Información">
                     <i class="fa-solid fa-pen-to-square"></i>
                 </button>
+
+                <button class="action-btn" onclick="deleteWorker(${worker.id})" title="Eliminar" style="color: #ef4444; border-color: #fee2e2; background: #fef2f2;">
+                    <i class="fa-solid fa-trash-can"></i>
+                </button>
             </div>
         `;
         list.appendChild(item);
@@ -601,7 +605,7 @@ async function deleteWorker(id) {
             } else {
                 Swal.fire(
                     'Error!',
-                    'No se pudo eliminar el registro.',
+                    data.error || 'No se pudo eliminar el registro.',
                     'error'
                 );
             }
