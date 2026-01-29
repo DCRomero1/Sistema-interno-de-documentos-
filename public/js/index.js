@@ -554,6 +554,17 @@ function viewHistory(docId) {
     ul.className = 'timeline';
 
     rawHistory.forEach(item => {
+        // PATCH: Replace old text with new text on the fly
+        const replaceText = (text) => {
+            if (!text) return text;
+            return text.replace(/JEFATURA DE UNIDAD DE ADMINISTRACION/gi, 'OFICINA DE ADMINISTRACIÓN');
+        };
+
+        item.from = replaceText(item.from);
+        item.to = replaceText(item.to);
+        item.cargo = replaceText(item.cargo);
+        item.action = replaceText(item.action);
+
         const li = document.createElement('li');
         li.className = 'timeline-item';
 
@@ -589,45 +600,45 @@ function viewHistory(docId) {
 
         // Build HTML
         li.innerHTML = `
-            <div class="timeline-marker ${badgeClass}"></div>
-            <div class="timeline-content">
-                <div class="timeline-header">
-                    <div class="timeline-datetime">
-                        <i class="fa-regular fa-calendar"></i> ${dateStr}
-                        ${timeStr ? `<span class="tm-time"><i class="fa-regular fa-clock"></i> ${timeStr}</span>` : ''}
+                <div class="timeline-marker ${badgeClass}"></div>
+                <div class="timeline-content">
+                    <div class="timeline-header">
+                        <div class="timeline-datetime">
+                            <i class="fa-regular fa-calendar"></i> ${dateStr}
+                            ${timeStr ? `<span class="tm-time"><i class="fa-regular fa-clock"></i> ${timeStr}</span>` : ''}
+                        </div>
+                        <span class="timeline-badge ${badgeClass}">${escapeHtml(item.action)}</span>
                     </div>
-                    <span class="timeline-badge ${badgeClass}">${escapeHtml(item.action)}</span>
-                </div>
-                
-                <div class="timeline-body">
-                    <div class="timeline-route">
-                        <div class="route-node source">
-                            <span class="label">Origen</span>
-                            <span class="value" title="${escapeHtml(item.from)}">${escapeHtml(item.from) || '&mdash;'}</span>
+                    
+                    <div class="timeline-body">
+                        <div class="timeline-route">
+                            <div class="route-node source">
+                                <span class="label">Origen</span>
+                                <span class="value" title="${escapeHtml(item.from)}">${escapeHtml(item.from) || '&mdash;'}</span>
+                            </div>
+                            <div class="route-arrow">
+                                <i class="fa-solid fa-arrow-right-long"></i>
+                            </div>
+                            <div class="route-node dest">
+                                <span class="label">Destino</span>
+                                <span class="value" title="${escapeHtml(item.cargo)}">${escapeHtml(item.cargo) || escapeHtml(item.to) || '&mdash;'}</span>
+                            </div>
                         </div>
-                        <div class="route-arrow">
-                            <i class="fa-solid fa-arrow-right-long"></i>
-                        </div>
-                        <div class="route-node dest">
-                            <span class="label">Destino</span>
-                            <span class="value" title="${escapeHtml(item.cargo)}">${escapeHtml(item.cargo) || escapeHtml(item.to) || '&mdash;'}</span>
-                        </div>
+
+                        ${item.to ? `
+                        <div class="timeline-meta">
+                            <strong><i class="fa-solid fa-building"></i> Área:</strong> 
+                            <span>${escapeHtml(item.to)}</span>
+                        </div>` : ''}
+
+                        ${item.observation ? `
+                        <div class="timeline-obs">
+                            <strong><i class="fa-regular fa-comment-dots"></i> Observaciones:</strong>
+                            <p>${escapeHtml(item.observation)}</p>
+                        </div>` : ''}
                     </div>
-
-                    ${item.to ? `
-                    <div class="timeline-meta">
-                        <strong><i class="fa-solid fa-building"></i> Área:</strong> 
-                        <span>${escapeHtml(item.to)}</span>
-                    </div>` : ''}
-
-                    ${item.observation ? `
-                    <div class="timeline-obs">
-                        <strong><i class="fa-regular fa-comment-dots"></i> Observaciones:</strong>
-                        <p>${escapeHtml(item.observation)}</p>
-                    </div>` : ''}
                 </div>
-            </div>
-        `;
+            `;
         ul.appendChild(li);
     });
 

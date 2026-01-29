@@ -14,7 +14,8 @@
             margin: 0;
             padding: 0;
             font-family: 'Roboto', sans-serif;
-            background-color: #f4f4f4;
+            background-color: #d1d5db;
+            /* Darker background */
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -31,7 +32,7 @@
             padding: 15px 0;
             font-size: 1.8rem;
             font-weight: 700;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
             position: fixed;
             top: 0;
             left: 0;
@@ -53,7 +54,8 @@
         .login-card {
             background-color: white;
             border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            /* Stronger shadow */
             padding: 40px;
             width: 380px;
             text-align: center;
@@ -78,6 +80,18 @@
         .avatar-container img {
             width: 100%;
             height: auto;
+            animation: spin 6s linear infinite;
+            /* Velocidad media */
+        }
+
+        @keyframes spin {
+            from {
+                transform: perspective(1000px) rotateY(0deg);
+            }
+
+            to {
+                transform: perspective(1000px) rotateY(360deg);
+            }
         }
 
 
@@ -237,6 +251,13 @@
             letter-spacing: 1px;
             text-transform: uppercase;
         }
+
+        .copyright-text {
+            margin-top: 10px;
+            font-size: 0.85rem;
+            color: #777;
+            font-weight: 400;
+        }
     </style>
 </head>
 
@@ -282,8 +303,9 @@
 
                 <button type="submit" class="btn-submit">Ingresar</button>
             </form>
+            <div class="footer-branding">INSTITUTO VIGIL</div>
+            <div class="copyright-text">© Copyright IESP VIGIL 2026. Todos los derechos reservados.</div>
         </div>
-        <div class="footer-branding">INSTITUTO VIGIL</div>
     </div>
 
     <script>

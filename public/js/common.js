@@ -11,7 +11,8 @@ async function checkUserRole() {
 
         if (data.authenticated) {
             // Update User Name in Header
-            const userDisplay = document.querySelector('.user-info span');
+            // Update User Name in Header
+            const userDisplay = document.getElementById('sidebar-username') || document.querySelector('.user-info span');
             if (userDisplay && data.user.name) {
                 // XSS Protection Helper
                 const escapeHtml = (str) => {
@@ -23,7 +24,12 @@ async function checkUserRole() {
                         .replace(/'/g, "&#039;");
                 };
 
-                userDisplay.innerHTML = `<i class="fa-solid fa-user-circle"></i> ${escapeHtml(data.user.name)} <i class="fa-solid fa-caret-down"></i>`;
+                // Check if it is the old or new sidebar style
+                if (userDisplay.id === 'sidebar-username') {
+                    userDisplay.textContent = data.user.name; // New sidebar just text
+                } else {
+                    userDisplay.innerHTML = `<i class="fa-solid fa-user-circle"></i> ${escapeHtml(data.user.name)} <i class="fa-solid fa-caret-down"></i>`;
+                }
             }
 
             if (data.user.role === 'admin') {

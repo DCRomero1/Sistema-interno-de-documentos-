@@ -192,5 +192,5 @@ async function fetchUserInfo() {
     }
 }
 
-// Call on startup
+// actualización de los da
 document.addEventListener('DOMContentLoaded', fetchUserInfo);
