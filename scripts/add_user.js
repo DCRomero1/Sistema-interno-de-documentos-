@@ -33,3 +33,4 @@ bcrypt.hash(password2, 10, (err, hash) => {
         }
     });
 });
+
