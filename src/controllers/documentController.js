@@ -13,7 +13,7 @@ exports.showRegisterPage = (req, res) => {
 
 // Obtener todos los documentos
 exports.getAllDocuments = (req, res) => {
-    db.all('SELECT * FROM documents ORDER BY created_at DESC', [], (err, docs) => {
+    db.all('SELECT * FROM documents ORDER BY id DESC', [], (err, docs) => {
         if (err) return res.status(500).json({ error: err.message });
 
         db.all('SELECT * FROM document_history', [], (err, historyRows) => {

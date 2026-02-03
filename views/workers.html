@@ -12,30 +12,44 @@
         href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cinzel:wght@400;700&display=swap"
         rel="stylesheet">
     <style>
-        /* Greeting Card Styles (Preserved) */
+        /* Greeting Card Styles (Director Edition - Paper Texture) */
         .greeting-card {
-            background: #fffdf9 url('/img/cream-paper.png');
+            background-image: url('/img/bg-paper.png');
+            background-repeat: repeat;
+            /* Ensure it tiles or covers as preferred, usually repeat for texture */
+            background-size: auto;
+            /* Fallback color if image fails */
+            background-color: #fdfbf7;
             padding: 20px;
-            color: #2c3e50;
+            color: #334155;
+            /* Dark Slate for readability on light background */
             position: relative;
             border-radius: 4px;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            /* Center vertically if space allows */
         }
 
         .card-border {
-            border: 2px solid #D4AF37;
-            padding: 40px;
+            border: 2px solid #b45309;
+            /* Dark Bronze/Gold */
+            padding: 30px 40px;
+            /* Reduced vertical padding */
             position: relative;
-            background: rgba(255, 255, 255, 0.9);
-            box-shadow: inset 0 0 0 4px #fff, inset 0 0 0 6px #D4AF37;
+            background: transparent;
         }
 
         .card-border::before,
         .card-border::after {
             content: "✦";
             position: absolute;
-            color: #D4AF37;
+            color: #b45309;
+            /* Dark Bronze to match border */
             font-size: 24px;
+            text-shadow: none;
+            /* Removed glow for cleaner look on paper */
         }
 
         .card-border::before {
@@ -50,15 +64,18 @@
 
         .card-header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
+            /* Reduced margin */
         }
 
         .formal-title {
             font-family: 'Great Vibes', cursive;
             font-size: 3.5rem;
-            color: #D4AF37;
-            margin-top: 10px;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+            /* Slightly smaller for space */
+            color: #b45309;
+            /* Dark Bronze/Gold */
+            margin-top: 5px;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
         }
 
         .card-body {
@@ -66,64 +83,88 @@
         }
 
         .intro-text,
-        .greet-text,
-        .message-text {
+        .greet-text {
             font-family: 'Playfair Display', serif;
-            font-size: 1.1rem;
-            line-height: 1.6;
-            color: #555;
+            font-size: 1rem;
+            /* Compact text */
+            line-height: 1.5;
+            color: #475569;
+            /* Slate-600 */
+            margin: 5px 0;
         }
 
         .institution-name {
             font-family: 'Cinzel', serif;
-            font-size: 1.4rem;
+            font-size: 1.3rem;
+            /* Compact text */
             font-weight: 700;
-            color: #1a252f;
-            margin: 10px 0 20px;
-            letter-spacing: 1px;
-            border-bottom: 1px solid #D4AF37;
+            color: #1e293b;
+            /* Slate-800 - Dark */
+            margin: 10px 0 15px;
+            letter-spacing: 2px;
+            border-bottom: 1px solid #b45309;
             display: inline-block;
-            padding-bottom: 10px;
+            padding-bottom: 5px;
+            text-shadow: none;
         }
 
         .honoree-name {
             font-family: 'Playfair Display', serif;
             font-size: 2.5rem;
+            /* Slightly smaller */
             font-weight: 700;
-            color: #c0392b;
-            margin: 20px 0;
+            color: #b45309;
+            /* Dark Bronze */
+            margin: 15px 0;
+            /* Reduced margin */
             font-style: italic;
+            text-shadow: none;
         }
 
         .message-text {
-            margin: 0 auto 30px;
-            max-width: 80%;
+            margin: 0 auto 20px;
+            max-width: 85%;
             font-style: italic;
+            color: #334155;
+            /* Dark Slate */
+            font-size: 1.1rem;
+            line-height: 1.6;
         }
 
         .card-footer {
-            margin-top: 40px;
+            margin-top: 10px;
             text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .footer-illustration {
+            max-width: 80%;
+            /* Adjust size */
+            height: auto;
+            margin-bottom: 10px;
+            opacity: 0.9;
         }
 
         .date-display {
             font-family: 'Cinzel', serif;
-            font-size: 0.9rem;
-            color: #7f8c8d;
-            border-top: 1px solid #eee;
-            padding-top: 20px;
+            font-size: 0.85rem;
+            color: #64748b;
+            border-top: none;
+            /* Removed line for cleaner look with image */
+            padding-top: 10px;
             display: inline-block;
-            width: 60%;
+            width: auto;
         }
 
-        /* --- New Design Styles --- */
+        /* --- New Design Styles (Dashboard) --- */
 
         /* Hero Banner */
         .hero-banner {
             background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
             border-radius: 12px;
             padding: 15px 30px;
-            /* Reduced specific padding */
             color: white;
             position: relative;
             overflow: hidden;
@@ -321,7 +362,6 @@
             background-color: #f6f6f6;
             background-image: radial-gradient(#e0e0e0 1px, transparent 1px);
             background-size: 10px 10px;
-            /* Dot texture simulation */
             border: none;
             border-radius: 4px;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
@@ -332,7 +372,6 @@
 
         .themed-header-title {
             font-family: 'Arial', sans-serif;
-            /* Fallback, maybe use a Google Font later if strictly needed */
             font-weight: 900;
             font-style: italic;
             text-transform: uppercase;
@@ -370,7 +409,6 @@
 
         .themed-btn-primary {
             background: #ff9900;
-            /* Orange */
             background: linear-gradient(135deg, #ffaf38 0%, #ff9900 100%);
             color: white;
             border: none;
@@ -381,7 +419,6 @@
             text-transform: uppercase;
             cursor: pointer;
             transform: skewX(-10deg);
-            /* Slanted Look */
             display: block;
             margin: 20px auto 0;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -391,7 +428,6 @@
         .themed-btn-primary span {
             display: block;
             transform: skewX(10deg);
-            /* Un-skew text */
         }
 
         .themed-btn-primary:hover {
@@ -574,11 +610,9 @@
                             </div>
                         </div>
 
-                        <!-- Pagination Actions (Static Placeholders) -->
                         <!-- Pagination Actions -->
                         <div id="paginationControls"
                             style="display: flex; justify-content: center; gap: 10px; margin-top: 30px;">
-                            <!-- Dynamic Pagination -->
                         </div>
                     </div>
 
@@ -697,7 +731,6 @@
                     style="background: white; border: none; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; font-weight: bold;">&times;</button>
             </div>
 
-            <!-- Card Design -->
             <div class="greeting-card" id="captureCard">
                 <div class="card-border">
                     <div class="card-header">
@@ -716,19 +749,20 @@
                         <h1 class="honoree-name" id="greetingName">Nombre del Docente</h1>
 
                         <p class="message-text">
-                            En este día tan especial, celebramos no solo su vida, sino también su valiosa dedicación y
-                            compromiso con la educación. Que este nuevo año esté lleno de éxitos, salud y prosperidad.
+                            En esta fecha significativa, expresamos nuestro reconocimiento a su valiosa gestión,
+                            liderazgo y entrega constante en favor del fortalecimiento de nuestra institución. Que este
+                            nuevo año de vida le traiga bienestar, prosperidad y muchos logros junto a toda la comunidad
+                            educativa vigiliana.
                         </p>
                     </div>
 
                     <div class="card-footer">
-                        <div class="signature-line"></div>
+                        <img src="/img/books_footer.png" alt="Decoración" class="footer-illustration">
                         <div class="date-display" id="greetingDate">Tacna, 19 de Enero de 2026</div>
                     </div>
                 </div>
             </div>
 
-            <!-- Action Buttons -->
             <!-- Action Buttons -->
             <div style="margin-top: 15px; display: flex; justify-content: center; gap: 10px;">
                 <button onclick="downloadGreeting()" class="btn"
@@ -779,8 +813,6 @@
         // openWorkerModal moved to workers.js to handle Edit state
         function closeWorkerModal() { document.getElementById('workerModal').style.display = 'none'; }
 
-        //Selcionamos 
-
         // Sidebar Toggle logic (Redundant if in common.js but safe here)
         document.addEventListener('DOMContentLoaded', () => {
             const toggleBtn = document.getElementById('sidebarToggle');
@@ -802,7 +834,6 @@
             if (event.target == document.getElementById('historyModal')) closeHistoryModal();
         }
     </script>
-
 </body>
 
 </html>
