@@ -6,6 +6,7 @@ const { isAuthenticated } = require('../middleware/auth');
 // Vistas
 router.get('/', isAuthenticated, documentController.showDashboard);
 router.get('/register', isAuthenticated, documentController.showRegisterPage);
+router.get('/formatos', isAuthenticated, documentController.showFormatosPage);
 
 // API
 router.get('/api/documents', isAuthenticated, documentController.getAllDocuments);

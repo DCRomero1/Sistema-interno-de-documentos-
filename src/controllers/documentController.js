@@ -11,6 +11,10 @@ exports.showRegisterPage = (req, res) => {
     res.sendFile(path.join(__dirname, '../../views/register.html'));
 };
 
+exports.showFormatosPage = (req, res) => {
+    res.sendFile(path.join(__dirname, '../../views/formatos.html'));
+};
+
 // Obtener todos los documentos
 exports.getAllDocuments = (req, res) => {
     db.all('SELECT * FROM documents ORDER BY id DESC', [], (err, docs) => {

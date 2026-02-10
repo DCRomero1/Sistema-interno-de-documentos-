@@ -14,16 +14,7 @@ document.getElementById('origen').addEventListener('change', function () {
 });
 
 // Logic for Destino "Otros"
-document.getElementById('destino').addEventListener('change', function () {
-    const inputDestinoOtro = document.getElementById('destinoOtro');
-    if (this.value === 'Otros') {
-        inputDestinoOtro.style.display = 'block';
-        inputDestinoOtro.focus();
-    } else {
-        inputDestinoOtro.style.display = 'none';
-        inputDestinoOtro.value = ''; // borrar
-    }
-});
+
 
 document.getElementById('tipo').addEventListener('change', function () {
     const inputTipoOtro = document.getElementById('tipoOtro');
@@ -103,21 +94,7 @@ async function submitForm() {
         showError('origen');
     }
 
-    // Validate 'destino'
-    let destinoVal = document.getElementById('destino').value;
-    if (destinoVal === 'Otros') {
-        destinoVal = document.getElementById('destinoOtro').value.trim();
-        if (!destinoVal) {
-            showError('destinoOtro');
-        }
-    } else if (!destinoVal) {
-        // Option: if you want destino to be required, uncomment this
-        // showError('destino');
-        // For now, if empty, we might let it pass or force it. Assuming required since DB has blank issues.
-        // Let's make it NOT strictly required to not break existing flow, or if user wants default empty.
-        // But user asked to fix it. So let's make it fillable.
-        // If "Seleccione destino..." is selected, value is empty.
-    }
+
 
     let tipoVal = document.getElementById('tipo').value;
     if (tipoVal === 'Otro') {
@@ -162,7 +139,7 @@ async function submitForm() {
     formData.append('tipo', tipoVal);
     formData.append('nombre', nombre.value);
     formData.append('origen', origenVal);
-    formData.append('destino', destinoVal);
+
     formData.append('concepto', concepto.value);
     formData.append('folios', folios.value);
 

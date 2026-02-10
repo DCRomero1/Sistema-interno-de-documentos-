@@ -147,7 +147,7 @@ function renderTable(documents) {
         row.innerHTML = `
             <td data-label="N° Corr." style="font-weight: bold; color: var(--primary-color);">${doc.id}</td>
             <td data-label="Recepción">${formatEmpty(displayFecha)}</td>
-            <td data-label="Tipo">${formatEmpty(doc.tipo)}</td>
+            <td data-label="Tipo">${formatEmpty(doc.tipo).replace(': N°', ':<br>N°')}</td>
             <td data-label="Remitente">${formatEmpty(doc.nombre)}</td>
             <td data-label="Área Origen">${formatEmpty(doc.origen)}</td>
             <td data-label="Concepto">${formatEmpty(doc.concepto)}</td>
@@ -661,3 +661,4 @@ window.onclick = function (event) {
         historyModal.style.display = "none";
     }
 }
+
