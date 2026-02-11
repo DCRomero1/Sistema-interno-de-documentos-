@@ -1,0 +1,24 @@
+# Dependencias
+node_modules/
+package-lock.json
+
+# Base de datos
+src/database.sqlite
+*.sqlite
+*.db
+
+# Variables de entorno
+.env
+
+# Archivos de registro
+*.log
+npm-debug.log*
+
+# Metadata del sistema operativo
+.DS_Store
+Thumbs.db
+
+# Directorios de compilación (si aplica)
+dist/
+build/
+coverage/
