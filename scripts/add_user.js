@@ -9,7 +9,6 @@ const username = 'diego';
 const password = '1234';
 const name = 'Diego';
 
-
 bcrypt.hash(password2, 10, (err, hash) => {
     if (err) {
         console.error('Error hashing password:', err);

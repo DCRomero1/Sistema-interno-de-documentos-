@@ -205,10 +205,13 @@
             background: #f3f4f6;
             z-index: 2000;
             display: none;
-            /* Hidden by default */
-            /* display: flex; REMOVED to prevent auto-show */
             flex-direction: column;
             overflow: hidden;
+        }
+
+        /* Ensure SweetAlert2 is always on top of the editor */
+        .swal2-container {
+            z-index: 3000 !important;
         }
 
         /* Editor Header */
@@ -699,8 +702,8 @@
             </div>
             <div class="editor-user">
                 <div style="text-align: right;">
-                    <div id="editorUserName" style="font-weight: 600; font-size: 0.85rem;">Administrador</div>
-                    <div id="editorUserEmail" style="font-size: 0.75rem; color: #9ca3af;">admin@vigil.edu.pe</div>
+                    <div id="editorUserName" style="font-weight: 600; font-size: 0.85rem;">Cargando...</div>
+                    <div id="editorUserEmail" style="font-size: 0.75rem; color: #9ca3af;">...</div>
                 </div>
                 <div class="user-circle"><i class="fa-solid fa-user"></i></div>
                 <div class="close-editor-btn" onclick="closeEditor()"><i class="fa-solid fa-times"></i></div>
@@ -724,6 +727,8 @@
                             oninput="this.value = this.value.toUpperCase(); updatePreview();">
                     </div>
 
+
+
                     <!-- Row: DNI & Matricula -->
                     <div style="display: flex; gap: 15px;">
                         <div class="editor-input-group" style="flex: 1;">
@@ -739,33 +744,61 @@
                     </div>
 
                     <!-- Carrera -->
-                    <!-- Carrera -->
+                    <!-- Programa de Estudios -->
                     <div class="editor-input-group">
-                        <label class="editor-label">CARRERA PROFESIONAL</label>
+                        <label class="editor-label">PROGRAMA DE ESTUDIOS</label>
                         <select id="editorArea" class="editor-input" onchange="updatePreview()">
                             <option value="" disabled selected>Seleccione una carrera...</option>
-                            <option value="COMPUTACIÓN E INFORMÁTICA">COMPUTACIÓN E INFORMÁTICA</option>
-                            <option value="ARQUITECTURA DE PLATAFORMAS Y SERVICIOS DE TECNOLOGÍAS DE LA INFORMACIÓN">
-                                ARQUITECTURA DE PLATAFORMAS Y SERVICIOS DE TECNOLOGÍAS DE LA INFORMACIÓN</option>
-                            <option value="ARQUITECTURA DE PLATAFORMAS Y SERVICIOS DE TECNOLOGÍAS DE INFORMACIÓN">
-                                ARQUITECTURA DE PLATAFORMAS Y SERVICIOS DE TECNOLOGÍAS DE INFORMACIÓN</option>
-                            <option value="CONSTRUCCIÓN CIVIL">CONSTRUCCIÓN CIVIL</option>
-                            <option value="CONTABILIDAD">CONTABILIDAD</option>
-                            <option value="ELECTRICIDAD">ELECTRICIDAD</option>
-                            <option value="ELECTROTECNIA INDUSTRIAL">ELECTROTECNIA INDUSTRIAL</option>
-                            <option value="ELECTRICIDAD INDUSTRIAL">ELECTRICIDAD INDUSTRIAL</option>
-                            <option value="ELECTRÓNICA">ELECTRÓNICA</option>
-                            <option value="ELECTRÓNICA INDUSTRIA">ELECTRÓNICA INDUSTRIA</option>
-                            <option value="MECÁNICA AUTOMOTRIZ">MECÁNICA AUTOMOTRIZ</option>
-                            <option value="MECATRÓNICA AUTOMOTRIZ">MECATRÓNICA AUTOMOTRIZ</option>
-                            <option value="MECÁNICA DE PRODUCCIÓN">MECÁNICA DE PRODUCCIÓN</option>
-                            <option value="MECÁNICA DE PRODUCCIÓN INDUSTRIAL">MECÁNICA DE PRODUCCIÓN INDUSTRIAL</option>
-                            <option value="SECRETARIADO EJECUTIVO">SECRETARIADO EJECUTIVO</option>
-                            <option value="ASISTENCIA DE DIRECCIÓN Y GERENCIA">ASISTENCIA DE DIRECCIÓN Y GERENCIA
-                            </option>
-                            <option value="ASISTENCIA ADMINISTRATIVA">ASISTENCIA ADMINISTRATIVA</option>
-                            <option value="AGROPECUARIA">AGROPECUARIA</option>
-                            <option value="PRODUCCIÓN AGROPECUARIA">PRODUCCIÓN AGROPECUARIA</option>
+
+                            <!-- COMPUTACION -->
+                            <option value="COMPUTACION_86">COMPUTACIÓN E INFORMÁTICA - PLAN 86</option>
+                            <option value="COMPUTACION_2020">ARQ. PLATAFORMAS Y SERVICIOS TI - PLAN 2020</option>
+                            <option value="COMPUTACION_2025">ARQ. PLATAFORMAS Y SERVICIOS TI - PLAN 2025</option>
+
+                            <!-- CONSTRUCCION -->
+                            <option value="CONSTRUCCION_86">CONSTRUCCIÓN CIVIL - PLAN 86</option>
+                            <option value="CONSTRUCCION_2020">CONSTRUCCIÓN CIVIL - PLAN 2020</option>
+                            <option value="CONSTRUCCION_2025">CONSTRUCCIÓN CIVIL - PLAN 2025</option>
+
+                            <!-- CONTABILIDAD -->
+                            <option value="CONTABILIDAD_86">CONTABILIDAD - PLAN 86</option>
+                            <option value="CONTABILIDAD_2020">CONTABILIDAD - PLAN 2020</option>
+                            <option value="CONTABILIDAD_2025">CONTABILIDAD - PLAN 2025</option>
+
+                            <!-- ELECTRICIDAD -->
+                            <option value="ELECTRICIDAD_86">ELECTRICIDAD - PLAN 86</option>
+                            <option value="ELECTRICIDAD_2007">ELECTROTECNIA INDUSTRIAL - PLAN 2007</option>
+                            <option value="ELECTRICIDAD_2017">ELECTRICIDAD INDUSTRIAL - PLAN 2017</option>
+                            <option value="ELECTRICIDAD_2020">ELECTRICIDAD INDUSTRIAL - PLAN 2020</option>
+                            <option value="ELECTRICIDAD_2025">ELECTRICIDAD INDUSTRIAL - PLAN 2025</option>
+
+                            <!-- ELECTRONICA -->
+                            <option value="ELECTRONICA_86">ELECTRÓNICA - PLAN 86</option>
+                            <option value="ELECTRONICA_2007">ELECTRÓNICA INDUSTRIA - PLAN 2007</option>
+                            <option value="ELECTRONICA_2020">ELECTRÓNICA INDUSTRIA - PLAN 2020</option>
+                            <option value="ELECTRONICA_2025">ELECTRÓNICA INDUSTRIA - PLAN 2025</option>
+
+                            <!-- AUTOMOTRIZ -->
+                            <option value="AUTOMOTRIZ_86">MECÁNICA AUTOMOTRIZ - PLAN 86</option>
+                            <option value="AUTOMOTRIZ_2007">MECATRÓNICA AUTOMOTRIZ - PLAN 2007</option>
+                            <option value="AUTOMOTRIZ_2017">MECATRÓNICA AUTOMOTRIZ - PLAN 2017</option>
+                            <option value="AUTOMOTRIZ_2020">MECATRÓNICA AUTOMOTRIZ - PLAN 2020</option>
+                            <option value="AUTOMOTRIZ_2025">MECATRÓNICA AUTOMOTRIZ - PLAN 2025</option>
+
+                            <!-- PRODUCCION -->
+                            <option value="PRODUCCION_86">MECÁNICA DE PRODUCCIÓN - PLAN 86</option>
+                            <option value="PRODUCCION_2020">MECÁNICA DE PRODUCCIÓN INDUSTRIAL - PLAN 2020</option>
+                            <option value="PRODUCCION_2025">MECÁNICA DE PRODUCCIÓN INDUSTRIAL - PLAN 2025</option>
+
+                            <!-- SECRETARIADO -->
+                            <option value="SECRETARIADO_86">SECRETARIADO EJECUTIVO - PLAN 86</option>
+                            <option value="SECRETARIADO_2020">ASISTENCIA DE DIRECCIÓN Y GERENCIA - PLAN 2020</option>
+                            <option value="SECRETARIADO_2025">ASISTENCIA ADMINISTRATIVA - PLAN 2025</option>
+
+                            <!-- AGROPECUARIA -->
+                            <option value="AGROPECUARIA_86">AGROPECUARIA - PLAN 86</option>
+                            <option value="AGROPECUARIA_2020">PRODUCCIÓN AGROPECUARIA - PLAN 2020</option>
+                            <option value="AGROPECUARIA_2025">PRODUCCIÓN AGROPECUARIA - PLAN 2025</option>
                         </select>
                     </div>
 
@@ -781,9 +814,64 @@
                         </div>
                     </div>
 
+                    <!-- Nombre del Año (Editable con Check) -->
+                    <div class="editor-input-group" style="margin-top: 15px;">
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                            <label class="editor-label" style="margin-bottom: 0;">NOMBRE DEL AÑO</label>
+                            <label
+                                style="font-size: 12px; display: flex; align-items: center; gap: 5px; cursor: pointer; color: #666;">
+                                <input type="checkbox" id="chkEditarAnio" onchange="toggleAnioEdit()"> Editar
+                            </label>
+                        </div>
+                        <textarea id="editorAnio" class="editor-input" rows="2" readonly
+                            style="background-color: #f3f4f6; color: #666; cursor: not-allowed;"
+                            oninput="updateAnio(this.value)">"AÑO DE LA ESPERANZA Y EL FORTALECIMIENTO DE LA DEMOCRACIA"</textarea>
+                    </div>
+
+                    <script>
+                        // Cargar año guardado al iniciar
+                        document.addEventListener('DOMContentLoaded', function () {
+                            const savedAnio = localStorage.getItem('formato_anio_nombre');
+                            if (savedAnio) {
+                                document.getElementById('editorAnio').value = savedAnio;
+                                updatePreview(); // Actualizar vista previa con el valor cargado
+                            }
+                        });
+
+                        function toggleAnioEdit() {
+                            const chk = document.getElementById('chkEditarAnio');
+                            const txt = document.getElementById('editorAnio');
+                            if (chk.checked) {
+                                txt.removeAttribute('readonly');
+                                txt.style.backgroundColor = '#ffffff';
+                                txt.style.color = '#333';
+                                txt.style.cursor = 'text';
+                                txt.focus();
+                            } else {
+                                txt.setAttribute('readonly', 'true');
+                                txt.style.backgroundColor = '#f3f4f6';
+                                txt.style.color = '#666';
+                                txt.style.cursor = 'not-allowed';
+                            }
+                        }
+
+                        function updateAnio(val) {
+                            // Convertir a mayúsculas
+                            const upperVal = val.toUpperCase();
+                            document.getElementById('editorAnio').value = upperVal;
+
+                            // Guardar en localStorage
+                            localStorage.setItem('formato_anio_nombre', upperVal);
+
+                            // Actualizar vista previa
+                            updatePreview();
+                        }
+                    </script>
+
                     <!-- Draft Button -->
                     <div class="sidebar-footer-btn">
-                        <button type="button" class="btn-draft" onclick="saveDraft()">
+                        <button type="button" class="btn-draft">
                             <i class="fa-solid fa-floppy-disk"></i> GUARDAR BORRADOR
                         </button>
                     </div>
@@ -869,14 +957,7 @@
             typeInput.value = type;
 
             // Populate dynamic fields
-            if (type === 'biblioteca') {
-                dynamicDiv.innerHTML = `
-                <div class="editor-input-group">
-                    <label class="editor-label">DETALLE / MOTIVO</label>
-                    <textarea id="editorDetalle" class="editor-input" rows="3" placeholder="Por ejemplo: No adeuda libros..." oninput="updatePreview()"></textarea>
-                </div>
-            `;
-            }
+
 
             // Load Draft if exists
             const draft = JSON.parse(localStorage.getItem(`draft_${type}`));
@@ -885,9 +966,7 @@
                 if (draft.dni) document.getElementById('editorDNI').value = draft.dni;
                 if (draft.matricula) document.getElementById('editorMatricula').value = draft.matricula;
                 if (draft.area) document.getElementById('editorArea').value = draft.area;
-                if (draft.detalle && document.getElementById('editorDetalle')) {
-                    document.getElementById('editorDetalle').value = draft.detalle;
-                }
+
             }
 
             overlay.style.display = 'flex';
@@ -905,7 +984,89 @@
             const nombre = document.getElementById('editorNombre').value || 'NOMBRE DEL ESTUDIANTE';
             const dni = document.getElementById('editorDNI').value || '________';
             const matricula = document.getElementById('editorMatricula').value || '________';
-            const area = document.getElementById('editorArea').value || 'CARRERA PROFESIONAL';
+            const areaKey = document.getElementById('editorArea').value;
+
+            // Nuevo campo para el nombre del año (con fallback seguro)
+            const anioEl = document.getElementById('editorAnio');
+            const anioNombre = anioEl ? anioEl.value : '"AÑO DE LA ESPERANZA Y EL FORTALECIMIENTO DE LA DEMOCRACIA"';
+
+            // Career Data (Single Dropdown)
+            const CAREER_DATA = {
+                // COMPUTACION
+                'COMPUTACION_86': { type: 'CP', name: 'COMPUTACIÓN E INFORMÁTICA' },
+                'COMPUTACION_2020': { type: 'PE', name: 'ARQUITECTURA DE PLATAFORMAS Y SERVICIOS DE TECNOLOGÍAS DE LA INFORMACIÓN' },
+                'COMPUTACION_2025': { type: 'PE', name: 'ARQUITECTURA DE PLATAFORMAS Y SERVICIOS DE TECNOLOGÍAS DE INFORMACIÓN' },
+
+                // CONSTRUCCION
+                'CONSTRUCCION_86': { type: 'CP', name: 'CONSTRUCCIÓN CIVIL' },
+                'CONSTRUCCION_2020': { type: 'PE', name: 'CONSTRUCCIÓN CIVIL' },
+                'CONSTRUCCION_2025': { type: 'PE', name: 'CONSTRUCCIÓN CIVIL' },
+
+                // CONTABILIDAD
+                'CONTABILIDAD_86': { type: 'CP', name: 'CONTABILIDAD' },
+                'CONTABILIDAD_2020': { type: 'PE', name: 'CONTABILIDAD' },
+                'CONTABILIDAD_2025': { type: 'PE', name: 'CONTABILIDAD' },
+
+                // ELECTRICIDAD
+                'ELECTRICIDAD_86': { type: 'CP', name: 'ELECTRICIDAD' },
+                'ELECTRICIDAD_2007': { type: 'CP', name: 'ELECTROTECNIA INDUSTRIAL' },
+                'ELECTRICIDAD_2017': { type: 'CP', name: 'ELECTRICIDAD INDUSTRIAL' },
+                'ELECTRICIDAD_2020': { type: 'PE', name: 'ELECTRICIDAD INDUSTRIAL' },
+                'ELECTRICIDAD_2025': { type: 'PE', name: 'ELECTRICIDAD INDUSTRIAL' },
+
+                // ELECTRONICA
+                'ELECTRONICA_86': { type: 'CP', name: 'ELECTRÓNICA' },
+                'ELECTRONICA_2007': { type: 'CP', name: 'ELECTRÓNICA INDUSTRIA' },
+                'ELECTRONICA_2020': { type: 'PE', name: 'ELECTRÓNICA INDUSTRIA' },
+                'ELECTRONICA_2025': { type: 'PE', name: 'ELECTRÓNICA INDUSTRIA' },
+
+                // AUTOMOTRIZ
+                'AUTOMOTRIZ_86': { type: 'CP', name: 'MECÁNICA AUTOMOTRIZ' },
+                'AUTOMOTRIZ_2007': { type: 'PE', name: 'MECATRÓNICA AUTOMOTRIZ' },
+                'AUTOMOTRIZ_2017': { type: 'PE', name: 'MECATRÓNICA AUTOMOTRIZ' },
+                'AUTOMOTRIZ_2020': { type: 'PE', name: 'MECATRÓNICA AUTOMOTRIZ' },
+                'AUTOMOTRIZ_2025': { type: 'CP', name: 'MECATRÓNICA AUTOMOTRIZ' },
+
+                // PRODUCCION
+                'PRODUCCION_86': { type: 'CP', name: 'MECÁNICA DE PRODUCCIÓN' },
+                'PRODUCCION_2020': { type: 'PE', name: 'MECÁNICA DE PRODUCCIÓN INDUSTRIAL' },
+                'PRODUCCION_2025': { type: 'PE', name: 'MECÁNICA DE PRODUCCIÓN INDUSTRIAL' },
+
+                // SECRETARIADO
+                'SECRETARIADO_86': { type: 'CP', name: 'SECRETARIADO EJECUTIVO' },
+                'SECRETARIADO_2020': { type: 'PE', name: 'ASISTENCIA DE DIRECCIÓN Y GERENCIA' },
+                'SECRETARIADO_2025': { type: 'PE', name: 'ASISTENCIA ADMINISTRATIVA' },
+
+                // AGROPECUARIA
+                'AGROPECUARIA_86': { type: 'CP', name: 'AGROPECUARIA' },
+                'AGROPECUARIA_2020': { type: 'PE', name: 'PRODUCCIÓN AGROPECUARIA' },
+                'AGROPECUARIA_2025': { type: 'PE', name: 'PRODUCCIÓN AGROPECUARIA' }
+            };
+
+            let careerText = 'CARRERA / PROGRAMA NO DEFINIDO';
+            let careerTypeFull = 'Programa de Estudios'; // Default
+            let careerPrefix = 'egresado (a) del'; // Default fallback
+
+            if (areaKey) {
+                const mapEntry = CAREER_DATA[areaKey];
+                if (mapEntry) {
+                    careerText = mapEntry.name;
+                    if (mapEntry.type === 'CP') {
+                        careerTypeFull = 'Carrera Profesional';
+                        careerPrefix = 'egresado (a) de la';
+                    } else {
+                        careerTypeFull = 'Programa de Estudios';
+                        careerPrefix = 'Bachiller del';
+                    }
+                } else {
+                    careerText = 'PROGRAMA NO REGISTRADO';
+                    careerTypeFull = 'CARRERA / PROGRAMA';
+                }
+            } else {
+                careerText = 'SELECCIONE UN PROGRAMA';
+                careerTypeFull = 'CARRERA / PROGRAMA';
+            }
+
 
             // Date logic
             const months = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
@@ -932,7 +1093,7 @@
                     <div style="border-top: 1px solid black; border-bottom: 2px solid black; height: 2px; margin: 5px 0 15px 0;"></div>
                     
                     <div class="year-name">
-                        "AÑO DE LA ESPERANZA Y EL FORTALECIMIENTO DE LA DEMOCRACIA"
+                        "${anioNombre}"
                     </div>
 
                     <div class="doc-title-admin">
@@ -949,7 +1110,7 @@
                         <p class="hace-constar">HACE CONSTAR:</p>
 
                         <p class="main-paragraph">
-                            Que, el ex - alumno (a) <strong>${nombre}</strong>, identificado (a) con <strong>DNI N° ${dni}</strong>, egresado (a) del Programa de Estudios de <strong>${area}</strong>, con código de matrícula <strong>N° ${matricula}</strong>, <strong>NO ADEUDA PAGOS, NI BIENES ADMINISTRATIVOS</strong> al Centro Superior de Estudios.
+                            Que, el ex - alumno (a) <strong>${nombre}</strong>, identificado (a) con <strong>DNI N° ${dni}</strong>, ${careerPrefix} ${careerTypeFull} de <strong>${careerText}</strong>, con código de matrícula <strong>N° ${matricula}</strong>, <strong>NO ADEUDA PAGOS, NI BIENES ADMINISTRATIVOS</strong> al Centro Superior de Estudios.
                         </p>
 
                         <p class="conclusion-text">
@@ -967,43 +1128,53 @@
                 </div>
             `;
             } else if (type === 'biblioteca') {
-                const detalleInput = document.getElementById('editorDetalle');
-                const detalle = detalleInput ? detalleInput.value : '';
-                const bodyText = detalle.trim() ? detalle : 'Hace constar que el estudiante no tiene material bibliográfico pendiente de devolución.';
-
                 content = `
-                <div class="page-header">
-                    <img src="/img/logo_vigil.png" style="height: 80px;">
-                    <div class="header-text">
-                        <h3>INSTITUTO DE EDUCACIÓN SUPERIOR PEDAGÓGICO PÚBLICO</h3>
-                        <h1>"FRANCISCO DE PAULA GONZALES VIGIL"</h1>
-                    </div>
-                </div>
-                
-                <div class="doc-title">CONSTANCIA DE BIBLIOTECA</div>
-                
-                <div class="doc-body">
-                    <p>LA QUE SUSCRIBE, <br>
-                    HACE CONSTAR:</p>
-                    <br>
-                    <p>Que el Sr(a): <strong>${nombre}</strong></p>
-                    <p>Identificado(a) con DNI N°: <strong>${dni}</strong></p>
-                    ${areaKey ? `<p>Del ${careerTypeFull}: <strong>${careerText}</strong></p>` : ''}
-                    
-                    <br>
-                    <p style="text-align: justify; margin: 20px 0;">${bodyText}</p>
-                    <br>
-                    <p>Se expide la presente a solicitud del interesado para los fines que estime conveniente.</p>
-                    
-                    <br><br><br>
-                    <p style="text-align: right">Tacna, ${simpleDate}</p>
-                </div>
+                <div class="admin-container">
+                    <table class="header-table">
+                        <tr>
+                            <td class="logo-cell"><img src="/img/logo_vigil.png" alt="Logo" style="width: 100px;"></td>
+                            <td class="title-cell">
+                                <h3 style="font-size: 11px; margin: 0;">INSTITUTO DE EDUCACIÓN SUPERIOR PÚBLICO</h3>
+                                <h2 style="font-size: 14px; margin: 2px 0;">"FRANCISCO DE PAULA GONZALES VIGIL"</h2>
+                                <p class="resolutions" style="font-size: 9px;">R.S. N° 131-83-ED-1983<br>R.D. N°0025-07-ED-2007</p>
+                            </td>
+                        </tr>
+                    </table>
 
-                <div class="signatures">
-                    <div class="sig-line">
-                        <hr>
-                        <strong>Responsable</strong><br>
-                        Unidad de Biblioteca
+                    <div style="border-top: 1px solid black; border-bottom: 2px solid black; height: 2px; margin: 5px 0 15px 0;"></div>
+                    
+                    <div class="year-name">
+                        "${anioNombre}"
+                    </div>
+
+                    <div class="doc-title-admin">
+                        CONSTANCIA DE BIBLIOTECA
+                    </div>
+
+                <div class="doc-body-admin">
+                        <div class="intro-block">
+                            <p class="intro-text">
+                                EL ÁREA DE BIBLIOTECA DEL INSTITUTO DE EDUCACIÓN SUPERIOR TECNOLÓGICO PÚBLICO "FRANCISCO DE PAULA GONZALES VIGIL" DE TACNA;
+                            </p>
+                        </div>
+
+                        <p class="hace-constar">HACE CONSTAR:</p>
+
+                        <p class="main-paragraph">
+                            Que, el ex - alumno (a) <strong>${nombre}</strong>, identificado (a) con <strong>DNI N° ${dni}</strong>, ${careerPrefix} ${careerTypeFull} de <strong>${careerText}</strong>, con código de matrícula <strong>N° ${matricula}</strong>, <strong>NO ADEUDA MATERIAL BIBLIOGRÁFICO</strong> al Centro Superior de Estudios.
+                        </p>
+
+                        <p class="conclusion-text">
+                            Se expide la presente a solicitud del interesado para los fines que estime por conveniente.
+                        </p>
+                        
+                        <p class="date-line">
+                            Alto Alianza, ${dateStr}.
+                        </p>
+                    </div>
+                    
+                    <div class="footer-cc">
+                        c.c./Arch.
                     </div>
                 </div>
             `;
@@ -1024,114 +1195,101 @@
             }
 
             printWindow.document.write(`
-            <html>
-            <head>
-                <title>Imprimir Documento</title>
-                <style>
-                     body { 
-                        margin: 0; 
-                        padding: 0; 
-                        font-family: 'Arial', sans-serif; 
-                        background-color: #f3f4f6; /* Light gray background for contrast */
-                    }
-                    .page {
-                        width: 21cm;
-                        min-height: 29.7cm;
-                        padding: 2cm; /* Standard padding for professional look */
-                        margin: 20px auto; 
-                        background-color: white;
-                        box-shadow: 0 0 10px rgba(0,0,0,0.1);
-                        box-sizing: border-box;
-                        position: relative; /* Enable absolute positioning for footer elements */
-                    }
-                    @media print {
-                        @page { size: A4; margin: 0; }
-                        body { background-color: white; }
-                        .page { 
-                            padding: 2cm; /* Standard padding for print */
+<html>
+                <head>
+                    <title>Imprimir Documento</title>
+                    <style>
+                        body { 
                             margin: 0; 
-                            box-shadow: none;
+                            padding: 0; 
+                            font-family: 'Arial', sans-serif; 
+                            background-color: #f3f4f6;
                         }
-                    }
-                    
-                    .admin-container { width: 100%; font-family: 'Arial', sans-serif; }
-                    .header-table { width: 100%; border-collapse: collapse; margin-bottom: 5px; }
-                    .header-table td { vertical-align: middle; }
-                    .logo-cell { width: 100px; text-align: left; }
-                    .title-cell { text-align: center; }
-                    .year-name { text-align: center; font-size: 11px; font-weight: bold; margin: 5px 0 20px 0; text-transform: uppercase; font-style: italic; font-family: 'Arial', sans-serif; }
-                    .doc-title-admin { text-align: center; font-size: 24px; font-weight: bold; text-decoration: underline; margin-top: 20px; margin-bottom: 30px; text-transform: uppercase; letter-spacing: 0.5px; font-family: 'Arial', sans-serif; }
-                    .doc-body-admin { font-family: 'Arial', sans-serif; font-size: 15px; line-height: 2.2; padding: 0 40px; }
-                    .intro-text { text-align: justify; font-weight: bold; margin-bottom: 30px; text-indent: 0; font-size: 14px; line-height: 2.2; } 
-                    .hace-constar { font-weight: bold; margin-bottom: 20px; font-size: 14px; }
-                    .main-paragraph { text-align: justify; text-indent: 80px; line-height: 2.2; font-size: 15px; margin-bottom: 20px; }
-                    .conclusion-text { text-align: justify; text-indent: 80px; margin-top: 30px; font-size: 15px; line-height: 2.2; }
-                    .date-line { 
-                        position: absolute; 
-                        bottom: 4cm; 
-                        right: 2cm; 
-                        text-align: right; 
-                        font-size: 14px; 
-                        margin: 0;
-                    }
-                    .footer-cc { 
-                        position: absolute; 
-                        bottom: 2cm; 
-                        left: 2cm; 
-                        font-size: 10px; 
-                        font-family: 'Arial', sans-serif; 
-                        margin: 0;
-                    }
+                        .page {
+                            width: 21cm;
+                            height: 29.7cm;
+                            padding: 2cm;
+                            margin: 20px auto; 
+                            background-color: white;
+                            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+                            box-sizing: border-box;
+                            position: relative;
+                            overflow: hidden; /* Prevent content from growing beyond A4 */
+                        }
+                        @media print {
+                            @page { 
+                                size: A4; 
+                                margin: 0; 
+                            }
+                            body { background-color: white; }
+                            .page { 
+                                width: 21cm;
+                                height: 29.7cm;
+                                padding: 2cm;
+                                margin: 0; 
+                                box-shadow: none;
+                            }
+                        }
+                        
+                        .admin-container { width: 100%; font-family: 'Arial', sans-serif; }
+                        .header-table { width: 100%; border-collapse: collapse; margin-bottom: 5px; }
+                        .header-table td { vertical-align: middle; }
+                        .logo-cell { width: 100px; text-align: left; }
+                        .title-cell { text-align: center; }
+                        .year-name { text-align: center; font-size: 11px; font-weight: bold; margin: 5px 0 20px 0; text-transform: uppercase; font-style: italic; font-family: 'Arial', sans-serif; }
+                        .doc-title-admin { text-align: center; font-size: 24px; font-weight: bold; text-decoration: underline; margin-top: 20px; margin-bottom: 30px; text-transform: uppercase; letter-spacing: 0.5px; font-family: 'Arial', sans-serif; }
+                        .doc-body-admin { font-family: 'Arial', sans-serif; font-size: 15px; line-height: 2.2; padding: 0 40px; }
+                        .intro-text { text-align: justify; font-weight: bold; margin-bottom: 30px; text-indent: 0; font-size: 14px; line-height: 2.2; } 
+                        .hace-constar { font-weight: bold; margin-bottom: 20px; font-size: 14px; }
+                        .main-paragraph { text-align: justify; text-indent: 80px; line-height: 2.2; font-size: 15px; margin-bottom: 20px; }
+                        .conclusion-text { text-align: justify; text-indent: 80px; margin-top: 30px; font-size: 15px; line-height: 2.2; }
+                        .date-line { 
+                            position: absolute; 
+                            bottom: 4cm; 
+                            right: 2cm; 
+                            text-align: right; 
+                            font-size: 14px; 
+                            margin: 0;
+                        }
+                        .footer-cc { 
+                            position: absolute; 
+                            bottom: 2cm; 
+                            left: 2cm; 
+                            font-size: 10px; 
+                            font-family: 'Arial', sans-serif; 
+                            margin: 0;
+                        }
+    
+                        /* Library specific */
+                        .page-header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 20px; margin-bottom: 40px; }
+                        .header-text h3 { font-size: 14px; margin: 0; font-weight: normal; }
+                        .header-text h1 { font-size: 18px; margin: 5px 0 0; }
+                        .doc-title { text-align: center; font-size: 20px; font-weight: bold; text-decoration: underline; margin-bottom: 40px; }
+                        .doc-body { font-size: 14px; line-height: 1.8; text-align: justify; }
+                        .signatures { display: flex; justify-content: center; margin-top: 100px; }
+                        .sig-line { text-align: center; width: 300px; }
+                        .sig-line hr { border: 1px solid black; margin-bottom: 5px; }
+                    </style>
+                </head>
+                <body>
+                    <div class="page">
+                        ${content}
+                    </div>
+                    <script>
+                        window.onload = function() {
+                            setTimeout(() => { 
+                                window.print(); 
+                                // Optional: window.close(); 
+                            }, 500);
+                        };
+    <\/script>
+</body>
 
-                    /* Library specific */
-                    .page-header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 20px; margin-bottom: 40px; }
-                    .header-text h3 { font-size: 14px; margin: 0; font-weight: normal; }
-                    .header-text h1 { font-size: 18px; margin: 5px 0 0; }
-                    .doc-title { text-align: center; font-size: 20px; font-weight: bold; text-decoration: underline; margin-bottom: 40px; }
-                    .doc-body { font-size: 14px; line-height: 1.8; text-align: justify; }
-                    .signatures { display: flex; justify-content: center; margin-top: 100px; }
-                    .sig-line { text-align: center; width: 300px; }
-                    .sig-line hr { border: 1px solid black; margin-bottom: 5px; }
-                </style>
-            </head>
-            <body>
-                <div class="page">
-                    ${content}
-                </div>
-                <script>
-                    window.onload = function() {
-                        setTimeout(() => { 
-                            window.print(); 
-                            // Optional: window.close(); 
-                        }, 500);
-                    };
-                <\/script>
-            </body>
-            </html>
-            `);
+</html>
+`);
             printWindow.document.close();
         }
 
-        function saveDraft() {
-            const type = document.getElementById('editorType').value;
-            const draftData = {
-                nombre: document.getElementById('editorNombre').value,
-                dni: document.getElementById('editorDNI').value,
-                matricula: document.getElementById('editorMatricula').value,
-                area: document.getElementById('editorArea').value,
-                detalle: document.getElementById('editorDetalle') ? document.getElementById('editorDetalle').value : ''
-            };
-
-            localStorage.setItem(`draft_${type}`, JSON.stringify(draftData));
-
-            Swal.fire({
-                icon: 'success',
-                title: 'Borrador guardado',
-                text: 'Los datos se recargarán automáticamente la próxima vez.',
-                timer: 1500,
-                showConfirmButton: false
-            });
-        }
     </script>
 
 </body>

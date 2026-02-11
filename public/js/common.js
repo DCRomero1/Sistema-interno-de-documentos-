@@ -32,6 +32,17 @@ async function checkUserRole() {
                 }
             }
 
+            // Update User Name in Header e.g. for Editor
+            const editorName = document.getElementById('editorUserName');
+            const editorEmail = document.getElementById('editorUserEmail');
+            if (editorName && data.user.name) {
+                editorName.textContent = data.user.name;
+            }
+            if (editorEmail && data.user.username) {
+                // If the DB doesn't have email, use username as fallback
+                editorEmail.textContent = `${data.user.username}@vigil.edu.pe`;
+            }
+
             if (data.user.role === 'admin') {
                 const adminLinks = document.querySelectorAll('#nav-admin-users');
                 adminLinks.forEach(el => el.style.display = 'block');
