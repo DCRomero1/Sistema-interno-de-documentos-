@@ -2,6 +2,22 @@
 
 Esta guía te llevará paso a paso desde un servidor vacío hasta tener tu aplicación corriendo con un dominio seguro (HTTPS).
 
+## 0. Requisitos Previos (Antes de empezar)
+
+### A. Comprar el VPS (Servidor)
+Necesitas una computadora en la nube.
+*   **Proveedores recomendados:** DigitalOcean (Droplet), Hetzner, Vultr, o Linode.
+*   **Sistema Operativo:** Elige **Ubuntu 22.04 LTS** o **24.04 LTS**.
+*   **Recursos:** Para este sistema, el plan más barato (aprox $4-6 USD/mes) con **1GB de RAM y 1 CPU** es suficiente.
+*   **Importante:** Al crear el servidor, te darán una **IP Pública** (ej: `123.45.67.89`) y una contraseña de `root` (o te pedirán subir una llave SSH).
+
+### B. Comprar un Dominio (Opcional pero recomendado)
+Para entrar como `sistema-reportes.com` en vez de números.
+*   Compra en Namecheap, GoDaddy, o Google Domains.
+*   Configura el **DNS** (Registro A) para que apunte a la IP de tu VPS.
+    *   Host: `@` -> Value: `Tu IP`
+    *   Host: `www` -> Value: `Tu IP`
+
 ## 1. Preparación de tu Código (En tu PC)
 Antes de entrar al servidor, asegúrate de que tu código esté listo.
 1.  Sube tu código a GitHub (si no lo has hecho).

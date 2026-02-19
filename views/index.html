@@ -5,114 +5,141 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de Registro Documentario</title>
-    <link rel="stylesheet" href="/css/style.css?v=3">
+
+    <link rel="icon" type="image/png" href="/img/user_avatar.svg">
+
+    <link rel="stylesheet" href="/css/style.css?v=5">
     <!--  Fondes de css actulizados -->
     <link rel="stylesheet" href="/css/fontawesome.all.min.css">
 </head>
 
 <body>
 
-    <!-- Top Bar (Full Width) -->
-    <header class="top-bar">
-        <div class="top-bar-left">
-            <div class="brand-text">Administración</div>
-            <i class="fa-solid fa-bars" id="sidebarToggle" style="cursor: pointer; font-size: 1.2rem;"></i>
+    <!-- Sidebar First -->
+    <nav class="sidebar">
+        <div class="sidebar-header"
+            style="justify-content: space-between; padding: 0 20px; height: 70px; align-items: center;">
+            <div class="sidebar-brand">
+                <div class="brand-icon-container">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <span class="brand-text">Vigil<span class="brand-suffix">Docs</span></span>
+            </div>
+            <!-- Toggle moves to right, but usually toggle is part of header interaction. 
+                 User request implied adding logo back. 
+                 Let's keep toggle but maybe adjust position if needed. 
+                 For now, spaced between is good. -->
         </div>
 
-        <div class="top-bar-right">
-            <a href="/logout" class="logout-link">
-                Cerrar Sesión
-            </a>
+        <div class="sidebar-section-header">MENU PRINCIPAL</div>
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="/" class="nav-link active">
+                    <span class="nav-icon"><i class="fa-solid fa-table-list"></i></span>
+                    Panel General
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/register" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-plus-circle"></i></span>
+                    Nuevo Documento
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/reports" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-chart-line"></i></span>
+                    Reportes
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/workers" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-users"></i></span>
+                    Trabajadores
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/formatos" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-file-contract"></i></span>
+                    Formatos
+                </a>
+            </li>
+        </ul>
+
+        <div class="sidebar-section-header">ADMINISTRACIÓN</div>
+        <ul class="nav-menu">
+            <li class="nav-item" id="nav-admin-users" style="display: none;">
+                <a href="/users" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-user-shield"></i></span>
+                    Usuarios
+                </a>
+            </li>
+
+        </ul>
+        <div class="sidebar-footer">
+            <div class="sidebar-user-card">
+                <div class="user-avatar-container">
+                    <img src="/img/user_avatar.svg" alt="Avatar" class="u-avatar-sidebar">
+                    <span class="status-indicator"></span>
+                </div>
+                <div class="u-info-sidebar">
+                    <span class="u-name-sidebar" id="sidebar-username">Cargando...</span>
+                    <span class="u-role-sidebar" id="sidebar-role">Usuario</span>
+                </div>
+                <a href="/logout" class="u-logout-card-btn" title="Cerrar Sesión">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                </a>
+            </div>
         </div>
-    </header>
+    </nav>
 
-    <div class="app-container">
-        <!-- Sidebar -->
-        <nav class="sidebar">
-            <div class="sidebar-user-profile">
-                <div class="user-avatar-circle">
-                    <i class="fa-solid fa-user"></i>
-                </div>
-                <div class="user-welcome-text">
-                    <span class="welcome-label">Bienvenido sr(a)</span>
-                    <span class="user-name" id="sidebar-username">CARGANDO...</span>
-                </div>
+    <!-- Main Wrapper -->
+    <div class="main-wrapper">
+        <header class="top-bar">
+            <!-- Search Bar -->
+            <div class="header-search-container">
+                <i class="fa-solid fa-magnifying-glass header-search-icon"></i>
+                <input type="text" id="searchInput" placeholder="Buscar documentos, usuarios, reportes..."
+                    class="header-search-input">
             </div>
 
-            <ul class="nav-menu">
-                <li class="nav-item">
-                    <a href="/" class="nav-link active">
-                        <span class="nav-icon"><i class="fa-solid fa-table-list"></i></span>
-                        Panel General
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="/register" class="nav-link">
-                        <span class="nav-icon"><i class="fa-solid fa-plus-circle"></i></span>
-                        Nuevo Documento
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="/reports" class="nav-link">
-                        <span class="nav-icon"><i class="fa-solid fa-chart-line"></i></span>
-                        Reporte
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="/workers" class="nav-link">
-                        <span class="nav-icon"><i class="fa-solid fa-users"></i></span>
-                        Trabajadores
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="/formatos" class="nav-link">
-                        <span class="nav-icon"><i class="fa-solid fa-file-contract"></i></span>
-                        Formatos
-                    </a>
-                </li>
-                <!-- Admin Only Section -->
-                <li class="nav-item" id="nav-admin-users" style="display: none;">
-                    <a href="/users" class="nav-link">
-                        <span class="nav-icon"><i class="fa-solid fa-user-shield"></i></span>
-                        Usuarios
-                    </a>
-                </li>
-            </ul>
-            <div class="sidebar-footer">
-                <img src="/img/logo_vigil.png" alt="Vigil Tecnológico" class="sidebar-logo">
-            </div>
-        </nav>
+            <!-- Right Actions -->
+            <div class="header-right-actions">
+                <select id="filterStatus" class="header-select">
+                    <option value="">Estados</option>
+                    <option value="Recibido">Recibido</option>
+                    <option value="Derivado">Derivado</option>
+                    <option value="Finalizado">Finalizado</option>
+                </select>
 
-        <!-- Main Content Area -->
+                <select id="filterArea" class="header-select">
+                    <option value="">Áreas</option>
+                    <!-- Populated Dynamically -->
+                </select>
+
+                <div class="header-divider"></div>
+
+                <div class="user-controls" style="display: flex; align-items: center; gap: 8px;">
+                    <button class="btn-icon-toggle" title="Notificaciones">
+                        <i class="fa-regular fa-bell"></i>
+                        <span class="notification-dot"
+                            style="position: absolute; top: 8px; right: 8px; width: 8px; height: 8px; background: #ef4444; border-radius: 50%; border: 2px solid white;"></span>
+                    </button>
+                    <button id="themeToggle" class="btn-icon-toggle" title="Cambiar Tema">
+                        <i class="fa-regular fa-moon"></i>
+                    </button>
+                </div>
+
+                <a href="/register" class="btn btn-primary btn-header-new">
+                    <i class="fa-solid fa-plus"></i> Nuevo
+                </a>
+            </div>
+        </header>
+
         <main class="main-content">
             <div class="content-area">
+                <!-- Toolbar -->
+                <!-- Toolbar Removed (Moved to Header) -->
                 <div class="paper-card">
-                    <!-- Search and Filter Section -->
-                    <div class="search-section">
-                        <div class="search-box">
-                            <i class="fa-solid fa-search search-icon"></i>
-                            <input type="text" id="searchInput" placeholder="Buscar por remite, concepto o cargo..."
-                                class="search-input">
-                        </div>
-                        <div class="filter-box">
-                            <select id="filterStatus" class="filter-select">
-                                <option value="">Todos los Estados</option>
-                                <option value="Recibido">Recibido</option>
-                                <option value="Derivado">Derivado</option>
-                                <option value="Finalizado">Finalizado</option>
-                            </select>
-
-
-                            <select id="filterArea" class="filter-select">
-                                <option value="">Áreas</option>
-                                <!-- Populated Dynamically -->
-                            </select>
-                            <button class="btn btn-secondary btn-icon-only" onclick="applyFilters()"
-                                title="Aplicar Filtros">
-                                <i class="fa-solid fa-filter"></i>
-                            </button>
-                        </div>
-                    </div>
 
                     <div class="registry-container">
                         <table class="registry-table">
@@ -187,6 +214,7 @@
                             <option>Limpieza y mantenimiento</option>
                             <option>Caja</option>
                             <option>Tesorero</option>
+                            <option>Jefatura de Unidad Administrativa</option>
                             <option>Secretaria</option>
                             <option>Oficinista II</option>
                         </optgroup>
@@ -240,6 +268,105 @@
                     <label class="themed-label">Observaciones</label>
                     <textarea id="modalObs" class="themed-input form-textarea" rows="2"
                         placeholder="Ingrese nuevas observaciones . . ."></textarea>
+                </div>
+
+                <!-- Checkbox para activar segunda derivación -->
+                <div class="form-group"
+                    style="background-color: #e3f2fd; padding: 10px; border-radius: 4px; border: 1px solid #90caf9;">
+                    <label
+                        style="display: flex; align-items: center; gap: 10px; cursor: pointer; color: #1565c0; font-weight: 600;">
+                        <input type="checkbox" id="enableSecondDerivation" style="width: 18px; height: 18px;">
+                        Derivar a una segunda área
+                    </label>
+                    <small style="display: block; margin-top: 5px; color: #666; margin-left: 28px;">
+                        Active esta opción si el documento se envía a dos áreas diferentes simultáneamente.
+                    </small>
+                </div>
+
+                <!-- Segunda Derivación (oculta por defecto) -->
+                <div id="secondDerivationFields"
+                    style="display: none; border-left: 3px solid #2196f3; padding-left: 15px; margin-left: 10px;">
+                    <h4 style="color: #1565c0; font-size: 0.9rem; margin-bottom: 10px;">
+                        <i class="fa-solid fa-copy"></i> Segunda Derivación
+                    </h4>
+
+                    <div class="form-group">
+                        <label class="themed-label">Cargo 2 (Persona)</label>
+                        <select id="modalCargo2" class="themed-input form-select">
+                            <option value="" disabled selected>Seleccione cargo...</option>
+                            <option>Dirección General</option>
+                            <option>Consejo Asesor</option>
+
+                            <optgroup label="Area de Administración">
+                                <option>Especialista administrativo</option>
+                                <option>Contador</option>
+                                <option>Recursos Humanos</option>
+                                <option>Administrador</option>
+                                <option>Abastecimiento</option>
+                                <option>Almacén</option>
+                                <option>Patrimonio</option>
+                                <option>Producción</option>
+                                <option>Técnico de campo</option>
+                                <option>Especialista en comunicaciones y software</option>
+                                <option>Especialista en Hardware</option>
+                                <option>Técnico Administrativo</option>
+                                <option>Técnico de biblioteca</option>
+                                <option>Auxiliar de biblioteca</option>
+                                <option>Mesa de partes</option>
+                                <option>Asistente administrativo</option>
+                                <option>Seguridad y vigilancia</option>
+                                <option>Limpieza y mantenimiento</option>
+                                <option>Caja</option>
+                                <option>Tesorero</option>
+                                <option>Jefatura de Unidad Administrativa</option>
+                                <option>Secretaria</option>
+                                <option>Oficinista II</option>
+                            </optgroup>
+
+                            <option>Area de Calidad</option>
+
+                            <optgroup label="Secretaría Académica">
+                                <option>Programador de Sistemas PAD</option>
+                            </optgroup>
+
+                            <optgroup label="Unidad Académica">
+                                <option>Coordinadores de Área Académica de los programas de estudio</option>
+                                <option>Docente extraordiario</option>
+                                <option>Docente Altamente especializado</option>
+                                <option>Docente Regular de Competencias especificas</option>
+                                <option>Docente Regular de Competencias para la Empleabilidad</option>
+                            </optgroup>
+
+                            <option>Unidad de Formación Continua</option>
+
+                            <optgroup label="Unidad de Bienestar y Empleabilidad">
+                                <option>Servicio Médico(Tópico)</option>
+                                <option>Servicio de Bienestar(Consejeria)</option>
+                                <option>Servicio psicopedagógico</option>
+                                <option>Servicio de Empleabilidad</option>
+                                <option>Servicio de Asistente Social</option>
+                            </optgroup>
+
+                            <optgroup label="Unidad de investigación">
+                                <option>Fabricacion Digital</option>
+                            </optgroup>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="themed-label">Área de Derivación 2 (Destino)</label>
+                        <select class="themed-input form-select" id="modalNewLocation2">
+                            <option value="" selected disabled>Seleccione nueva ubicación...</option>
+                            <option>Consejo Asesor</option>
+                            <option>Area de Administración</option>
+                            <option>Area de Calidad</option>
+                            <option>Secretaría Académica</option>
+                            <option>Unidad Académica</option>
+                            <option>Unidad de Formación Continua</option>
+                            <option>Unidad de Bienestar y Empleabilidad</option>
+                            <option>Unidad de investigación</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div class="form-group"
@@ -326,24 +453,10 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="/js/common.js?v=2"></script>
+    <script src="/js/common.js?v=3"></script>
     <script src="/js/index.js"></script>
     <script>
-        // Sidebar Toggle Logic
-        document.addEventListener('DOMContentLoaded', () => {
-            const toggleBtn = document.getElementById('sidebarToggle');
-            const sidebar = document.querySelector('.sidebar');
-
-            // Restore state
-            if (localStorage.getItem('sidebarCollapsed') === 'true') {
-                sidebar.classList.add('collapsed');
-            }
-
-            toggleBtn.addEventListener('click', () => {
-                sidebar.classList.toggle('collapsed');
-                localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
-            });
-        });
+        // Specific logic for index.html if any needed in future
     </script>
 </body>
 

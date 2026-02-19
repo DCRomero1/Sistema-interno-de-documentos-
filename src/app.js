@@ -12,6 +12,7 @@ const documentRoutes = require('./routes/documentRoutes');
 const userRoutes = require('./routes/userRoutes');
 const workerRoutes = require('./routes/workerRoutes');
 const reportRoutes = require('./routes/reportRoutes');
+const settingsRoutes = require('./routes/settingsRoutes');
 
 // Middleware para procesar JSON y datos de formularios
 app.use(express.json());
@@ -47,6 +48,7 @@ app.use(documentRoutes);
 app.use(userRoutes);
 app.use(workerRoutes);
 app.use(reportRoutes);
+app.use(settingsRoutes);
 
 // Manejo de error 404 (Opcional, pero buena práctica)
 app.use((req, res) => {

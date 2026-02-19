@@ -7,6 +7,9 @@ src/database.sqlite
 *.sqlite
 *.db
 
+# Archivos subidos por usuarios
+public/uploads/
+
 # Variables de entorno
 .env
 

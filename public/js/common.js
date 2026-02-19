@@ -1,7 +1,70 @@
-// Auth Check on Load
+// Auth Check, Sidebar & Theme Init on Load
 document.addEventListener('DOMContentLoaded', () => {
     checkUserRole();
+    initSidebarToggle();
+    initDarkMode();
 });
+
+function initSidebarToggle() {
+    const toggleBtn = document.getElementById('sidebarToggle');
+    const brandIcon = document.querySelector('.brand-icon-container'); // Select the shield
+    const sidebar = document.querySelector('.sidebar');
+
+    // Restore state immediately to avoid flicker (if possible, though this runs on DOMReady)
+    if (sidebar && localStorage.getItem('sidebarCollapsed') === 'true') {
+        sidebar.classList.add('collapsed');
+    }
+
+    // Toggle function
+    const toggleSidebar = () => {
+        sidebar.classList.toggle('collapsed');
+        localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
+    };
+
+    if (toggleBtn && sidebar) {
+        toggleBtn.addEventListener('click', toggleSidebar);
+    }
+
+    if (brandIcon && sidebar) {
+        brandIcon.addEventListener('click', toggleSidebar);
+    }
+}
+
+function initDarkMode() {
+    const themeToggleBtn = document.getElementById('themeToggle');
+    const icon = themeToggleBtn ? themeToggleBtn.querySelector('i') : null;
+    const body = document.body;
+
+    // 1. Check LocalStorage
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+        body.classList.add('dark-mode');
+        if (icon) {
+            icon.classList.remove('fa-moon');
+            icon.classList.add('fa-sun');
+        }
+    }
+
+    // 2. Toggle Event
+    if (themeToggleBtn) {
+        themeToggleBtn.addEventListener('click', () => {
+            body.classList.toggle('dark-mode');
+            const isDark = body.classList.contains('dark-mode');
+
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+
+            if (icon) {
+                if (isDark) {
+                    icon.classList.remove('fa-moon');
+                    icon.classList.add('fa-sun');
+                } else {
+                    icon.classList.remove('fa-sun');
+                    icon.classList.add('fa-moon');
+                }
+            }
+        });
+    }
+}
 
 async function checkUserRole() {
     try {
@@ -10,36 +73,39 @@ async function checkUserRole() {
         const data = await response.json();
 
         if (data.authenticated) {
-            // Update User Name in Header
-            // Update User Name in Header
-            const userDisplay = document.getElementById('sidebar-username') || document.querySelector('.user-info span');
-            if (userDisplay && data.user.name) {
-                // XSS Protection Helper
-                const escapeHtml = (str) => {
-                    return String(str)
-                        .replace(/&/g, "&amp;")
-                        .replace(/</g, "&lt;")
-                        .replace(/>/g, "&gt;")
-                        .replace(/"/g, "&quot;")
-                        .replace(/'/g, "&#039;");
-                };
+            // Guardar usuario actual globalmente para uso en otras páginas
+            window.__currentUser = data.user;
+            // --- Update Sidebar User Info (New Design) ---
+            const headerName = document.getElementById('sidebar-username');
+            const headerRole = document.getElementById('sidebar-role');
 
-                // Check if it is the old or new sidebar style
-                if (userDisplay.id === 'sidebar-username') {
-                    userDisplay.textContent = data.user.name; // New sidebar just text
-                } else {
-                    userDisplay.innerHTML = `<i class="fa-solid fa-user-circle"></i> ${escapeHtml(data.user.name)} <i class="fa-solid fa-caret-down"></i>`;
-                }
+            if (headerName && data.user.name) {
+                // Shorten name to first 2 words if too long
+                const shortName = data.user.name.split(' ').slice(0, 2).join(' ');
+                headerName.textContent = shortName;
             }
 
-            // Update User Name in Header e.g. for Editor
+            if (headerRole && data.user.role) {
+                // Formatting role: admin -> Administrador
+                const roleMap = {
+                    'admin': 'Administrador',
+                    'user': 'Usuario',
+                    'editor': 'Editor'
+                };
+                headerRole.textContent = roleMap[data.user.role] || data.user.role;
+            }
+
+            // Update Avatar if available (future proofing)
+            // const userAvatar = document.querySelector('.u-avatar');
+            // if(userAvatar && data.user.avatar) userAvatar.src = data.user.avatar;
+
+            // --- Keep Legacy/Editor Update just in case (optional) ---
             const editorName = document.getElementById('editorUserName');
             const editorEmail = document.getElementById('editorUserEmail');
             if (editorName && data.user.name) {
                 editorName.textContent = data.user.name;
             }
             if (editorEmail && data.user.username) {
-                // If the DB doesn't have email, use username as fallback
                 editorEmail.textContent = `${data.user.username}@vigil.edu.pe`;
             }
 

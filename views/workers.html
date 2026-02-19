@@ -5,7 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Directorio de Personal - Sistema de Registro</title>
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="icon" type="image/png" href="/img/user_avatar.svg">
+    <link rel="stylesheet" href="/css/style.css?v=5">
     <link rel="stylesheet" href="/css/fontawesome.all.min.css">
     <!-- Google Fonts for Formal Card -->
     <link
@@ -461,27 +462,20 @@
 
 <body>
 
-    <!-- Top Bar -->
-    <header class="top-bar">
-        <div class="top-bar-left">
-            <div class="brand-text">Administración</div>
-            <i class="fa-solid fa-bars" id="sidebarToggle" style="cursor: pointer; font-size: 1.2rem;"></i>
-        </div>
-        <div class="top-bar-right">
-            <a href="/logout" class="logout-link">Cerrar Sesión</a>
-        </div>
-    </header>
-
-    <div class="app-container">
-        <!-- Sidebar -->
-        <nav class="sidebar">
-            <div class="sidebar-user-profile">
-                <div class="user-avatar-circle"><i class="fa-solid fa-user"></i></div>
-                <div class="user-welcome-text">
-                    <span class="welcome-label">Bienvenido sr(a)</span>
-                    <span class="user-name" id="sidebar-username">CARGANDO...</span>
+    <!-- Sidebar First -->
+    <nav class="sidebar">
+        <div class="sidebar-header"
+            style="justify-content: space-between; padding: 0 20px; height: 70px; align-items: center;">
+            <div class="sidebar-brand">
+                <div class="brand-icon-container">
+                    <i class="fa-solid fa-shield-halved"></i>
                 </div>
+                <span class="brand-text">Vigil<span class="brand-suffix">Docs</span></span>
             </div>
+        </div>
+
+        <div class="sidebar-section-header">MENU PRINCIPAL</div>
+        <div class="sidebar-scroll-area">
             <ul class="nav-menu">
                 <li class="nav-item">
                     <a href="/" class="nav-link">
@@ -513,6 +507,10 @@
                         Formatos
                     </a>
                 </li>
+            </ul>
+
+            <div class="sidebar-section-header">ADMINISTRACIÓN</div>
+            <ul class="nav-menu">
                 <li class="nav-item" id="nav-admin-users" style="display: none;">
                     <a href="/users" class="nav-link">
                         <span class="nav-icon"><i class="fa-solid fa-user-shield"></i></span>
@@ -520,162 +518,195 @@
                     </a>
                 </li>
             </ul>
-            <div class="sidebar-footer">
-                <img src="/img/logo_vigil.png" alt="Vigil Tecnológico" class="sidebar-logo">
+            <div class="sidebar-bottom-logo">
+                <img src="/img/Logo2.jpg" alt="Vigil Logo">
             </div>
-        </nav>
-
-        <main class="main-content">
-            <div class="content-area">
-
-                <!-- Header Title -->
-                <div style="margin-bottom: 25px;">
-                    <button class="btn btn-primary" onclick="openWorkerModal()" style="float: right;">
-                        <i class="fa-solid fa-plus"></i> Nuevo Registro
-                    </button>
-                    <div style="display: flex; align-items: center; gap: 15px;">
-                        <div
-                            style="background: #2563eb; color: white; width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
-                            <i class="fa-solid fa-id-card"></i>
-                        </div>
-                        <div>
-                            <h2 style="color: var(--primary-color); font-weight: 700; margin: 0; font-size: 1.5rem;">
-                                Directorio de Personal</h2>
-                            <p style="color: #64748b; margin: 0; font-size: 0.9rem;">Gestión de docentes y personal
-                                administrativo</p>
-                        </div>
-                    </div>
+        </div>
+        <div class="sidebar-footer">
+            <div class="sidebar-user-card">
+                <div class="user-avatar-container">
+                    <img src="/img/user_avatar.svg" alt="Avatar" class="u-avatar-sidebar">
+                    <span class="status-indicator"></span>
                 </div>
-
-                <!-- Hero Banner -->
-                <div class="hero-banner" id="heroBanner">
-                    <div style="z-index: 2;">
-                        <h1 style="font-size: 1.6rem; font-weight: 800; margin-bottom: 5px;">Próximos Cumpleaños 🎂</h1>
-                        <p style="font-size: 0.95rem; opacity: 0.9; max-width: 600px; line-height: 1.4; margin: 0;">
-                            Celebra con tus
-                            compañeros. Aquí tienes la lista de los próximos eventos.</p>
-                    </div>
-                    <div class="hero-date-card">
-                        <div
-                            style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; opacity: 0.9;">
-                            HOY ES</div>
-                        <div style="font-size: 1.4rem; font-weight: 800;" id="heroDateDisplay">21 de Enero</div>
-                    </div>
+                <div class="u-info-sidebar">
+                    <span class="u-name-sidebar" id="sidebar-username">Cargando...</span>
+                    <span class="u-role-sidebar" id="sidebar-role">Usuario</span>
                 </div>
+                <a href="/logout" class="u-logout-card-btn" title="Cerrar Sesión">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                </a>
+            </div>
+        </div>
+    </nav>
 
-                <!-- Main Layout Grid -->
-                <div style="display: grid; grid-template-columns: 3fr 1fr; gap: 30px;">
+    <!-- Main Wrapper -->
+    <div class="main-wrapper">
+        <header class="top-bar">
+            <div style="flex-grow: 1;"></div>
+            <div class="user-controls">
+                <button id="themeToggle" class="btn-icon-toggle" title="Cambiar Tema">
+                    <i class="fa-regular fa-moon"></i>
+                </button>
+            </div>
+        </header>
 
-                    <!-- Left: Search and List -->
-                    <div>
-                        <!-- Filter Bar -->
-                        <div class="search-section"
-                            style="border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: none;">
-                            <div class="search-box">
-                                <i class="fa-solid fa-magnifying-glass search-icon"></i>
-                                <input type="text" id="searchInput" class="search-input"
-                                    placeholder="Buscar personal...">
-                            </div>
-                            <div class="filter-box">
-                                <select id="deptFilter" class="filter-select" style="background-color: #f8fafc;">
-                                    <option value="all">Todos los departamentos</option>
-                                    <option value="Docente">Docente</option>
-                                    <option value="Administrativo">Administrativo</option>
-                                </select>
-                                <button class="btn-icon-only">
-                                    <i class="fa-solid fa-filter"></i>
-                                </button>
-                            </div>
-                        </div>
+        <div class="app-container">
+            <!-- Sidebar moved out -->
 
-                        <!-- Table Header (Visual) -->
-                        <div
-                            style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; padding: 0 20px 10px; color: #94a3b8; font-size: 0.75rem; font-weight: 700; letter-spacing: 1px;">
-                            <div>PERSONAL</div>
-                            <div>DEPARTAMENTO</div>
-                            <div>FECHA</div>
-                            <div style="text-align: right;">ACCIONES</div>
-                        </div>
+            <main class="main-content">
+                <div class="content-area">
 
-                        <!-- Workers List Container -->
-                        <div id="workersList" style="display: flex; flex-direction: column; gap: 12px;">
-                            <!-- List Items Scripted Here -->
-                            <!-- Skeleton Loader -->
-                            <div class="worker-card"
-                                style="display: flex; align-items: center; padding: 20px; border-radius: 12px; border: 1px solid #f1f5f9; background: white;">
-                                <div
-                                    style="width: 40px; height: 40px; background: #e2e8f0; border-radius: 50%; margin-right: 15px;">
-                                </div>
-                                <div style="flex-grow: 1;">
-                                    <div
-                                        style="width: 150px; height: 15px; background: #e2e8f0; border-radius: 4px; margin-bottom: 5px;">
-                                    </div>
-                                    <div style="width: 80px; height: 10px; background: #e2e8f0; border-radius: 4px;">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Pagination Actions -->
-                        <div id="paginationControls"
-                            style="display: flex; justify-content: center; gap: 10px; margin-top: 30px;">
-                        </div>
-                    </div>
-
-                    <!-- RightSidebar -->
-                    <div>
-                        <!-- Summary Widget -->
-                        <div
-                            style="background: white; border-radius: 16px; padding: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); margin-bottom: 30px;">
-                            <div class="widget-title" style="border-left-color: #2563eb;">Resumen</div>
-
-                            <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
-                                <span style="color: #64748b;">Total Personal</span>
-                                <span style="font-weight: 800; font-size: 1.2rem; color: #2563eb;"
-                                    id="statTotal">--</span>
-                            </div>
-                            <div style="display: flex; justify-content: space-between; margin-bottom: 25px;">
-                                <span style="color: #64748b;">Cumpleaños este mes</span>
-                                <span style="font-weight: 800; font-size: 1.2rem; color: #8b5cf6;"
-                                    id="statBirthdaysMonth">--</span>
-                            </div>
-
+                    <!-- Header Title -->
+                    <div style="margin-bottom: 25px;">
+                        <button class="btn btn-primary" onclick="openWorkerModal()" style="float: right;">
+                            <i class="fa-solid fa-plus"></i> Nuevo Registro
+                        </button>
+                        <div style="display: flex; align-items: center; gap: 15px;">
                             <div
-                                style="font-size: 0.75rem; text-transform: uppercase; color: #94a3b8; letter-spacing: 1px; margin-bottom: 10px;">
-                                DISTRIBUCIÓN MENSUAL</div>
-                            <div class="chart-placeholder" id="chartBars">
-                                <!-- Dynamic Bars -->
+                                style="background: #2563eb; color: white; width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
+                                <i class="fa-solid fa-id-card"></i>
                             </div>
-                            <div id="chartLabels"
-                                style="display: flex; justify-content: space-between; font-size: 0.65rem; color: #94a3b8; padding-top: 5px;">
-                                <!-- Dynamic Labels -->
+                            <div>
+                                <h2
+                                    style="color: var(--primary-color); font-weight: 700; margin: 0; font-size: 1.5rem;">
+                                    Directorio de Personal</h2>
+                                <p style="color: #64748b; margin: 0; font-size: 0.9rem;">Gestión de docentes y personal
+                                    administrativo</p>
                             </div>
-                        </div>
-
-                        <!-- Recent Activity -->
-                        <div
-                            style="background: white; border-radius: 16px; padding: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
-                            <div class="widget-title" style="border-left-color: #8b5cf6;">Actividad Reciente</div>
-
-                            <div id="recentActivityList">
-                                <!-- Dynamic Content -->
-                                <div style="color: #94a3b8; font-size: 0.9rem; text-align: center; padding: 20px;">
-                                    Cargando actividad...</div>
-                            </div>
-
-                            <div style="text-align: center; margin-top: 20px;">
-                                <a href="javascript:void(0)" onclick="openHistoryModal()"
-                                    style="font-size: 0.85rem; color: #2563eb; font-weight: 600; text-decoration: none;">Ver
-                                    todo el historial <i class="fa-solid fa-arrow-right"></i></a>
-                            </div>
-
                         </div>
                     </div>
 
-                </div>
+                    <!-- Hero Banner -->
+                    <div class="hero-banner" id="heroBanner">
+                        <div style="z-index: 2;">
+                            <h1 style="font-size: 1.6rem; font-weight: 800; margin-bottom: 5px;">Próximos Cumpleaños 🎂
+                            </h1>
+                            <p style="font-size: 0.95rem; opacity: 0.9; max-width: 600px; line-height: 1.4; margin: 0;">
+                                Celebra con tus
+                                compañeros. Aquí tienes la lista de los próximos eventos.</p>
+                        </div>
+                        <div class="hero-date-card">
+                            <div
+                                style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; opacity: 0.9;">
+                                HOY ES</div>
+                            <div style="font-size: 1.4rem; font-weight: 800;" id="heroDateDisplay">21 de Enero</div>
+                        </div>
+                    </div>
 
-            </div>
-        </main>
+                    <!-- Main Layout Grid -->
+                    <div style="display: grid; grid-template-columns: 3fr 1fr; gap: 30px;">
+
+                        <!-- Left: Search and List -->
+                        <div>
+                            <!-- Filter Bar -->
+                            <!-- Filter Bar -->
+                            <div class="content-toolbar">
+                                <div class="search-wrapper">
+                                    <i class="fa-solid fa-magnifying-glass"></i>
+                                    <input type="text" id="searchInput" placeholder="Buscar personal...">
+                                </div>
+                                <div class="filter-wrapper">
+                                    <select id="deptFilter" class="filter-select">
+                                        <option value="all">Todos los departamentos</option>
+                                        <option value="Docente">Docente</option>
+                                        <option value="Administrativo">Administrativo</option>
+                                    </select>
+                                    <button class="btn-icon-only">
+                                        <i class="fa-solid fa-filter"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Table Header (Visual) -->
+                            <div
+                                style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; padding: 0 20px 10px; color: #94a3b8; font-size: 0.75rem; font-weight: 700; letter-spacing: 1px;">
+                                <div>PERSONAL</div>
+                                <div>DEPARTAMENTO</div>
+                                <div>FECHA</div>
+                                <div style="text-align: right;">ACCIONES</div>
+                            </div>
+
+                            <!-- Workers List Container -->
+                            <div id="workersList" style="display: flex; flex-direction: column; gap: 12px;">
+                                <!-- List Items Scripted Here -->
+                                <!-- Skeleton Loader -->
+                                <div class="worker-card"
+                                    style="display: flex; align-items: center; padding: 20px; border-radius: 12px; border: 1px solid #f1f5f9; background: white;">
+                                    <div
+                                        style="width: 40px; height: 40px; background: #e2e8f0; border-radius: 50%; margin-right: 15px;">
+                                    </div>
+                                    <div style="flex-grow: 1;">
+                                        <div
+                                            style="width: 150px; height: 15px; background: #e2e8f0; border-radius: 4px; margin-bottom: 5px;">
+                                        </div>
+                                        <div
+                                            style="width: 80px; height: 10px; background: #e2e8f0; border-radius: 4px;">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Pagination Actions -->
+                            <div id="paginationControls"
+                                style="display: flex; justify-content: center; gap: 10px; margin-top: 30px;">
+                            </div>
+                        </div>
+
+                        <!-- RightSidebar -->
+                        <div>
+                            <!-- Summary Widget -->
+                            <div
+                                style="background: white; border-radius: 16px; padding: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); margin-bottom: 30px;">
+                                <div class="widget-title" style="border-left-color: #2563eb;">Resumen</div>
+
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+                                    <span style="color: #64748b;">Total Personal</span>
+                                    <span style="font-weight: 800; font-size: 1.2rem; color: #2563eb;"
+                                        id="statTotal">--</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 25px;">
+                                    <span style="color: #64748b;">Cumpleaños este mes</span>
+                                    <span style="font-weight: 800; font-size: 1.2rem; color: #8b5cf6;"
+                                        id="statBirthdaysMonth">--</span>
+                                </div>
+
+                                <div
+                                    style="font-size: 0.75rem; text-transform: uppercase; color: #94a3b8; letter-spacing: 1px; margin-bottom: 10px;">
+                                    DISTRIBUCIÓN MENSUAL</div>
+                                <div class="chart-placeholder" id="chartBars">
+                                    <!-- Dynamic Bars -->
+                                </div>
+                                <div id="chartLabels"
+                                    style="display: flex; justify-content: space-between; font-size: 0.65rem; color: #94a3b8; padding-top: 5px;">
+                                    <!-- Dynamic Labels -->
+                                </div>
+                            </div>
+
+                            <!-- Recent Activity -->
+                            <div
+                                style="background: white; border-radius: 16px; padding: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
+                                <div class="widget-title" style="border-left-color: #8b5cf6;">Actividad Reciente</div>
+
+                                <div id="recentActivityList">
+                                    <!-- Dynamic Content -->
+                                    <div style="color: #94a3b8; font-size: 0.9rem; text-align: center; padding: 20px;">
+                                        Cargando actividad...</div>
+                                </div>
+
+                                <div style="text-align: center; margin-top: 20px;">
+                                    <a href="javascript:void(0)" onclick="openHistoryModal()"
+                                        style="font-size: 0.85rem; color: #2563eb; font-weight: 600; text-decoration: none;">Ver
+                                        todo el historial <i class="fa-solid fa-arrow-right"></i></a>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </main>
+        </div>
     </div>
 
     <!-- Modal for Adding Worker (Themed) -->
@@ -741,7 +772,7 @@
                 <div class="card-border">
                     <div class="card-header">
                         <div class="school-logo">
-                            <img src="/img/logo_vigil.png" alt="Logo" style="height: 60px; opacity: 0.9;">
+                            <img src="/img/Logo2.jpg" alt="Logo" style="height: 60px; opacity: 0.9;">
                         </div>
                         <div class="formal-title">Feliz Cumpleaños</div>
                     </div>
@@ -812,7 +843,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <!-- Common JS for Sidebar -->
-    <script src="/js/common.js?v=2"></script>
+    <script src="/js/common.js?v=3"></script>
     <script src="/js/workers.js?v=5"></script>
     <script>
         // Inline Modal Logic Helpers
@@ -820,19 +851,7 @@
         function closeWorkerModal() { document.getElementById('workerModal').style.display = 'none'; }
 
         // Sidebar Toggle logic (Redundant if in common.js but safe here)
-        document.addEventListener('DOMContentLoaded', () => {
-            const toggleBtn = document.getElementById('sidebarToggle');
-            const sidebar = document.querySelector('.sidebar');
-            if (toggleBtn && sidebar) {
-                toggleBtn.addEventListener('click', () => {
-                    sidebar.classList.toggle('collapsed');
-                    localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
-                });
-                if (localStorage.getItem('sidebarCollapsed') === 'true') {
-                    sidebar.classList.add('collapsed');
-                }
-            }
-        });
+        // Sidebar Toggle logic is now handled in common.js
 
         window.onclick = function (event) {
             if (event.target == document.getElementById('workerModal')) closeWorkerModal();

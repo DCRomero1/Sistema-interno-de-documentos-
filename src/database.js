@@ -91,6 +91,38 @@ function initializeTables() {
                     // console.error('Migration note:', err.message);
                 }
             });
+
+            // Migración: Agregar columna year para reinicio anual de IDs
+            db.run(`ALTER TABLE documents ADD COLUMN year INTEGER`, (err) => {
+                if (err && !err.message.includes('duplicate column')) {
+                    // console.error('Migration note:', err.message);
+                }
+            });
+
+            // Crear índice en year para mejor rendimiento
+            db.run(`CREATE INDEX IF NOT EXISTS idx_documents_year ON documents(year)`, (err) => {
+                if (err) console.error('Error creating year index:', err);
+            });
+        }
+    });
+
+    // Tabla de Configuración General del Sistema
+    db.run(`CREATE TABLE IF NOT EXISTS settings (
+        key TEXT PRIMARY KEY,
+        value TEXT NOT NULL,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )`, (err) => {
+        if (err) {
+            console.error('Error creating settings table:', err);
+        } else {
+            // Insertar valor por defecto del nombre del año si no existe
+            db.run(
+                `INSERT OR IGNORE INTO settings (key, value) VALUES (?, ?)`,
+                ['anio_nombre', 'AÑO DE LA ESPERANZA Y EL FORTALECIMIENTO DE LA DEMOCRACIA'],
+                (err) => {
+                    if (err) console.error('Error inserting default setting:', err);
+                }
+            );
         }
     });
 

@@ -1,5 +1,6 @@
 :root {
-    /* --- Tema Azul Administrativo --- */
+    box-sizing: border-box;
+    /* --- Tema Azul Administrativo (Modo Claro) --- */
     --primary-color: #2563eb;
     /* Azul Brillante */
     --secondary-color: #1e3a8a;
@@ -7,18 +8,91 @@
     --accent-color: #3b82f6;
     /* Azul Cielo */
 
-    --header-bg: #1e3a8a;
-    /* Encabezado Azul Oscuro */
-    --sidebar-bg: #f8f9fa;
-    /* Gris Claro/Blanco */
-    --text-color: #333;
-    --sidebar-text: #555;
-    --sidebar-hover-bg: #e9ecef;
-    --border-color: #ddd;
+    --bg-body: #f3f4f6;
+    /* Fondo General */
+    --bg-panel: #ffffff;
+    /* Fondo Tarjetas/Sidebar */
+    --text-main: #1f2937;
+    /* Texto Principal */
+    --text-secondary: #6b7280;
+    /* Texto Secundario */
+    --border-color: #e5e7eb;
+    /* Bordes */
+
+    --header-bg: #ffffff;
+    /* Header Blanco (Light Mode Default) */
+    --header-text: #1f2937;
+
+    --sidebar-bg: #ffffff;
+    --sidebar-text: #4b5563;
+    --sidebar-hover-bg: #f3f4f6;
+
+    /* Branding Light Mode */
+    --brand-text: #1f2937;
+    /* Dark Gray */
+    --brand-suffix: #2563EB;
+    /* Blue */
 
     /* Dimensiones */
-    --sidebar-width: 260px;
+    /* Dimensiones Compactas */
+    --sidebar-width: 250px;
+    /* Reduced from 260px */
     --header-height: 60px;
+    /* Restored to 70px */
+
+    /* Input Theme Variables (Light Mode) */
+    --input-bg: #f9fafb;
+    --input-text: #1f2937;
+    --input-border: #e2e8f0;
+    --input-placeholder: #9ca3af;
+
+    --paper-color: #ffffff;
+    /* Default defined */
+}
+
+/* --- Modo Oscuro (Reference Match) --- */
+/* --- Modo Oscuro (Reference Match - ONLY SIDEBAR/HEADER) --- */
+body.dark-mode {
+    --primary-color: #3b82f6;
+
+    /* REFERENCE MATCH: Dark Sidebar/Header (Tailwind #0B1120) */
+    --bg-body: #cbd5e1;
+    /* Slate 300 - Darker grey to make white cards float */
+    /* --bg-panel: #1e293b; */
+    /* Slate 800 for cards */
+
+    /* --text-main: #f8fafc; */
+    /* --text-secondary: #94a3b8; */
+    /* --border-color: #1e293b; */
+
+
+    /* DARK NAVIGATION (Tailwind #0B1120) */
+    /* DARK NAVIGATION (Login Match - Slate 900) */
+    --header-bg: #0f172a;
+    /* Slate 900 */
+    --header-text: #f8fafc;
+
+    --sidebar-bg: #0f172a;
+    /* Slate 900 */
+    --sidebar-text: #cbd5e1;
+    /* Slate 300 */
+    --sidebar-hover-bg: #1e293b;
+    /* Slate 800 */
+
+    /* Branding Dark Mode */
+    --brand-text: #ffffff;
+    --brand-suffix: #9CA3AF;
+    /* Matching text-muted */
+
+    /* Dark Mode Input Variables (Login Style) */
+    /* --input-bg: rgba(2, 6, 23, 0.5); */
+    /* Slate 950 transparent-ish */
+    /* --input-text: #f1f5f9; */
+    /* --input-border: rgba(255, 255, 255, 0.1); */
+    /* --input-placeholder: #64748b; */
+
+    /* Paper Color Mapping */
+    /* --paper-color: var(--bg-panel); */
 }
 
 * {
@@ -27,176 +101,746 @@
     padding: 0;
 }
 
+*,
+*::before,
+*::after {
+    box-sizing: inherit;
+}
+
 body {
     font-family: 'Segoe UI', 'Roboto', Helvetica, Arial, sans-serif;
-    background-color: #ffffff;
+    background-color: var(--bg-body);
+    color: var(--text-main);
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    /* Change to Row */
     height: 100vh;
     overflow: hidden;
+    transition: background-color 0.3s, color 0.3s;
 }
 
-/* --- Barra Superior (Encabezado Rojo) --- */
-.top-bar {
-    height: var(--header-height);
-    background-color: var(--header-bg);
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 20px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    z-index: 20;
-    /* Sobre la barra lateral */
-    position: relative;
-}
-
-.top-bar-left {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-}
-
-.brand-text {
-    font-family: 'Brush Script MT', cursive;
-    /* O fuente script similar */
-    font-size: 1.8rem;
-    font-weight: normal;
-}
-
-.logout-link {
-    color: white;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 0.95rem;
-    cursor: pointer;
-}
-
-.logout-link:hover {
-    text-decoration: underline;
-}
-
-
-/* --- Contenedor Principal (Barra Lateral + Contenido) --- */
-/* We need to restructure body to be column? No, body was flex row. 
-   The image implies top bar spans full width. 
-   So Body should be Column if Top Bar is top.
-   BUT, usually Layout is:
-   Top Bar (Width 100%)
-   Flex Container (Sidebar + Content)
-*/
-/* Ajustar el cuerpo para ser Header + Fila Flexible */
-
-body {
-    display: flex;
-    flex-direction: column;
-}
-
-.app-container {
-    display: flex;
-    flex: 1;
-    overflow: hidden;
-    /* Para hacer scroll dentro del área de contenido */
-}
-
-/* Barra Lateral */
+/* --- Barra Lateral Reformulada --- */
 .sidebar {
     width: var(--sidebar-width);
     background-color: var(--sidebar-bg);
-    /* Blanco/Claro */
+    /* Blanco */
     border-right: 1px solid var(--border-color);
     display: flex;
     flex-direction: column;
     flex-shrink: 0;
     transition: width 0.3s ease;
-    z-index: 10;
+    z-index: 30;
+    /* Higher Z-index */
+    overflow-x: hidden;
+    white-space: nowrap;
+    height: 100vh;
+}
+
+.sidebar-header {
+    height: var(--header-height) !important;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    border-bottom: 1px solid var(--border-color);
+    flex-shrink: 0;
+    /* IMPEDIR QUE SE ENCOJA */
+}
+
+/* Dark Mode Sidebar Specific Override */
+body.dark-mode .sidebar-header,
+body.dark-mode .sidebar {
+    border-color: #1e293b !important;
+}
+
+/* Sidebar Logo & Toggle in Sidebar Header */
+.brand-section {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+}
+
+.logo-vigil {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text-main);
+    letter-spacing: -0.025em;
+    overflow: hidden;
+    transition: opacity 0.2s;
+}
+
+.logo-vigil i {
+    color: #2563eb;
+    font-size: 1.4rem;
+    min-width: 24px;
+    /* Fixed width for icon */
+    text-align: center;
 }
 
 .sidebar.collapsed {
-    width: 70px;
+    width: 80px;
+    /* Slightly wider for centered icons */
 }
 
-/* Sección de Perfil de Usuario en Barra Lateral */
-.sidebar-user-profile {
+.sidebar.collapsed .logo-vigil span {
+    display: none;
+    /* Hide text */
+}
+
+.sidebar.collapsed .brand-subtitle {
+    display: none;
+}
+
+.sidebar.collapsed .sidebar-header {
+    justify-content: center;
+    padding: 0;
+}
+
+.sidebar.collapsed .brand-section {
+    justify-content: center;
+    width: auto;
+}
+
+.sidebar.collapsed #sidebarToggle {
+    /* Keep toggle at the top */
     display: flex;
-    align-items: center;
-    padding: 20px 15px;
-    border-bottom: 1px solid #eee;
-    background-color: #fff;
-    margin-bottom: 10px;
+    position: static;
+    margin: 0 auto;
 }
 
-.user-avatar-circle {
-    width: 45px;
-    height: 45px;
-    background-color: #fce4ec;
-    /* Light pink/redish or maybe yellow/orange icon like image */
-    /* La imagen tiene un chico amarillo/naranja */
+.btn-icon-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-secondary);
+    transition: color 0.2s;
+    padding: 8px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-right: 15px;
-    color: #e65100;
-    /* Naranja Oscuro */
-    font-size: 1.5rem;
+    width: 40px;
+    /* Fixed width for alignment */
+    height: 40px;
+    /* Fixed height for alignment */
+    margin-right: 12px;
+    /* Replaces inline style */
+    font-size: 1.2rem;
+    /* Replaces inline style */
 }
 
-/* En modo colapsado, ocultar texto, centrar icono */
-.sidebar.collapsed .sidebar-user-profile {
-    padding: 15px 5px;
-    justify-content: center;
+.btn-icon-toggle:hover {
+    background-color: var(--sidebar-hover-bg);
+    color: var(--primary-color);
 }
 
-.sidebar.collapsed .user-welcome-text {
+/* Fix for Collapsed Header items */
+.sidebar.collapsed .logo-vigil {
     display: none;
 }
 
-.sidebar.collapsed .user-avatar-circle {
-    margin-right: 0;
+/* Ensure logo text baseline is centered */
+.logo-vigil {
+    line-height: 1;
+    align-self: center;
 }
 
-.user-welcome-text {
+/* Let's refine the requested layout logic:
+   "linea roja": Sidebar contains [Menu Icon] [Logo].
+   When collapsed: Show [Menu Icon] (and maybe icon of logo?).
+   User said: "cuando se retrae el sidebar todavia me muestre documentos y se escuenta el logito"
+   "escuenta el logito" -> "encuentra el logito"? -> Logo icon visible.
+*/
+
+.sidebar.collapsed .logo-vigil span {
+    display: none;
+}
+
+.sidebar.collapsed .brand-divider {
+    display: none;
+}
+
+.sidebar.collapsed .brand-subtitle {
+    display: none;
+}
+
+
+/* --- Main Wrapper (Right Side) --- */
+.main-wrapper {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+    background-color: var(--bg-body);
+}
+
+/* --- Barra Superior (Header) --- */
+.top-bar {
+    height: var(--header-height) !important;
+    margin: 0;
+    background-color: var(--header-bg);
+    color: var(--header-text);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    /* Justify between? dependent on contents */
+    padding: 0 24px;
+    border-bottom: 1px solid var(--border-color);
+    /* box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); Removed for seamless alignment */
+    z-index: 40;
+    /* Higher than sidebar (30) to sit on top if needed, or ensuring visibility */
+    gap: 20px;
+    /* Space between search and user controls */
+    flex-shrink: 0;
+}
+
+/* --- Header Search & Actions (New) --- */
+.header-search-container {
+    position: relative;
+    flex-grow: 1;
+    max-width: 500px;
+    margin-right: 20px;
+}
+
+.header-search-input {
+    width: 100%;
+    padding: 10px 10px 10px 38px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    background-color: var(--input-bg);
+    color: var(--text-main);
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+
+.header-search-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+}
+
+.header-search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-secondary);
+    pointer-events: none;
+}
+
+.header-right-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.header-select {
+    padding: 8px 30px 8px 12px;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    background-color: var(--input-bg);
+    color: var(--text-main);
+    font-size: 0.85rem;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 14px;
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+.header-select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+.header-divider {
+    width: 1px;
+    height: 24px;
+    background-color: var(--border-color);
+    margin: 0 4px;
+}
+
+.btn-header-new {
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+}
+
+/* Shared Content Toolbar */
+.content-toolbar,
+.users-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    background: var(--bg-panel);
+    /* Theme aware */
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.content-toolbar .search-wrapper {
+    position: relative;
+    width: 300px;
+    flex-grow: 1;
+    max-width: 400px;
+}
+
+.content-toolbar .search-wrapper i {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+}
+
+.content-toolbar .search-wrapper input {
+    width: 100%;
+    padding: 10px 10px 10px 36px;
+    border-radius: 8px;
+    border: 1px solid var(--input-border);
+    /* Theme aware */
+    outline: none;
+    transition: border-color 0.2s;
+    height: 42px;
+}
+
+.content-toolbar .search-wrapper input:focus {
+    border-color: #3b82f6;
+}
+
+.content-toolbar .filter-wrapper {
+    display: flex;
+    gap: 10px;
+}
+
+.content-toolbar .filter-select {
+    height: 42px;
+    padding: 0 35px 0 15px;
+    border: 1px solid var(--input-border);
+    border-radius: 8px;
+    background-color: var(--input-bg);
+    color: var(--input-text);
+    font-size: 0.9rem;
+    cursor: pointer;
+    outline: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239ca3af'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 16px;
+}
+
+/* Header Controls (Search & Filters) */
+.header-controls {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    max-width: 900px;
+    height: 100%;
+    /* Fill header height for centering */
+    /* Limit width */
+}
+
+/* Header Search Box */
+.header-controls .search-box {
+    flex-grow: 2;
+    position: relative;
+    max-width: 500px;
+    margin: 0;
+    display: flex;
+    align-items: center;
+}
+
+.content-toolbar .search-input,
+.header-controls .search-input {
+    width: 100%;
+    height: 42px;
+    padding: 0 15px 0 40px;
+    border: 1px solid var(--input-border);
+    /* Theme Border */
+    border-radius: 8px;
+    /* Slightly more rounded */
+    background-color: var(--input-bg);
+    /* Theme Background */
+    color: var(--input-text);
+    /* Theme Text */
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.content-toolbar .search-icon,
+.header-controls .search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9ca3af;
+    font-size: 1rem;
+    pointer-events: none;
+}
+
+.content-toolbar .search-input::placeholder,
+.header-controls .search-input::placeholder {
+    color: var(--input-placeholder);
+}
+
+.content-toolbar .search-input:focus,
+.header-controls .search-input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+    outline: none;
+}
+
+/* Header Filter Box */
+.header-controls .filter-box {
+    flex-grow: 1;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin: 0;
+}
+
+.content-toolbar .filter-select,
+.header-controls .filter-select {
+    height: 42px;
+    padding: 0 35px 0 15px;
+    border: 1px solid var(--input-border);
+    border-radius: 8px;
+    background-color: var(--input-bg);
+    /* Theme Background */
+    color: var(--input-text);
+    font-size: 0.9rem;
+    cursor: pointer;
+    outline: none;
+    appearance: none;
+    /* Remove default arrow */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239ca3af'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 16px;
+}
+
+.header-controls .filter-select:focus {
+    border-color: var(--primary-color);
+}
+
+.header-controls .btn-icon-header {
+    background: none;
+    border: none;
+    color: #9ca3af;
+    cursor: pointer;
+    font-size: 1.1rem;
+    padding: 8px;
+    border-radius: 50%;
+    transition: all 0.2s;
+}
+
+.header-controls .btn-icon-header:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+
+
+/* Adjust User Controls to be on the right (auto margin if needed) */
+.user-controls {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    height: 100%;
+    gap: 16px;
+}
+
+/* User Profile in Header */
+.user-profile-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-align: right;
+}
+
+.user-text {
     display: flex;
     flex-direction: column;
 }
 
-.welcome-label {
+.u-name {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--header-text);
+}
+
+.u-role {
     font-size: 0.75rem;
-    color: #888;
-    margin-bottom: 2px;
+    color: var(--text-secondary);
 }
 
-.user-name {
-    font-weight: 700;
-    color: #333;
-    font-size: 0.95rem;
-    text-transform: uppercase;
+.u-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--border-color);
 }
 
-/* Menú de Navegación */
-.nav-menu {
-    list-style: none;
-    padding: 10px; /* Add padding to container */
-    flex-grow: 1;
+.user-divider {
+    width: 1px;
+    height: 24px;
+    background-color: var(--border-color);
+    margin: 0 8px;
 }
 
+.logout-icon-btn {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    padding: 8px;
+    border-radius: 50%;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Navigation Menu Items Compact */
 .nav-item {
-    border-bottom: none; /* Remove separators */
-    margin-bottom: 5px; /* Spacing between items */
+    margin-bottom: 2px;
+    /* Tighter spacing */
 }
 
 .nav-link {
     display: flex;
     align-items: center;
-    padding: 12px 16px; /* Comfortable touch target */
+    padding: 10px 15px;
+    /* Reduced padding */
+    color: var(--sidebar-text);
+    text-decoration: none;
+    transition: all 0.2s;
+    border-radius: 8px;
+    /* Rounded corners */
+    margin: 4px 12px;
+    font-size: 0.85rem;
+    /* Reduced from 0.95rem */
+}
+
+.sidebar-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: var(--brand-text);
+    /* Theme aware */
+}
+
+.brand-icon-container {
+    width: 36px;
+    height: 36px;
+    background: var(--primary-color);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.1rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    /* Clickable */
+    transition: transform 0.2s;
+}
+
+.brand-icon-container:hover {
+    transform: scale(1.05);
+    background: var(--secondary-color);
+}
+
+.brand-text {
+    font-family: 'Outfit', sans-serif;
+    letter-spacing: -0.02em;
+}
+
+.brand-suffix {
+    color: var(--brand-suffix);
+}
+
+.sidebar.collapsed .brand-text {
+    display: none;
+}
+
+/* Sidebar Section Headers */
+.sidebar-section-header {
+    padding: 20px 24px 10px 24px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--sidebar-text);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    opacity: 0.7;
+}
+
+.sidebar.collapsed .sidebar-section-header {
+    display: none;
+}
+
+.sidebar-section-header {
+    padding: 16px 24px 8px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-top: 10px;
+}
+
+/* Hide Logos in Sidebar */
+.logo-vigil,
+.sidebar-bottom-logo {
+    display: none !important;
+}
+
+.nav-link:hover {
+    background-color: var(--sidebar-hover-bg);
+    color: var(--primary-color);
+}
+
+.nav-link.active {
+    background-color: var(--primary-color);
+    color: white !important;
+    font-weight: 600;
+}
+
+.nav-link.active .nav-icon {
+    color: #ffffff;
+}
+
+.nav-icon {
+    margin-right: 12px;
+    width: 20px;
+    text-align: center;
+    font-size: 1rem;
+    color: #64748b;
+    /* Muted icon color by default */
+    transition: color 0.2s;
+}
+
+
+/* App Container is Deprecated/Refactored */
+.app-container {
+    display: contents;
+    /* Remove layout influence */
+}
+
+/* Sección de Perfil de Usuario en Barra Lateral (Dark Theme Match) */
+.sidebar-user-profile {
+    display: flex;
+    align-items: center;
+    padding: 16px 20px;
+    margin-top: auto;
+    /* Push to bottom */
+    border-top: 1px solid var(--border-color);
+    background-color: var(--sidebar-bg);
+    /* Match sidebar bg */
+    color: var(--sidebar-text);
+}
+
+.user-avatar-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+    /* Ensure image clips */
+    margin-right: 12px;
+    border: 2px solid var(--border-color);
+}
+
+.user-avatar-circle img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* En modo colapsado, ocultar texto, centrar icono */
+.sidebar.collapsed .sidebar-user-profile {
+    padding: 16px 10px;
+    justify-content: center;
+}
+
+.sidebar.collapsed .u-info-sidebar,
+.sidebar.collapsed .u-logout-sidebar {
+    display: none;
+}
+
+.user-name {
+    font-weight: 600;
+    color: var(--sidebar-text);
+    font-size: 0.9rem;
+    text-transform: capitalize;
+}
+
+.user-role-label {
+    font-size: 0.75rem;
+    color: #64748b;
+}
+
+.sidebar-scroll-area {
+    flex-grow: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    /* Custom Scrollbar for Webkit */
+    scrollbar-width: thin;
+    scrollbar-color: var(--sidebar-text) transparent;
+}
+
+.sidebar-scroll-area::-webkit-scrollbar {
+    width: 4px;
+}
+
+.sidebar-scroll-area::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+}
+
+.nav-menu {
+    list-style: none;
+    padding: 0;
+    /* flex-grow: 1; No longer needed as scroll-area grows */
+    padding-top: 10px;
+}
+
+.nav-item {
+    border-bottom: none;
+    margin-bottom: 2px;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    padding: 14px 24px;
     color: var(--sidebar-text);
     text-decoration: none;
     font-size: 0.95rem;
     font-weight: 500;
     transition: all 0.2s ease;
-    border-radius: 8px; /* Rounded corners */
-    margin: 0 5px; /* Space from edges */
+    border-radius: 0;
+    margin: 0;
+    border-right: 4px solid transparent;
 }
 
 .nav-link:hover {
@@ -207,19 +851,21 @@ body {
 .nav-link.active {
     background-color: var(--primary-color);
     color: white;
-    box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2); /* Subtle blue shadow */
+    box-shadow: none;
     font-weight: 600;
+    border-right-color: #93c5fd;
 }
 
 .nav-link.active .nav-icon {
-    color: white; /* Force icon white */
+    color: white;
 }
 
 .nav-icon {
     width: 25px;
     text-align: center;
     margin-right: 12px;
-    color: #94a3b8; /* Lighter color for icons */
+    color: #94a3b8;
+    /* Lighter color for icons */
     font-size: 1.1rem;
     transition: color 0.2s;
 }
@@ -234,10 +880,8 @@ body {
 }
 
 .sidebar.collapsed .nav-link span:not(.nav-icon) {
-    /* This won't work easily if text is bare. Hopefully text is wrapped if I edit HTML or I rely on flex hiding overflow? */
-    /* Wait, the HTML I wrote has text directly in 'a'. */
-    /* Let's assume text is hidden by font-size 0 trick or display none logic */
     display: none;
+    opacity: 0;
 }
 
 /* De hecho, más simple: */
@@ -251,19 +895,163 @@ body {
 
 
 /* Pie de Página de Barra Lateral */
-.sidebar-footer {
+/* Pie de Página de Barra Lateral (User Profile) */
+/* Logo Restore at Bottom of Scroll Area */
+.sidebar-bottom-logo {
     padding: 20px;
-    border-top: 1px solid #eee;
     text-align: center;
+    margin-top: auto;
+    /* Pushes to bottom of scroll area if menu is short */
 }
 
-.sidebar-logo {
-    max-width: 100%;
+.sidebar-bottom-logo img {
+    max-width: 65%;
+    /* Increase size slightly (was 50%) */
     height: auto;
+    opacity: 0.9;
+    /* Increase opacity */
+    transition: opacity 0.2s;
+    border-radius: 8px;
+    /* Optional: Rounded corners for logo */
 }
 
-.sidebar.collapsed .sidebar-footer {
+.sidebar-bottom-logo img:hover {
+    opacity: 1;
+}
+
+.sidebar.collapsed .sidebar-bottom-logo {
     display: none;
+}
+
+/* Pie de Página de Barra Lateral (User Profile) */
+/* --- Sidebar User Card (Redesign) --- */
+.sidebar-footer {
+    padding: 16px;
+    margin-top: auto;
+    border-top: none;
+    /* Prepare for card look */
+}
+
+.sidebar-user-card {
+    background-color: rgba(0, 0, 0, 0.2);
+    /* Darken slightly on dark mode */
+    border-radius: 16px;
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: all 0.2s ease;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Light Mode Adjustment via variable if needed, or stick to contrast logic */
+body:not(.dark-mode) .sidebar-user-card {
+    background-color: #f1f5f9;
+    /* Slate 100 */
+    border: 1px solid #e2e8f0;
+}
+
+.user-avatar-container {
+    position: relative;
+    flex-shrink: 0;
+}
+
+.u-avatar-sidebar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+body:not(.dark-mode) .u-avatar-sidebar {
+    border-color: white;
+}
+
+.status-indicator {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    width: 10px;
+    height: 10px;
+    background-color: #22c55e;
+    /* Green-500 */
+    border: 2px solid var(--sidebar-bg);
+    /* Match bg to cut circle */
+    border-radius: 50%;
+}
+
+.u-info-sidebar {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    overflow: hidden;
+    justify-content: center;
+    line-height: 1.2;
+}
+
+.u-name-sidebar {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--sidebar-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+body.dark-mode .u-name-sidebar {
+    color: #ffffff;
+    /* Explicit white in dark mode */
+}
+
+.u-role-sidebar {
+    font-size: 0.75rem;
+    color: var(--sidebar-text);
+    opacity: 0.7;
+}
+
+.u-logout-card-btn {
+    color: var(--sidebar-text);
+    opacity: 0.6;
+    font-size: 1.1rem;
+    padding: 8px;
+    border-radius: 8px;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.u-logout-card-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    opacity: 1;
+    color: #ef4444;
+    /* Red on hover */
+}
+
+body:not(.dark-mode) .u-logout-card-btn:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* Collapsed State */
+.sidebar.collapsed .sidebar-user-card {
+    padding: 0;
+    background: transparent;
+    border: none;
+    justify-content: center;
+}
+
+.sidebar.collapsed .u-info-sidebar,
+.sidebar.collapsed .u-logout-card-btn,
+.sidebar.collapsed .status-indicator {
+    display: none;
+}
+
+.sidebar.collapsed .u-avatar-sidebar {
+    width: 36px;
+    height: 36px;
+    margin: 0;
+    border-width: 1px;
 }
 
 /* Ajustes del Área de Contenido Principal */
@@ -313,7 +1101,8 @@ body {
 }
 
 .stat-card {
-    background-color: white;
+    background-color: var(--bg-panel);
+    /* Theme aware */
     border-radius: 12px;
     padding: 20px;
     display: flex;
@@ -377,76 +1166,16 @@ body {
 }
 
 
-/* Sección de Búsqueda y Filtro */
-/* Sección de Búsqueda y Filtro */
-.search-section {
-    padding: 20px;
-    background-color: white;
-    border-bottom: 1px solid var(--border-color);
+/* Old Filter button styles removed or reused */
+.btn-icon-only {
+    /* Keep generic styles */
     display: flex;
-    gap: 20px;
     align-items: center;
-    flex-wrap: nowrap;
-    /* Forzar una sola línea por defecto */
-    justify-content: flex-start;
-    /* Alinear a la izquierda inicialmente */
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-    /* Sombra suave */
-    border-radius: 12px 12px 0 0;
-    /* Bordes superiores redondeados */
-    z-index: 5;
-    position: relative;
-    margin-bottom: 0;
-    /* Pegado a la tabla */
-}
-
-/* Caja de Búsqueda */
-.search-box {
-    flex-grow: 1;
-    position: relative;
-    /* min-width: 300px;  Removed to allow shrinking */
-    max-width: 600px;
-    /* Reduced max width slightly to give space */
-    margin-right: auto;
-    /* Push filters to right */
-}
-
-.search-icon {
-    position: absolute;
-    left: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--primary-color);
-    /* Color activo */
-    font-size: 1.1rem;
-    pointer-events: none;
-}
-
-.search-input {
-    width: 100%;
-    padding: 12px 15px 12px 45px;
-    /* Más espacio */
-    border: 1px solid #e2e8f0;
-    /* Borde sutil */
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    padding: 0;
     border-radius: 8px;
-    /* Bordes cuadrados suaves */
-    background-color: #f8fafc;
-    transition: all 0.2s ease;
-    font-size: 0.95rem;
-    color: var(--text-color);
-    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.02);
-}
-
-.search-input::placeholder {
-    color: #94a3b8;
-}
-
-.search-input:focus {
-    background-color: white;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
-    /* Resplandor azul */
-    outline: none;
 }
 
 /* Caja de Filtros */
@@ -460,11 +1189,11 @@ body {
     padding: 11px 35px 11px 15px;
     /* Espacio para flecha custom si se añade */
     border-radius: 8px;
-    border: 1px solid #e2e8f0;
-    background-color: white;
+    border: 1px solid var(--input-border);
+    background-color: var(--input-bg);
     cursor: pointer;
     font-size: 0.9rem;
-    color: var(--text-color);
+    color: var(--input-text);
     min-width: 160px;
     transition: all 0.2s ease;
     appearance: none;
@@ -494,7 +1223,8 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: white;
+    background-color: var(--bg-panel);
+    /* Was white */
     border: 1px solid #e2e8f0;
     color: #64748b;
     cursor: pointer;
@@ -506,9 +1236,9 @@ body {
 }
 
 .btn-icon-only:hover {
-    background-color: #f1f5f9;
+    background-color: var(--input-bg);
     color: var(--primary-color);
-    border-color: #cbd5e1;
+    border-color: var(--border-color);
 }
 
 .btn-icon-only:active {
@@ -551,31 +1281,32 @@ body {
 }
 
 .registry-table thead th {
-    background-color: rgba(248, 250, 252, 0.95);
-    /* Semitransparente */
-    backdrop-filter: blur(8px);
-    /* Efecto de vidrio */
-    color: #475569;
-    /* Pizarra 600 */
+    background-color: var(--bg-panel);
+    /* Theme aware */
+    /* Blue-Grey tone matching reference */
+    color: var(--text-secondary);
+    /* Darker text for contrast */
     text-transform: uppercase;
     font-size: 0.75rem;
     letter-spacing: 0.05em;
     text-align: left;
-    padding: 16px;
-    font-weight: 700;
+    padding: 14px 12px;
+    font-weight: 800;
+    /* Bold header */
     position: sticky;
     top: 0;
     z-index: 10;
-    border-bottom: 2px solid #e2e8f0;
+    border-bottom: 2px solid #b0bec5;
 }
 
 .registry-table tbody td {
-    padding: 16px;
-    border-bottom: 1px solid #f1f5f9;
+    padding: 8px 12px;
+    /* Reduced padding for compact view */
+    border-bottom: 1px solid var(--border-color);
     /* Borde muy claro */
     vertical-align: middle;
     font-size: 0.9rem;
-    color: #334155;
+    color: var(--text-main);
     /* Pizarra 700 */
     transition: color 0.2s;
     text-transform: capitalize;
@@ -594,11 +1325,12 @@ body {
 /* Efecto Hover en Fila */
 .registry-table tbody tr {
     transition: all 0.2s ease;
-    background-color: white;
+    background-color: var(--bg-panel);
+    /* Was white */
 }
 
 .registry-table tbody tr:hover {
-    background-color: #f8fafc;
+    background-color: var(--sidebar-hover-bg);
     /* Azul/Gris muy claro */
     transform: scale(1.002);
     /* Micro-interacción para sensación táctil */
@@ -610,8 +1342,15 @@ body {
 
 /* Eliminar rayado par/impar para un aspecto más limpio, o mantenerlo muy sutil. 
    Vamos a eliminarlo para favorecer el aspecto limpio. */
+/* Zebra Striping */
 .registry-table tbody tr:nth-child(even) {
-    background-color: white;
+    background-color: rgba(0, 0, 0, 0.02);
+    /* Transparent darkening */
+    /* Gris muy claro / Azulado sutil */
+}
+
+.registry-table tbody tr:nth-child(odd) {
+    background-color: var(--bg-panel);
 }
 
 /* Truncamiento de Concepto */
@@ -1213,10 +1952,10 @@ body {
 
 /* Insignias de Estado - Píldoras Modernas */
 .badge {
-    padding: 4px 8px;
+    padding: 2px 8px;
     border-radius: 9999px;
     /* Píldora completa */
-    font-size: 0.75rem;
+    font-size: 0.65rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.025em;
@@ -1226,36 +1965,34 @@ body {
     white-space: nowrap;
     box-shadow: none;
     /* Aspecto plano más limpio */
+    min-width: 80px;
 }
 
 /* Estado: Recibido (Azul) */
 .badge-received {
-    background-color: #eff6ff;
-    /* Blue 50 */
-    color: #2563eb;
-    /* Blue 600 */
-    border: 1px solid #dbeafe;
-    /* Blue 100 */
+    background-color: #dbeafe;
+    /* bg-blue-100 */
+    color: #1e40af;
+    /* text-blue-800 */
+    border: 1px solid transparent;
 }
 
-/* Estado: Derivado (Ámbar/Naranja) */
+/* Estado: Derivado (Naranja/Ámbar) */
 .badge-derived {
-    background-color: #fffbeb;
-    /* Amber 50 */
-    color: #d97706;
-    /* Amber 600 */
-    border: 1px solid #fef3c7;
-    /* Amber 100 */
+    background-color: #fef3c7;
+    /* bg-amber-100 */
+    color: #92400e;
+    /* text-amber-800 */
+    border: 1px solid transparent;
 }
 
 /* Estado: Finalizado (Verde) */
 .badge-finalized {
-    background-color: #f0fdf4;
-    /* Green 50 */
-    color: #16a34a;
-    /* Green 600 */
-    border: 1px solid #dcfce7;
-    /* Green 100 */
+    background-color: #dcfce7;
+    /* bg-green-100 */
+    color: #166534;
+    /* text-green-800 */
+    border: 1px solid transparent;
 }
 
 /* Agregar: Diseño de cerrar sesión */
@@ -1485,4 +2222,208 @@ body {
     color: #78350f;
     font-style: italic;
     text-transform: capitalize;
+}
+
+/* --- Action Menu Dropdown --- */
+.action-menu-container {
+    position: relative;
+    display: inline-block;
+}
+
+.btn-kebab {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    color: #64748b;
+    transition: background-color 0.2s, color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+}
+
+.btn-kebab:hover {
+    background-color: #f1f5f9;
+    color: #1e293b;
+}
+
+.action-dropdown {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    margin-top: 4px;
+    width: 180px;
+    background-color: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    z-index: 50;
+    overflow: hidden;
+    text-align: left;
+}
+
+.action-dropdown.show {
+    display: block;
+    animation: fadeIn 0.1s ease-out;
+}
+
+.action-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 10px 16px;
+    background: none;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: #334155;
+    transition: background-color 0.1s;
+    text-decoration: none;
+    font-family: inherit;
+}
+
+.action-item:hover {
+    background-color: #f8fafc;
+    color: var(--primary-color);
+}
+
+.action-item i {
+    width: 16px;
+    text-align: center;
+    color: #94a3b8;
+}
+
+.action-item:hover i {
+    color: inherit;
+}
+
+.action-item.delete {
+    color: #ef4444;
+}
+
+.action-item.delete:hover {
+    background-color: #fef2f2;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* --- Cargo Badge (Etiqueta de Cargo) --- */
+.cargo-badge {
+    display: block;
+    background-color: #f8fafc;
+    /* Slate 50 */
+    border-left: 4px solid #cbd5e1;
+    /* Default Gray */
+    padding: 3px 8px;
+    border-radius: 0 6px 6px 0;
+    margin-bottom: 4px;
+    font-size: 0.8rem;
+    color: #334155;
+    /* Slate 700 */
+    white-space: normal;
+    line-height: 1.3;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    font-weight: 600;
+}
+
+.cargo-badge:last-child {
+    margin-bottom: 0;
+}
+
+/* Variaciones de color para diferenciación */
+.cargo-badge-0 {
+    border-left-color: #3b82f6;
+    background-color: #eff6ff;
+    color: #1e40af;
+}
+
+/* Azul */
+.cargo-badge-1 {
+    border-left-color: #f59e0b;
+    background-color: #fffbeb;
+    color: #92400e;
+}
+
+/* Naranja */
+.cargo-badge-2 {
+    border-left-color: #10b981;
+    background-color: #f0fdf4;
+    color: #166534;
+}
+
+/* Verde */
+.cargo-badge-3 {
+    border-left-color: #8b5cf6;
+    background-color: #f5f3ff;
+    color: #5b21b6;
+}
+
+/* Púrpura */
+.cargo-badge-4 {
+    border-left-color: #ec4899;
+    background-color: #fdf2f8;
+    color: #9d174d;
+}
+
+/* Rosa */
+
+/* --- Enhanced Floating Effect for Dark Mode (User Request) --- */
+.paper-card,
+.auto-height,
+.bg-plomito,
+.content-area .paper-card {
+    background-color: var(--paper-color);
+    border-radius: 12px;
+    /* Consistent rounding */
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    /* Strong shadow */
+}
+
+/* Specific shadow intensification for dark mode */
+body.dark-mode .paper-card,
+body.dark-mode .auto-height,
+body.dark-mode .bg-plomito,
+body.dark-mode .content-area .paper-card {
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+    /* Make the shadow slightly more prominent against the grey background */
+}
+
+/* --- Form Label Styling (User Request: Bold & Vivid) --- */
+.form-label {
+    font-weight: 700;
+    /* Bold */
+    color: var(--primary-color);
+    /* Vivid (Primary Color) */
+    display: block;
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+    letter-spacing: 0.01em;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+/* --- Registration Form Specific Width --- */
+.register-card {
+    max-width: 1000px;
+    /* Limit width as requested */
+    margin: 0 auto;
+    /* Center it */
 }

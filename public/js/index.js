@@ -4,6 +4,22 @@ document.addEventListener('DOMContentLoaded', () => {
     fetchUserInfo();
 });
 
+// Helper to extract display ID (remove year suffix)
+function getDisplayId(fullId) {
+    if (!fullId) return '';
+    // Handle legacy IDs (no year suffix)
+    if (!fullId.includes('-')) return fullId;
+
+    // Extract number part (and suffix if exists) from "XXX[-S]-YYYY" format
+    const parts = fullId.split('-');
+    if (parts.length > 1) {
+        // Remove the last part (year) and join the rest
+        parts.pop();
+        return parts.join('-');
+    }
+    return fullId;
+}
+
 // Helper to format date YYYY-MM-DD -> DD-MM-YYYY
 function formatDate(dateString) {
     if (!dateString) return '';
@@ -126,6 +142,77 @@ function getBadge(status) {
     return `<span class="badge ${className}">${s}</span>`;
 }
 
+// Helper for Type Column (Bold Type + Light Number)
+function formatStackedType(typeString) {
+    if (!typeString) return formatEmpty(typeString);
+
+    // Check if it contains ":" to split
+    if (typeString.includes(':')) {
+        const parts = typeString.split(':');
+        const type = parts[0].trim();
+        const number = parts.slice(1).join(':').trim(); // Join rest in case of multiple colons
+
+        return `
+            <div style="line-height: 1.2;">
+                <span style="font-weight: 700; color: #374151; font-size: 0.8rem; text-transform: uppercase;">${escapeHtml(type)}:</span><br>
+                <span style="color: #6b7280; font-size: 0.75rem;">${escapeHtml(number)}</span>
+            </div>
+        `;
+    }
+
+    return formatEmpty(typeString);
+}
+
+
+// Helper for Remitter Column (Avatar + Stacked Name)
+function formatRemitter(name) {
+    if (!name) return formatEmpty(name);
+
+    // 1. Get Initials (First letter of first 2 words)
+    const words = name.trim().split(/\s+/);
+    let initials = '';
+    if (words.length > 0) initials += words[0][0];
+    if (words.length > 1) initials += words[1][0];
+    initials = initials.toUpperCase();
+
+    // 2. Split Name (First Name + Rest)
+    // Heuristic: First word is "Name", rest is "Surname"
+    // If only one word, just show it.
+    let mainName = words[0];
+    let subName = words.slice(1).join(' ');
+
+    // Colors for avatar background (random-ish based on first letter char code)
+    const colors = ['#e0f2fe', '#fce7f3', '#dcfce7', '#fef9c3', '#f3f4f6'];
+    const textColors = ['#0369a1', '#be185d', '#15803d', '#a16207', '#4b5563'];
+
+    const charCode = mainName.charCodeAt(0) || 0;
+    const colorIndex = charCode % colors.length;
+    const bgColor = colors[colorIndex];
+    const textColor = textColors[colorIndex];
+
+    return `
+        <div class="remitter-wrapper" style="display: flex; align-items: center; gap: 10px;">
+            <div class="table-avatar" style="
+                width: 35px; 
+                height: 35px; 
+                border-radius: 50%; 
+                background-color: ${bgColor}; 
+                color: ${textColor}; 
+                display: flex; 
+                align-items: center; 
+                justify-content: center; 
+                font-weight: 600; 
+                font-size: 0.8rem;
+                flex-shrink: 0;
+            ">${initials}</div>
+            <div class="remitter-info" style="display: flex; flex-direction: column; line-height: 1.2;">
+                <span class="remitter-name-main" style="font-weight: 600; color: var(--text-main); font-size: 0.9em;">${escapeHtml(mainName)}</span>
+                <span class="remitter-name-sub" style="color: var(--text-secondary); font-size: 0.8em;">${escapeHtml(subName)}</span>
+            </div>
+        </div>
+    `;
+}
+
 // Render table with specific set of documents
 function renderTable(documents) {
     const tbody = document.getElementById('documentsTableBody');
@@ -140,38 +227,83 @@ function renderTable(documents) {
         const safeCargo = doc.cargo || '';
         const safeStatus = doc.status || 'Recibido';
 
+        // Check if there are multiple derivations for this document on the same dispatch date
+        // Determine Cargo Display based on the LATEST history entry
+        let cargoDisplay = formatEmpty(safeCargo);
+
+        if (doc.history && doc.history.length > 0) {
+            // 1. Filter relevant history entries (Derivations/Finalizations that have a cargo)
+            const derivations = doc.history.filter(h =>
+                h.action && (h.action.includes('Derivación') || h.action.includes('Finalización') || h.action.includes('Recepción')) && h.cargo
+            );
+
+            if (derivations.length > 0) {
+                // 2. Sort descending by date to find the absolute latest action
+                derivations.sort((a, b) => new Date(b.date) - new Date(a.date));
+                const latestDate = derivations[0].date;
+
+                // 3. Filter all derivations that match this LATEST date exactly
+                // This captures simultaneous derivations (which share the exact same timestamp)
+                const latestDerivations = derivations.filter(h => h.date === latestDate);
+
+                if (latestDerivations.length > 0) {
+                    const cargos = latestDerivations.map(d => d.cargo).filter(c => c);
+                    // Remove duplicates just in case
+                    const uniqueCargos = [...new Set(cargos)];
+
+                    if (uniqueCargos.length > 0) {
+                        cargoDisplay = `<div style="display: flex; flex-direction: column; gap: 4px;">
+                            ${uniqueCargos.map((c, index) => `<span class="cargo-badge cargo-badge-${index % 5}">${escapeHtml(c)}</span>`).join('')}
+                        </div>`;
+                    }
+                }
+            }
+        }
+
         // Format dates for display
         const displayFecha = formatDate(doc.fecha);
         const displayFechaDespacho = formatDate(safeFecha);
 
+        // Display only the number part of the ID (e.g., 001 instead of 001-2026)
+        const displayId = getDisplayId(doc.id);
+
         row.innerHTML = `
-            <td data-label="N° Corr." style="font-weight: bold; color: var(--primary-color);">${doc.id}</td>
+            <td data-label="N° Corr." style="font-weight: bold; color: var(--primary-color);">${displayId}</td>
             <td data-label="Recepción">${formatEmpty(displayFecha)}</td>
-            <td data-label="Tipo">${formatEmpty(doc.tipo).replace(': N°', ':<br>N°')}</td>
-            <td data-label="Remitente">${formatEmpty(doc.nombre)}</td>
+            <td data-label="Tipo">${formatStackedType(doc.tipo)}</td>
+            <td data-label="Remitente">${formatRemitter(doc.nombre)}</td>
             <td data-label="Área Origen">${formatEmpty(doc.origen)}</td>
             <td data-label="Concepto">${formatEmpty(doc.concepto)}</td>
             <td data-label="Despacho">${formatEmpty(displayFechaDespacho)}</td>
             <td data-label="Área de derivacion">${formatEmpty(safeUbicacion)}</td>
             <td data-label="Folios">${formatEmpty(doc.folios)}</td>
-            <td data-label="Cargo">${formatEmpty(safeCargo)}</td>
+            <td data-label="Cargo">${cargoDisplay}</td>
             <td data-label="Estado">${getBadge(safeStatus)}</td>
             <td>
-                <div style="display: flex; gap: 5px; justify-content: center;">
-                    <button class="btn-icon edit" onclick="openModal('${safeId}', '${safeFecha}', '${safeUbicacion}', '${safeCargo}')" title="Editar">
-                        <i class="fa-solid fa-pen-to-square"></i>
+                <div class="action-menu-container">
+                    <button class="btn-kebab" onclick="toggleDropdown(event, '${safeId}')" title="Acciones">
+                        <i class="fa-solid fa-ellipsis-vertical"></i>
                     </button>
-                    ${doc.pdf_path ?
-                `<div style="display: flex; gap: 5px;">
-                    <a href="${doc.pdf_path}" target="_blank" class="btn-icon" style="color: #e74c3c;" title="Ver PDF"><i class="fa-solid fa-file-pdf"></i></a>
-                    <button class="btn-icon" onclick="deletePdf('${safeId}')" style="color: #c0392b;" title="Eliminar PDF"><i class="fa-solid fa-trash-can"></i></button>
-                 </div>`
+                    <div id="dropdown-${safeId}" class="action-dropdown">
+                        <button class="action-item" onclick="openModal('${safeId}', '${safeFecha}', '${safeUbicacion}', '${safeCargo}')">
+                            <i class="fa-solid fa-pen-to-square"></i> Editar
+                        </button>
+                        ${doc.pdf_path ?
+                `<a href="${doc.pdf_path}" target="_blank" class="action-item">
+                                <i class="fa-solid fa-file-pdf"></i> Ver PDF
+                             </a>
+                             <button class="action-item delete" onclick="deletePdf('${safeId}')">
+                                <i class="fa-solid fa-trash-can"></i> Eliminar PDF
+                             </button>`
                 :
-                `<button class="btn-icon" onclick="openUploadModal('${safeId}')" style="color: #3498db;" title="Subir PDF"><i class="fa-solid fa-cloud-arrow-up"></i></button>`
+                `<button class="action-item" onclick="openUploadModal('${safeId}')">
+                                <i class="fa-solid fa-cloud-arrow-up"></i> Subir archivo
+                             </button>`
             }
-                    <button class="btn-icon view" onclick="viewHistory('${safeId}')" title="Ver Ruta / Seguimiento" style="color: var(--accent-color);">
-                        <i class="fa-solid fa-eye"></i>
-                    </button>
+                        <button class="action-item" onclick="viewHistory('${safeId}')">
+                             <i class="fa-solid fa-clock-rotate-left"></i> Ver detalles
+                        </button>
+                    </div>
                 </div>
             </td>
         `;
@@ -361,6 +493,7 @@ document.addEventListener('DOMContentLoaded', () => {
         "Limpieza y mantenimiento": "Area de Administración",
         "Caja": "Area de Administración",
         "Tesorero": "Area de Administración",
+        "Jefatura de Unidad Administrativa": "Area de Administración",
         "Secretaria": "Area de Administración",
         "Oficinista II": "Area de Administración",
 
@@ -407,6 +540,41 @@ document.addEventListener('DOMContentLoaded', () => {
                     // Remove error class if present
                     modalNewLocation.classList.remove('input-error');
                 }
+            }
+        });
+    }
+
+    // Event listener for second cargo (same logic)
+    const modalCargo2 = document.getElementById('modalCargo2');
+    const modalNewLocation2 = document.getElementById('modalNewLocation2');
+
+    if (modalCargo2 && modalNewLocation2) {
+        modalCargo2.addEventListener('change', function () {
+            const selectedCargo = this.value;
+            const targetArea = cargoToAreaMap[selectedCargo];
+
+            if (targetArea) {
+                const optionExists = Array.from(modalNewLocation2.options).some(opt => opt.value === targetArea);
+                if (optionExists) {
+                    modalNewLocation2.value = targetArea;
+                    modalNewLocation2.classList.remove('input-error');
+                }
+            }
+        });
+    }
+
+    // Toggle second derivation fields
+    const enableSecondDerivation = document.getElementById('enableSecondDerivation');
+    const secondDerivationFields = document.getElementById('secondDerivationFields');
+
+    if (enableSecondDerivation && secondDerivationFields) {
+        enableSecondDerivation.addEventListener('change', function () {
+            secondDerivationFields.style.display = this.checked ? 'block' : 'none';
+
+            // Clear second derivation fields when unchecked
+            if (!this.checked) {
+                if (modalCargo2) modalCargo2.value = '';
+                if (modalNewLocation2) modalNewLocation2.value = '';
             }
         });
     }
@@ -471,11 +639,22 @@ async function saveLocationUpdate() {
     const obs = document.getElementById('modalObs').value;
     const isFinalize = document.getElementById('modalFinalize').checked;
 
+    // Check if second derivation is enabled
+    const enableSecond = document.getElementById('enableSecondDerivation').checked;
+    const newCargo2 = enableSecond ? document.getElementById('modalCargo2').value : null;
+    const newLocation2 = enableSecond ? document.getElementById('modalNewLocation2').value : null;
+
     const inputs = {
         'modalFechaDespacho': newFecha,
         'modalNewLocation': newLocation,
         'modalCargo': newCargo
     };
+
+    // Add second derivation fields to validation if enabled
+    if (enableSecond) {
+        inputs['modalCargo2'] = newCargo2;
+        inputs['modalNewLocation2'] = newLocation2;
+    }
 
     let hasError = false;
     for (const [id, value] of Object.entries(inputs)) {
@@ -496,17 +675,25 @@ async function saveLocationUpdate() {
     }
 
     try {
+        const requestBody = {
+            id: docId,
+            ubicacion: newLocation,
+            fechaDespacho: newFecha,
+            cargo: newCargo,
+            observaciones: obs,
+            finalize: isFinalize
+        };
+
+        // Add second derivation data if enabled
+        if (enableSecond) {
+            requestBody.cargo2 = newCargo2;
+            requestBody.ubicacion2 = newLocation2;
+        }
+
         const response = await fetch('/api/documents/update-location', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                id: docId,
-                ubicacion: newLocation,
-                fechaDespacho: newFecha,
-                cargo: newCargo,
-                observaciones: obs,
-                finalize: isFinalize
-            })
+            body: JSON.stringify(requestBody)
         });
 
         if (response.ok) {
@@ -662,3 +849,30 @@ window.onclick = function (event) {
     }
 }
 
+
+// --- Action Menu Logic --- 
+
+function toggleDropdown(event, docId) {
+    event.stopPropagation();
+    const dropdown = document.getElementById(`dropdown-${docId}`);
+
+    // Close other open dropdowns
+    const allDropdowns = document.querySelectorAll('.action-dropdown');
+    allDropdowns.forEach(d => {
+        if (d.id !== `dropdown-${docId}`) {
+            d.classList.remove('show');
+        }
+    });
+
+    if (dropdown) {
+        dropdown.classList.toggle('show');
+    }
+}
+
+// Close dropdowns when clicking outside
+window.addEventListener('click', function (event) {
+    if (!event.target.closest('.btn-kebab') && !event.target.closest('.action-dropdown')) {
+        const dropdowns = document.querySelectorAll('.action-dropdown');
+        dropdowns.forEach(d => d.classList.remove('show'));
+    }
+});

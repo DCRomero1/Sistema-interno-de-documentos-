@@ -5,94 +5,104 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nuevo Documento - Sistema de Registro</title>
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="icon" type="image/png" href="/img/user_avatar.svg">
+    <link rel="stylesheet" href="/css/style.css?v=5">
     <link rel="stylesheet" href="/css/fontawesome.all.min.css">
 </head>
 
 <body>
 
-    <!-- Top Bar (Full Width) -->
-    <header class="top-bar">
-        <div class="top-bar-left">
-            <div class="brand-text">Administración</div>
-            <i class="fa-solid fa-bars" id="sidebarToggle" style="cursor: pointer; font-size: 1.2rem;"></i>
+    <!-- Sidebar First -->
+    <nav class="sidebar">
+        <div class="sidebar-header"
+            style="justify-content: space-between; padding: 0 20px; height: 70px; align-items: center;">
+            <div class="sidebar-brand">
+                <div class="brand-icon-container">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <span class="brand-text">Vigil<span class="brand-suffix">Docs</span></span>
+            </div>
         </div>
 
-        <div class="top-bar-right">
-            <a href="/logout" class="logout-link">
-                Cerrar Sesión
-            </a>
+        <div class="sidebar-section-header">MENU PRINCIPAL</div>
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="/" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-table-list"></i></span>
+                    Panel General
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/register" class="nav-link active">
+                    <span class="nav-icon"><i class="fa-solid fa-plus-circle"></i></span>
+                    Nuevo Documento
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/reports" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-chart-line"></i></span>
+                    Reportes
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/workers" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-users"></i></span>
+                    Trabajadores
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/formatos" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-file-contract"></i></span>
+                    Formatos
+                </a>
+            </li>
+        </ul>
+
+        <div class="sidebar-section-header">ADMINISTRACIÓN</div>
+        <ul class="nav-menu">
+            <li class="nav-item" id="nav-admin-users" style="display: none;">
+                <a href="/users" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-user-shield"></i></span>
+                    Usuarios
+                </a>
+            </li>
+
+        </ul>
+        <div class="sidebar-footer">
+            <div class="sidebar-user-card">
+                <div class="user-avatar-container">
+                    <img src="/img/user_avatar.svg" alt="Avatar" class="u-avatar-sidebar">
+                    <span class="status-indicator"></span>
+                </div>
+                <div class="u-info-sidebar">
+                    <span class="u-name-sidebar" id="sidebar-username">Cargando...</span>
+                    <span class="u-role-sidebar" id="sidebar-role">Usuario</span>
+                </div>
+                <a href="/logout" class="u-logout-card-btn" title="Cerrar Sesión">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                </a>
+            </div>
         </div>
-    </header>
+    </nav>
 
-    <div class="app-container">
-        <!-- Sidebar -->
-        <nav class="sidebar">
-            <div class="sidebar-user-profile">
-                <div class="user-avatar-circle">
-                    <i class="fa-solid fa-user"></i>
-                </div>
-                <div class="user-welcome-text">
-                    <span class="welcome-label">Bienvenido sr(a)</span>
-                    <span class="user-name" id="sidebar-username">CARGANDO...</span>
-                </div>
+    <!-- Main Wrapper -->
+    <div class="main-wrapper">
+        <header class="top-bar" style="position: relative;">
+            <h2
+                style="position: absolute; left: 50%; transform: translateX(-50%); margin: 0; font: oblique bold 120% cursive; color: var(--primary-color);">
+                Registrar Nuevo Documento</h2>
+            <div style="flex-grow: 1;"></div>
+            <div class="user-controls">
+                <button id="themeToggle" class="btn-icon-toggle" title="Cambiar Tema">
+                    <i class="fa-regular fa-moon"></i>
+                </button>
             </div>
-
-            <ul class="nav-menu">
-                <li class="nav-item">
-                    <a href="/" class="nav-link">
-                        <span class="nav-icon"><i class="fa-solid fa-table-list"></i></span>
-                        Panel General
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="/register" class="nav-link active">
-                        <span class="nav-icon"><i class="fa-solid fa-plus-circle"></i></span>
-                        Nuevo Documento
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="/reports" class="nav-link">
-                        <span class="nav-icon"><i class="fa-solid fa-chart-line"></i></span>
-                        Reporte
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="/workers" class="nav-link">
-                        <span class="nav-icon"><i class="fa-solid fa-users"></i></span>
-                        Trabajadores
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="/formatos" class="nav-link">
-                        <span class="nav-icon"><i class="fa-solid fa-file-contract"></i></span>
-                        Formatos
-                    </a>
-                </li>
-                <!-- Admin Only Section -->
-                <li class="nav-item" id="nav-admin-users" style="display: none;">
-                    <a href="/users" class="nav-link">
-                        <span class="nav-icon"><i class="fa-solid fa-user-shield"></i></span>
-                        Usuarios
-                    </a>
-                </li>
-            </ul>
-            <div class="sidebar-footer">
-                <img src="/img/logo_vigil.png" alt="Vigil Tecnológico" class="sidebar-logo">
-            </div>
-        </nav>
+        </header>
 
         <main class="main-content">
-            <!-- Page Title Inside Main Content if desired, or remove since Top Bar has brand text. 
-                 The Index page had the title in the top bar but we changed that to 'Administración'.
-                 However, specific page titles like 'Registrar Nuevo Documento' might be useful. 
-                 I'll add a simple h2 at the top of content area or keep it if it fits. 
-                 The previous code had specific titles in the top bar. Now top bar is generic.
-                 I'll add a header inside content-area for the specific page title.
-            -->
+            <!-- Content here -->
             <div class="content-area">
-                <h2 style="margin-bottom: 20px; color: var(--primary-color);">Registrar Nuevo Documento</h2>
-                <div class="paper-card auto-height bg-plomito">
+                <div class="paper-card auto-height bg-plomito register-card">
                     <div class="form-container">
                         <form class="form-grid">
 
@@ -158,7 +168,7 @@
                                         <option>Fablab</option>
                                         <option>Mesa de partes</option>
                                         <option>Estudiante Exterior</option>
-                                        <OPtion>Estudiante Interno</OPtion>
+                                        <option>Estudiante Interno</option>
                                         <option>Unidad de bienestar y empleabilidad</option>
                                     </optgroup>
                                     <optgroup label="AREAS ACADÉMICAS">
@@ -192,22 +202,7 @@
                                 <input type="number" id="folios" class="form-input" placeholder="Ej. 10">
                             </div>
 
-                            <div class="form-group full-width">
-                                <label class="form-label"><i class="fa-solid fa-file-pdf"></i> Adjuntar PDF</label>
-                                <div style="display: flex; align-items: center; gap: 10px;">
-                                    <label for="pdfFile" class="btn btn-secondary" style="margin: 0; cursor: pointer;">
-                                        <i class="fa-solid fa-upload"></i> Seleccionar Archivo
-                                    </label>
-                                    <input type="file" id="pdfFile" accept=".pdf" style="display: none;">
-                                    <span id="fileNameDisplay" style="font-style: italic; color: #555;">Ningún archivo
-                                        seleccionado</span>
-                                    <button type="button" id="clearFileBtn" class="btn btn-danger"
-                                        style="display: none; padding: 5px 10px; font-size: 0.9em;"
-                                        title="Quitar archivo">
-                                        <i class="fa-solid fa-times"></i>
-                                    </button>
-                                </div>
-                            </div>
+
 
                             <div class="form-actions">
                                 <button type="reset" class="btn btn-secondary"
@@ -223,32 +218,12 @@
                     </div>
                 </div>
             </div>
+        </main>
     </div>
-    </main>
-    </div>
-
-
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="/js/common.js?v=2"></script>
     <script src="/js/register.js"></script>
-    <script>
-        // Sidebar Toggle Logic
-        document.addEventListener('DOMContentLoaded', () => {
-            const toggleBtn = document.getElementById('sidebarToggle');
-            const sidebar = document.querySelector('.sidebar');
-
-            // Restore state
-            if (localStorage.getItem('sidebarCollapsed') === 'true') {
-                sidebar.classList.add('collapsed');
-            }
-
-            toggleBtn.addEventListener('click', () => {
-                sidebar.classList.toggle('collapsed');
-                localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
-            });
-        });
-    </script>
 </body>
 
 </html>

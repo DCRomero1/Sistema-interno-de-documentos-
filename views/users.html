@@ -5,9 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Usuarios - Vigil Tecnológico</title>
+    <link rel="icon" type="image/png" href="/img/user_avatar.svg">
     <!-- Use Google Fonts (Outfit) -->
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/style.css?v=5">
     <link rel="stylesheet" href="/css/fontawesome.all.min.css">
     <style>
         /* Specific Styles for Users Grid */
@@ -166,105 +167,126 @@
 
 <body>
 
-    <!-- Top Bar (Full Width) -->
-    <header class="top-bar">
-        <div class="top-bar-left">
-            <div class="brand-text">Administración</div>
-            <i class="fa-solid fa-bars" id="sidebarToggle" style="cursor: pointer; font-size: 1.2rem;"></i>
+    <!-- Sidebar First -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header"
+            style="justify-content: space-between; padding: 0 20px; height: 70px; align-items: center;">
+            <div class="sidebar-brand">
+                <div class="brand-icon-container">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <span class="brand-text">Vigil<span class="brand-suffix">Docs</span></span>
+            </div>
+            <!-- Toggle moves to right, but usually toggle is part of header interaction. 
+                 User request implied adding logo back. 
+                 Let's keep toggle but maybe adjust position if needed. 
+                 For now, spaced between is good. -->
         </div>
 
-        <div class="top-bar-right">
-            <a href="/logout" class="logout-link">
-                Cerrar Sesión
-            </a>
+        <div class="sidebar-section-header">MENU PRINCIPAL</div>
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="/" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-table-list"></i></span>
+                    Panel General
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/register" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-plus-circle"></i></span>
+                    Nuevo Documento
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/reports" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-chart-line"></i></span>
+                    Reportes
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/workers" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-users"></i></span>
+                    Trabajadores
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/formatos" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-file-contract"></i></span>
+                    Formatos
+                </a>
+            </li>
+        </ul>
+
+        <div class="sidebar-section-header">ADMINISTRACIÓN</div>
+        <ul class="nav-menu">
+            <li class="nav-item" id="nav-admin-users" style="display: none;">
+                <a href="/users" class="nav-link active">
+                    <span class="nav-icon"><i class="fa-solid fa-user-shield"></i></span>
+                    Usuarios
+                </a>
+            </li>
+
+        </ul>
+        <div class="sidebar-footer">
+            <div class="sidebar-user-card">
+                <div class="user-avatar-container">
+                    <img src="/img/user_avatar.svg" alt="Avatar" class="u-avatar-sidebar">
+                    <span class="status-indicator"></span>
+                </div>
+                <div class="u-info-sidebar">
+                    <span class="u-name-sidebar" id="sidebar-username">Cargando...</span>
+                    <span class="u-role-sidebar" id="sidebar-role">Usuario</span>
+                </div>
+                <a href="/logout" class="u-logout-card-btn" title="Cerrar Sesión">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                </a>
+            </div>
         </div>
-    </header>
+    </nav>
 
-    <div class="app-container">
-        <!-- Sidebar -->
-        <nav class="sidebar" id="sidebar">
-            <div class="sidebar-user-profile">
-                <div class="user-avatar-circle">
-                    <i class="fa-solid fa-user"></i>
-                </div>
-                <div class="user-welcome-text">
-                    <span class="welcome-label">Bienvenido sr(a)</span>
-                    <span class="user-name" id="sidebar-username">CARGANDO...</span>
-                </div>
+    <!-- Main Wrapper -->
+    <div class="main-wrapper">
+        <header class="top-bar">
+            <div style="flex-grow: 1;"></div>
+            <div class="user-controls">
+                <button id="themeToggle" class="btn-icon-toggle" title="Cambiar Tema">
+                    <i class="fa-regular fa-moon"></i>
+                </button>
             </div>
+        </header>
 
-            <ul class="nav-menu">
-                <li class="nav-item">
-                    <a href="/" class="nav-link">
-                        <span class="nav-icon"><i class="fa-solid fa-table-list"></i></span>
-                        Panel General
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="/register" class="nav-link">
-                        <span class="nav-icon"><i class="fa-solid fa-plus-circle"></i></span>
-                        Nuevo Documento
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="/reports" class="nav-link">
-                        <span class="nav-icon"><i class="fa-solid fa-chart-line"></i></span>
-                        Reporte
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="/workers" class="nav-link">
-                        <span class="nav-icon"><i class="fa-solid fa-users"></i></span>
-                        Trabajadores
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="/formatos" class="nav-link">
-                        <span class="nav-icon"><i class="fa-solid fa-file-contract"></i></span>
-                        Formatos
-                    </a>
-                </li>
-                <!-- Admin Only Section -->
-                <li class="nav-item" id="nav-admin-users" style="display: none;">
-                    <a href="/users" class="nav-link active">
-                        <span class="nav-icon"><i class="fa-solid fa-user-shield"></i></span>
-                        Usuarios (Admin)
-                    </a>
-                </li>
-            </ul>
-            <div class="sidebar-footer">
-                <img src="/img/logo_vigil.png" alt="Vigil Tecnológico" class="sidebar-logo">
-            </div>
-        </nav>
+        <div class="app-container">
+            <!-- Sidebar moved out -->
 
-        <!-- Main Content -->
-        <main class="main-content">
-            <!-- Top Bar removed from here -->
+            <!-- Main Content -->
+            <main class="main-content">
+                <!-- Top Bar removed from here -->
 
-            <!-- Content Area -->
-            <div class="content-area">
+                <!-- Content Area -->
+                <div class="content-area">
 
-                <!-- Toolbar -->
-                <div class="users-toolbar">
-                    <div class="search-wrapper">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                        <input type="text" id="searchInput" placeholder="Buscar usuario..." onkeyup="filterUsers()">
+                    <!-- Toolbar -->
+                    <div class="users-toolbar">
+                        <div class="search-wrapper">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" id="searchInput" placeholder="Buscar usuario..." onkeyup="filterUsers()">
+                        </div>
+                        <button class="add-btn" onclick="openAddUserModal()">
+                            <i class="fa-solid fa-plus"></i> Nuevo Usuario
+                        </button>
                     </div>
-                    <button class="add-btn" onclick="openAddUserModal()">
-                        <i class="fa-solid fa-plus"></i> Nuevo Usuario
-                    </button>
-                </div>
 
-                <!-- Grid -->
-                <div id="usersGrid" class="users-grid">
-                    <!-- Data Loaded Here -->
-                    <div style="grid-column: 1/-1; text-align: center; color: #64748b;">
-                        Cargando...
+                    <!-- Grid -->
+                    <div id="usersGrid" class="users-grid">
+                        <!-- Data Loaded Here -->
+                        <div style="grid-column: 1/-1; text-align: center; color: #64748b;">
+                            Cargando...
+                        </div>
                     </div>
-                </div>
 
-            </div>
-        </main>
+                </div>
+            </main>
+        </div>
     </div>
 
     <!-- Modal Add User -->
@@ -333,7 +355,7 @@
         </div>
     </div>
 
-    <script src="/js/common.js?v=2"></script>
+    <script src="/js/common.js?v=3"></script>
     <script>
         // Check for common.js sidebar logic or implement simpler toggle here if missing in common.js for this page specifically
         // Assuming common.js might handle dropdowns but index.html had custom sidebar logic. 
@@ -341,18 +363,7 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             loadUsers();
-
-            const toggleBtn = document.getElementById('sidebarToggle');
-            const sidebar = document.getElementById('sidebar');
-            if (toggleBtn && sidebar) {
-                if (localStorage.getItem('sidebarCollapsed') === 'true') {
-                    sidebar.classList.add('collapsed');
-                }
-                toggleBtn.addEventListener('click', () => {
-                    sidebar.classList.toggle('collapsed');
-                    localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
-                });
-            }
+            // Sidebar logic moved to common.js
         });
 
         let allUsers = [];
@@ -390,8 +401,9 @@
                 const card = document.createElement('div');
                 card.className = 'user-card';
 
-                // Block deleting yourself (simple client check)
-                const isMe = user.username === 'diego'; // ideally check session
+                // No mostrar botón eliminar si el usuario es el mismo que está logueado
+                const currentUsername = window.__currentUser?.username || '';
+                const isMe = user.username === currentUsername;
                 const deleteBtn = isMe ? '' : `
                     <button class="delete-btn" onclick="deleteUser(${user.id}, '${user.username}')" title="Eliminar">
                         <i class="fa-solid fa-trash"></i>
@@ -530,23 +542,7 @@
                 });
             }
         }
-        // Fetch User Info for Sidebar
-        async function fetchUserInfo() {
-            try {
-                const response = await fetch('/api/auth/me');
-                const data = await response.json();
-                if (data.authenticated && data.user) {
-                    const userNameElement = document.getElementById('sidebar-username');
-                    if (userNameElement) {
-                        userNameElement.textContent = data.user.name || data.user.username;
-                    }
-                }
-            } catch (error) {
-                console.error('Error fetching user info:', error);
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', fetchUserInfo);
+        // User Info fetching and Sidebar toggling are handled in common.js
     </script>
 </body>
 

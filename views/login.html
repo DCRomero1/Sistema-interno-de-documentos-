@@ -4,312 +4,558 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Administración - Inicio de Sesión</title>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <!-- FontAwesome -->
-    <link rel="stylesheet" href="/css/fontawesome.all.min.css">
+    <title>Comunidad Vigiliana - Iniciar Sesión</title>
+    <link rel="icon" type="image/png" href="/img/Logo2.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
+        /* --- ESTILOS GENERALES Y FONDO FULL HD --- */
         body {
             margin: 0;
             padding: 0;
-            font-family: 'Roboto', sans-serif;
-            background-color: #d1d5db;
-            /* Darker background */
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            font-family: 'Inter', sans-serif;
             height: 100vh;
-        }
-
-        /* Top Red Bar */
-        .top-bar {
             width: 100%;
-            background-color: #1e3a8a;
-            /* Deep Blue */
-            color: white;
-            text-align: center;
-            padding: 15px 0;
-            font-size: 1.8rem;
-            font-weight: 700;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 1000;
-        }
-
-        /* Main Container */
-        .login-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100%;
-            width: 100%;
-            padding-top: 60px;
-            /* Space for top bar */
-        }
-
-        /* Login Card */
-        .login-card {
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-            /* Stronger shadow */
-            padding: 40px;
-            width: 380px;
-            text-align: center;
-            border: 1px solid #ddd;
-        }
-
-        /* Avatar Image */
-        .avatar-container {
-            width: 120px;
-            height: 120px;
-            margin: 0 auto 20px;
-            border: 3px solid #1e3a8a;
-            /* Dark Blue border */
-            border-radius: 12px;
             overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: #fff;
-        }
-
-        .avatar-container img {
-            width: 100%;
-            height: auto;
-            animation: spin 6s linear infinite;
-            /* Velocidad media */
-        }
-
-        @keyframes spin {
-            from {
-                transform: perspective(1000px) rotateY(0deg);
-            }
-
-            to {
-                transform: perspective(1000px) rotateY(360deg);
-            }
-        }
-
-
-
-        h2.login-title {
-            color: #555;
-            font-size: 1.4rem;
-            margin-bottom: 25px;
-            font-weight: 400;
-        }
-
-        /* Form Elements */
-        .form-group {
-            margin-bottom: 20px;
+            /* Aquí va la imagen de fondo cubriendo TODO */
+            background-image: url('/img/bg-vigil.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
             position: relative;
         }
 
-        .input-group {
-            display: flex;
-            align-items: center;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            background-color: #fff;
-            padding: 5px;
-        }
-
-        .input-group:focus-within {
-            border-color: #888;
-        }
-
-        .input-icon {
-            padding: 10px;
-            color: #555;
-            background-color: #e9ecef;
-            border-right: 1px solid #ccc;
-            width: 45px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border-top-left-radius: 3px;
-            border-bottom-left-radius: 3px;
-        }
-
-        .input-wrapper {
-            /* Wrapper to mimic the image's "input group" look more closely */
-            display: flex;
-            align-items: stretch;
+        /* Capa oscura general para que el texto se lea bien sobre la foto */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
-            border: 1px solid #d1d5db;
-            border-radius: 4px;
-            overflow: hidden;
+            height: 100%;
+            /* Capa oscura MUY TRANSPARENTE para que el edificio resalte */
+            background: rgba(15, 23, 42, 0.4);
+            /* Opcional: Gradiente sutil para oscurecer solo abajo */
+            background: linear-gradient(to bottom, rgba(15, 23, 42, 0.3) 0%, rgba(15, 23, 42, 0.6) 100%);
+            z-index: 1;
         }
 
-        .input-icon-box {
-            background-color: #e2e8f0;
-            color: #475569;
-            padding: 0 15px;
+        /* --- LAYOUT PRINCIPAL --- */
+        .split-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            /* 50/50 split works better for this layout */
+            height: 100vh;
+            width: 100%;
+            position: relative;
+            z-index: 2;
+            /* Para estar encima de la capa oscura */
+            max-width: 1600px;
+            /* Evitar que se estire demasiado en pantallas 4k */
+            margin: 0 auto;
+        }
+
+        /* --- PANELES --- */
+        .left-pane {
             display: flex;
             align-items: center;
             justify-content: center;
-            border-right: 1px solid #d1d5db;
+            /* Centrado horizontal */
+            padding: 40px;
         }
 
+        .right-pane {
+            display: flex;
+            align-items: center;
+            padding: 60px;
+            /* Ya no tiene background propio, es transparente */
+        }
+
+        /* Wrapper for centering content on Left */
+        .login-wrapper {
+            width: 100%;
+            max-width: 380px;
+            /* Reduced from 420px */
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            /* Space between title and card */
+        }
+
+        /* Title Outside Card */
+        .login-title {
+            margin: 0;
+            color: white;
+            font-weight: 800;
+            font-size: 2.4rem;
+            /* Reduced from 2.8rem */
+            letter-spacing: -1px;
+            line-height: 1.1;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .login-subtitle {
+            color: #e2e8f0;
+            margin-top: 5px;
+            margin-bottom: 25px;
+            font-size: 0.95rem;
+            /* Slightly smaller */
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        /* --- TARJETA DE LOGIN (Glassmorphism) --- */
+        .login-card {
+            /* Fondo MUY transparente y mas borroso */
+            background: rgba(15, 23, 42, 0.65);
+            /* Efecto borroso fuerte para leer inputs */
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            /* Slightly smaller radius */
+            padding: 32px;
+            /* Reduced from 40px */
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+            width: 100%;
+            /* max-width is handled by wrapper, but good to keep consistent */
+            max-width: 380px;
+        }
+
+        /* Títulos y Textos del Login */
+        h2 {
+            margin: 0;
+            color: white;
+            font-weight: 800;
+            font-size: 2.2rem;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            color: #94a3b8;
+            margin-top: 8px;
+            margin-bottom: 32px;
+            font-size: 0.95rem;
+        }
+
+        /* Stats Styles */
+        .stats-grid {
+            display: flex;
+            gap: 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            padding-top: 30px;
+            margin-top: 40px;
+        }
+
+        .stat-box h4 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin: 0 0 5px 0;
+            color: white;
+        }
+
+        .stat-box p {
+            font-size: 0.8rem;
+            color: #cbd5e1;
+            margin: 0;
+        }
+
+        /* Rest of Styles and HTML Content... Truncated for diff */
+        /* Will need to update the HTML section separately or replace the whole file?
+           User's file is large, I'll do partial updates or a full rewrite for cleanliness?
+           Wait, user's HTML is mostly fine except for stats. */
+
+        /* Let's just update the key parts: background image and right pane content */
+        /* ...Actually replace_file_content works on chunks. */
+
+        /* Update Image first */
+
+        /* --- FORMULARIOS --- */
+        .form-group {
+            margin-bottom: 16px;
+            /* Reduced from 20px */
+        }
 
         .form-control {
-            border: none;
-            padding: 12px;
             width: 100%;
-            font-size: 1rem;
+            padding: 14px 14px;
+            /* Reduced from 16px */
+            /* Input más oscuro para contraste */
+            background: rgba(2, 6, 23, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            /* Slightly smaller radius */
+            color: #f1f5f9;
+            font-size: 0.9rem;
+            /* Slightly smaller font */
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
             outline: none;
-            color: #333;
+            border-color: #3b82f6;
+            background: rgba(2, 6, 23, 0.8);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
         }
 
         .form-control::placeholder {
-            color: #888;
+            color: #64748b;
         }
 
-
-
-
-
-
-
-        /* Links */
-        .forgot-password {
-            display: block;
-            text-align: right;
-            color: #2563eb;
-            text-decoration: none;
-            font-size: 0.9rem;
-            margin-bottom: 25px;
+        /* --- CHECKBOX Y OLVIDE CONTRASEÑA --- */
+        .remember-group {
             display: flex;
             align-items: center;
-            justify-content: flex-end;
-            gap: 5px;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            /* Reduced from 30px */
+            font-size: 0.85rem;
+            /* Smaller text */
+            color: #cbd5e1;
         }
 
-        .forgot-password i {
-            font-size: 0.8rem;
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            /* Tighter gap */
+            cursor: pointer;
+            user-select: none;
         }
 
-        .forgot-password:hover {
+        .remember-me input {
+            accent-color: #3b82f6;
+            width: 14px;
+            /* Smaller checkbox */
+            height: 14px;
+            cursor: pointer;
+        }
+
+        .forgot-link {
+            color: #60a5fa;
+            /* Azul más claro */
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .forgot-link:hover {
+            color: #93c5fd;
             text-decoration: underline;
         }
 
-        /* Button */
+        /* --- BOTONES --- */
         .btn-submit {
             width: 100%;
-            background-color: #1e3a8a;
-            /* Match header */
+            padding: 14px;
+            /* Reduced form 16px */
+            /* Gradiente sutil en el botón */
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
             color: white;
-            padding: 12px;
             border: none;
-            border-radius: 4px;
-            font-size: 1.1rem;
-            font-weight: 500;
+            border-radius: 10px;
+            /* Matching inputs */
+            font-size: 0.95rem;
+            font-weight: 600;
             cursor: pointer;
-            transition: background 0.3s;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-bottom: 20px;
+            /* Reduced */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
         }
 
         .btn-submit:hover {
-            background-color: #a00000;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.4);
         }
 
-        /* Error Message */
-        .error-msg {
-            background-color: #fef2f2;
-            color: #ef4444;
-            padding: 10px;
-            border-radius: 4px;
-            margin-bottom: 20px;
+        /* --- REDES SOCIALES --- */
+        .divider {
+            text-align: center;
+            color: #64748b;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 24px;
+            position: relative;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            width: 30%;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .divider::before {
+            left: 0;
+        }
+
+        .divider::after {
+            right: 0;
+        }
+
+        .social-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .btn-social {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 12px;
+            color: #cbd5e1;
             font-size: 0.9rem;
-            border: 1px solid #fee2e2;
-            display: none;
+            cursor: pointer;
+            display: flex;
             align-items: center;
-            gap: 8px;
             justify-content: center;
+            gap: 8px;
+            transition: all 0.2s;
         }
 
-        .login-container {
+        .btn-social:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .create-account {
+            text-align: center;
+            margin-top: 24px;
+            font-size: 0.9rem;
+            color: #94a3b8;
+        }
+
+        .create-account a {
+            color: #3b82f6;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        /* --- LADO DERECHO (TEXTO FLOTANTE) --- */
+        .content-floating {
+            max-width: 600px;
+            padding-left: 50px;
+            /* Separación visual del centro */
+        }
+
+        /* Badge Institucional */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(15, 23, 42, 0.8);
+            /* Fondo oscuro semitransparente */
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 10px 20px;
+            margin-bottom: 30px;
+        }
+
+        .badge img {
+            height: 32px;
+            width: auto;
+        }
+
+        .badge span {
             display: flex;
             flex-direction: column;
-            /* Changed to column to stack card and footer */
-            justify-content: center;
-            align-items: center;
-            height: 100%;
-            width: 100%;
-            padding-top: 60px;
-        }
-
-        .footer-branding {
-            margin-top: 30px;
-            font-size: 1.2rem;
-            color: #1e3a8a;
-            /* Deep Blue to match theme */
+            color: white;
             font-weight: 700;
-            letter-spacing: 1px;
-            text-transform: uppercase;
+            font-size: 0.9rem;
+            line-height: 1.1;
         }
 
-        .copyright-text {
-            margin-top: 10px;
-            font-size: 0.85rem;
-            color: #777;
-            font-weight: 400;
+        .badge small {
+            color: #60a5fa;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Tipografía Gigante */
+        .hero-title {
+            font-size: 3.5rem;
+            /* Letra grande e impactante */
+            font-weight: 800;
+            line-height: 1.1;
+            margin: 0 0 24px 0;
+            color: white;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            /* Sombra para leerse sobre foto */
+        }
+
+        .highlight {
+            color: #3b82f6;
+            /* Azul eléctrico */
+            display: block;
+            /* Fuerza que baje a otra línea si es necesario */
+        }
+
+        .description {
+            font-size: 1.1rem;
+            color: #e2e8f0;
+            /* Blanco grisáceo muy claro */
+            line-height: 1.6;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+            max-width: 500px;
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 960px) {
+            .split-container {
+                grid-template-columns: 1fr;
+                /* Una sola columna */
+                height: auto;
+                min-height: 100vh;
+            }
+
+            body {
+                overflow-y: auto;
+                /* Permitir scroll en móviles */
+            }
+
+            .left-pane {
+                align-items: flex-start;
+                /* Better for mobile forms */
+                padding-top: 60px;
+                padding: 40px 20px;
+                order: 2;
+                /* Bajar el login en móviles */
+            }
+
+            .right-pane {
+                padding: 60px 20px 20px 20px;
+                order: 1;
+                /* Texto arriba en móviles */
+                justify-content: center;
+                text-align: center;
+            }
+
+            .content-floating {
+                padding-left: 0;
+            }
+
+            .hero-title {
+                font-size: 2.5rem;
+                text-align: center;
+            }
+        }
+
+        /* Animation Keyframes - Outside Media Query */
+        @keyframes fadeInOut {
+
+            0%,
+            100% {
+                opacity: 0.8;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.4;
+                transform: scale(0.98);
+            }
+        }
+
+        .hero-title {
+            animation: fadeInOut 3s ease-in-out infinite;
         }
     </style>
 </head>
 
 <body>
+    <div class="split-container">
 
-    <div class="top-bar">
-        Administración
-    </div>
+        <div class="left-pane">
+            <div class="login-wrapper">
+                <!-- Title & Subtitle OUTSIDE the card -->
+                <h2 class="login-title">Bienvenido</h2>
+                <p class="login-subtitle">Accede a tu bóveda segura de documentos.</p>
 
-    <div class="login-container">
-        <div class="login-card">
-            <div class="avatar-container">
-                <img src="/img/logo_vigil.png" alt="Logo Vigil" class="logo-img">
-            </div>
-            <h2 class="login-title">Inicio de Sesión</h2>
-
-            <div id="errorMsg" class="error-msg">
-                <i class="fa-solid fa-circle-exclamation"></i>
-                <span>Credenciales incorrectas</span>
-            </div>
-
-            <form action="/login" method="POST">
-                <div class="form-group">
-                    <div class="input-wrapper">
-                        <div class="input-icon-box">
-                            <i class="fa-solid fa-user"></i>
+                <div class="login-card">
+                    <form action="/login" method="POST">
+                        <div id="errorMsg" class="error-msg"
+                            style="display:none; color: #fca5a5; background: rgba(239, 68, 68, 0.2); padding: 10px; border-radius: 8px; margin-bottom: 15px; font-size: 0.9rem;">
+                            <i class="fa-solid fa-circle-exclamation"></i> Usuario o contraseña incorrectos.
                         </div>
-                        <input type="text" name="username" class="form-control" placeholder="Usuario" required
-                            autofocus>
+
+                        <div class="form-group">
+                            <input type="text" name="username" class="form-control" placeholder="Usuario" required
+                                autofocus>
+                        </div>
+
+                        <div class="form-group">
+                            <input type="password" name="password" class="form-control" placeholder="Contraseña"
+                                required>
+                        </div>
+
+                        <div class="remember-group">
+                            <label class="remember-me">
+                                <input type="checkbox" name="remember">
+                                <span>Recordarme</span>
+                            </label>
+                            <a href="#" class="forgot-link">¿Olvidaste tu contraseña?</a>
+                        </div>
+
+                        <button type="submit" class="btn-submit">
+                            Ingresar <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+
+                        <div class="divider">O continúa con</div>
+
+                        <div class="social-buttons">
+                            <button type="button" class="btn-social">
+                                <i class="fa-brands fa-google"></i> Google
+                            </button>
+                            <button type="button" class="btn-social">
+                                <i class="fa-brands fa-apple"></i> Apple
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="create-account">
+                        ¿No tienes una cuenta? <a href="#">Crear una cuenta</a>
                     </div>
                 </div>
+            </div>
+        </div>
 
-                <div class="form-group">
-                    <div class="input-wrapper">
-                        <div class="input-icon-box">
-                            <i class="fa-solid fa-key"></i>
-                        </div>
-                        <input type="password" name="password" class="form-control" placeholder="Contraseña" required>
-                    </div>
+        <div class="right-pane">
+            <div class="content-floating">
+                <div class="badge">
+                    <img src="/img/Logo2.jpg" alt="Logo">
+                    <span>IESP VIGIL </span>
                 </div>
 
+                <h1 class="hero-title">
+                    Gestión Documental,<br>
+                    <span class="highlight">Redefinida.</span>
+                </h1>
 
+                <p class="description">
+                    Experimenta la nueva generación de seguridad en la nube y flujos de trabajo colaborativos diseñados
+                    para equipos técnicos de alto rendimiento.
+                </p>
 
-                <button type="submit" class="btn-submit">Ingresar</button>
-            </form>
-            <div class="footer-branding">INSTITUTO VIGIL</div>
-            <div class="copyright-text">© Copyright IESP VIGIL 2026. Todos los derechos reservados.</div>
+                <!-- Stats Removed per User Request -->
+            </div>
         </div>
     </div>
 
     <script>
-        // Check for error in URL (e.g. /login?error=1)
         const urlParams = new URLSearchParams(window.location.search);
         if (urlParams.has('error')) {
             document.getElementById('errorMsg').style.display = 'flex';

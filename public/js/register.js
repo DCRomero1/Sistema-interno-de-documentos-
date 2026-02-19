@@ -1,5 +1,7 @@
 // Seccion principal para modificar el registro diario
-document.getElementById('fecha').valueAsDate = new Date();
+// Fecha de hoy en hora LOCAL (evita el bug de UTC que adelanta un día por las noches)
+const today = new Date();
+document.getElementById('fecha').value = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
 
 // campos para cambiar la funcion
 document.getElementById('origen').addEventListener('change', function () {
@@ -51,26 +53,7 @@ document.querySelectorAll('.form-input, .form-select').forEach(input => {
     });
 });
 
-// PDF File Input Logic
-const pdfInput = document.getElementById('pdfFile');
-const fileNameDisplay = document.getElementById('fileNameDisplay');
-const clearFileBtn = document.getElementById('clearFileBtn');
 
-pdfInput.addEventListener('change', function () {
-    if (this.files && this.files.length > 0) {
-        fileNameDisplay.textContent = this.files[0].name;
-        clearFileBtn.style.display = 'inline-block';
-    } else {
-        fileNameDisplay.textContent = 'Ningún archivo seleccionado';
-        clearFileBtn.style.display = 'none';
-    }
-});
-
-clearFileBtn.addEventListener('click', function () {
-    pdfInput.value = ''; // Clear the input
-    fileNameDisplay.textContent = 'Ningún archivo seleccionado';
-    clearFileBtn.style.display = 'none';
-});
 
 async function submitForm() {
     let hasError = false;
@@ -143,11 +126,7 @@ async function submitForm() {
     formData.append('concepto', concepto.value);
     formData.append('folios', folios.value);
 
-    // Append file if selected
-    const pdfFile = document.getElementById('pdfFile').files[0];
-    if (pdfFile) {
-        formData.append('pdfFile', pdfFile);
-    }
+
 
     try {
         const response = await fetch('/api/documents', {
