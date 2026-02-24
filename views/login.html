@@ -560,6 +560,9 @@
         if (urlParams.has('error')) {
             document.getElementById('errorMsg').style.display = 'flex';
         }
+
+        // Limpiar el flag de cumpleaños para que se muestre en la nueva sesión
+        sessionStorage.removeItem('birthdayShown');
     </script>
 </body>
 

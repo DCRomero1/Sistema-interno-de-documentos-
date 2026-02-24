@@ -4,173 +4,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Directorio de Personal - Sistema de Registro</title>
-    <link rel="icon" type="image/png" href="/img/user_avatar.svg">
-    <link rel="stylesheet" href="/css/style.css?v=5">
+    <title>Directorio de Personal - VigilDocs</title>
     <link rel="stylesheet" href="/css/fontawesome.all.min.css">
-    <!-- Google Fonts for Formal Card -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css?v=5">
     <link
-        href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cinzel:wght@400;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@300;400;600&display=swap"
         rel="stylesheet">
     <style>
-        /* Greeting Card Styles (Director Edition - Paper Texture) */
-        .greeting-card {
-            background-image: url('/img/bg-paper.png');
-            background-repeat: repeat;
-            /* Ensure it tiles or covers as preferred, usually repeat for texture */
-            background-size: auto;
-            /* Fallback color if image fails */
-            background-color: #fdfbf7;
-            padding: 20px;
-            color: #334155;
-            /* Dark Slate for readability on light background */
-            position: relative;
-            border-radius: 4px;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            /* Center vertically if space allows */
-        }
-
-        .card-border {
-            border: 2px solid #b45309;
-            /* Dark Bronze/Gold */
-            padding: 30px 40px;
-            /* Reduced vertical padding */
-            position: relative;
-            background: transparent;
-        }
-
-        .card-border::before,
-        .card-border::after {
-            content: "✦";
-            position: absolute;
-            color: #b45309;
-            /* Dark Bronze to match border */
-            font-size: 24px;
-            text-shadow: none;
-            /* Removed glow for cleaner look on paper */
-        }
-
-        .card-border::before {
-            top: 10px;
-            left: 10px;
-        }
-
-        .card-border::after {
-            bottom: 10px;
-            right: 10px;
-        }
-
-        .card-header {
-            text-align: center;
-            margin-bottom: 20px;
-            /* Reduced margin */
-        }
-
-        .formal-title {
-            font-family: 'Great Vibes', cursive;
-            font-size: 3.5rem;
-            /* Slightly smaller for space */
-            color: #b45309;
-            /* Dark Bronze/Gold */
-            margin-top: 5px;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-        }
-
-        .card-body {
-            text-align: center;
-        }
-
-        .intro-text,
-        .greet-text {
-            font-family: 'Playfair Display', serif;
-            font-size: 1rem;
-            /* Compact text */
-            line-height: 1.5;
-            color: #475569;
-            /* Slate-600 */
-            margin: 5px 0;
-        }
-
-        .institution-name {
-            font-family: 'Cinzel', serif;
-            font-size: 1.3rem;
-            /* Compact text */
-            font-weight: 700;
-            color: #1e293b;
-            /* Slate-800 - Dark */
-            margin: 10px 0 15px;
-            letter-spacing: 2px;
-            border-bottom: 1px solid #b45309;
-            display: inline-block;
-            padding-bottom: 5px;
-            text-shadow: none;
-        }
-
-        .honoree-name {
-            font-family: 'Playfair Display', serif;
-            font-size: 2.5rem;
-            /* Slightly smaller */
-            font-weight: 700;
-            color: #b45309;
-            /* Dark Bronze */
-            margin: 15px 0;
-            /* Reduced margin */
-            font-style: italic;
-            text-shadow: none;
-        }
-
-        .message-text {
-            margin: 0 auto 20px;
-            max-width: 85%;
-            font-style: italic;
-            color: #334155;
-            /* Dark Slate */
-            font-size: 1.1rem;
-            line-height: 1.6;
-        }
-
-        .card-footer {
-            margin-top: 10px;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .footer-illustration {
-            max-width: 80%;
-            /* Adjust size */
-            height: auto;
-            margin-bottom: 10px;
-            opacity: 0.9;
-        }
-
-        .date-display {
-            font-family: 'Cinzel', serif;
-            font-size: 0.85rem;
-            color: #64748b;
-            border-top: none;
-            /* Removed line for cleaner look with image */
-            padding-top: 10px;
-            display: inline-block;
-            width: auto;
-        }
-
-        /* --- New Design Styles (Dashboard) --- */
-
-        /* Hero Banner */
         .hero-banner {
-            background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
-            border-radius: 12px;
-            padding: 15px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
+            padding: 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
             position: relative;
             overflow: hidden;
-            margin-bottom: 20px;
-            box-shadow: 0 5px 15px -5px rgba(99, 102, 241, 0.4);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -212,6 +61,107 @@
             z-index: 2;
         }
 
+        /* Config Panel Styles */
+        .config-panel {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .config-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .config-label {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #475569;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Modern Select & Textarea */
+        .config-select,
+        .config-input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            background: #f8fafc;
+            font-size: 0.95rem;
+            color: #334155;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .config-select:focus,
+        .config-input:focus {
+            outline: none;
+            border-color: #6366f1;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        /* Custom Color Picker Swatches */
+        .color-picker-group {
+            display: flex;
+            gap: 15px;
+            padding-top: 5px;
+        }
+
+        .color-picker-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+        }
+
+        .color-picker-item input[type="color"] {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            border: none;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            cursor: pointer;
+            padding: 0;
+            overflow: hidden;
+            background: transparent;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .color-picker-item input[type="color"]::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+
+        .color-picker-item input[type="color"]::-webkit-color-swatch {
+            border: 2px solid white;
+            border-radius: 50%;
+            box-shadow: 0 0 0 1px #cbd5e1;
+        }
+
+        .color-picker-item:hover input[type="color"] {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .color-picker-item span {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #64748b;
+        }
+
         /* Avatar in Table */
         .table-avatar-circle {
             width: 40px;
@@ -244,6 +194,15 @@
         .badge-admin {
             background-color: rgba(16, 185, 129, 0.1);
             color: #059669;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .badge-limpieza {
+            background-color: rgba(245, 158, 11, 0.1);
+            color: #d97706;
             padding: 4px 10px;
             border-radius: 20px;
             font-size: 0.8rem;
@@ -332,11 +291,23 @@
 
         .modal-content {
             background-color: #fefefe;
-            margin: 10% auto;
+            margin: 2% auto;
+            /* Decreased top margin */
+            /* Adjusted margin */
             border: 1px solid #888;
             width: 50%;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-height: 90vh;
+            /* Limit height to viewport */
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-body {
+            overflow-y: auto;
+            /* Enable scrolling for body only */
+            padding: 20px;
         }
 
         .modal-header,
@@ -457,6 +428,332 @@
         .themed-close:hover {
             background: #333;
         }
+
+        /* Template Selection Styles */
+        .template-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            /* justify-content: center; Optional: Center buttons */
+        }
+
+        .template-btn {
+            padding: 10px 20px;
+            border: 1px solid #e2e8f0;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #64748b;
+            transition: all 0.2s;
+            flex: 1;
+            /* Stretch to fill width */
+            text-align: center;
+        }
+
+        .template-btn:hover {
+            border-color: #cbd5e1;
+            background: #f8fafc;
+        }
+
+        .template-btn.active {
+            background: #eff6ff;
+            color: #2563eb;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+        }
+
+        .template-preview {
+            /* Legacy style kept just in case but unused */
+            display: none;
+        }
+
+        .template-name {
+            /* Legacy style kept just in case but unused */
+            display: none;
+        }
+
+        /* Large Preview Area */
+        /* Large Preview Area */
+        .preview-container {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            min-height: 800px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 10px;
+            overflow: auto;
+            image-rendering: -webkit-optimize-contrast;
+            padding: 20px;
+        }
+
+        .preview-placeholder {
+            color: #94a3b8;
+            font-style: italic;
+        }
+
+        /* --- Classic Card Design Styles --- */
+        /* --- Classic Card Design Styles --- */
+        .card-classic {
+            width: 100%;
+            max-width: 600px;
+            /* Wider format */
+            min-height: 850px;
+            /* Taller format */
+            height: auto;
+            background-color: #fdfbf7;
+            background-image: url("https://www.transparenttextures.com/patterns/cream-paper.png");
+            padding: 50px;
+            /* More padding */
+            position: relative;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #4b5563;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            margin: 20px auto;
+        }
+
+        .card-classic-border {
+            width: 100%;
+            height: 100%;
+            flex: 1;
+            border: 3px double #b45309;
+            border-radius: 4px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 30px;
+            /* adjust padding inside border */
+            box-sizing: border-box;
+            background: transparent;
+        }
+
+        /* Decorative Corners */
+        .card-corner {
+            position: absolute;
+            color: #b45309;
+            font-size: 2rem;
+        }
+
+        .c-tl {
+            top: 15px;
+            left: 15px;
+        }
+
+        .c-br {
+            bottom: 15px;
+            right: 15px;
+        }
+
+        .card-logo-img {
+            height: 60px;
+            /* Slightly larger */
+            margin-bottom: 15px;
+        }
+
+        .card-title-script {
+            font-family: 'Great Vibes', cursive;
+            font-size: 4.5rem;
+            /* Larger */
+            color: #b45309;
+            margin: 0 0 20px 0;
+            line-height: 1;
+            font-weight: 400;
+            text-shadow: none;
+        }
+
+        .card-header-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1rem;
+            color: #57534e;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+
+        .card-institution {
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            color: #1e293b;
+            font-size: 1.2rem;
+            text-align: center;
+            letter-spacing: 0.5px;
+            margin-bottom: 25px;
+            border-bottom: 1px solid #b45309;
+            padding-bottom: 15px;
+            width: 90%;
+            line-height: 1.3;
+        }
+
+        .card-recipient-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            /* Larger */
+            font-weight: 700;
+            color: #b45309;
+            text-align: center;
+            margin: 20px 0;
+            font-style: italic;
+            text-transform: uppercase;
+            line-height: 1.1;
+        }
+
+        .card-message {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            text-align: center;
+            line-height: 1.6;
+            color: #4b5563;
+            width: 95%;
+            font-style: italic;
+            margin-bottom: 30px;
+        }
+
+        .card-footer-date {
+            font-family: 'Cinzel', serif;
+            font-size: 0.8rem;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 15px;
+        }
+
+        /* --- Minimalist Design 2 Styles --- */
+        .card-minimalista {
+            width: 100%;
+            max-width: 800px;
+            /* Wider for landscape split */
+            aspect-ratio: 16/9;
+            /* Landscape format */
+            background-color: white;
+            display: flex;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            margin: 20px auto;
+            position: relative;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .card-min-left {
+            width: 50%;
+            background-color: #633030;
+            /* Deep Reddish-Brown */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-min-left img {
+            width: 75%;
+            height: auto;
+            object-fit: contain;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+            /* Card-like shadow */
+            opacity: 1;
+        }
+
+        .card-min-right {
+            width: 50%;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background-image: radial-gradient(circle at top right, #fdfbf7, #f2ead3);
+            position: relative;
+            /* Added for corner positioning */
+        }
+
+        .min-title {
+            font-family: 'Great Vibes', cursive;
+            font-size: 3rem;
+            /* Reduced from 4rem */
+            color: #b4853e;
+            /* Darker Gold for better visibility */
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        .min-subtitle {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            color: #9ca3af;
+            text-transform: uppercase;
+            margin: 10px 0 20px 0;
+        }
+
+        .min-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: #b4853e;
+            /* Gold to match title */
+            font-weight: 700;
+            font-style: italic;
+            margin-bottom: 20px;
+        }
+
+        .min-message {
+            font-family: 'Playfair Display', serif;
+            font-size: 0.9rem;
+            color: #6b7280;
+            line-height: 1.6;
+            font-style: italic;
+            width: 90%;
+            margin-bottom: 40px;
+        }
+
+        .min-footer {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.65rem;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: auto;
+            border-top: 1px solid #e5e7eb;
+            padding-top: 15px;
+            margin-bottom: 20px;
+            /* Moved up */
+            width: 70%;
+            /* Slightly wider */
+        }
+
+        /* Rhombus Decorations for Design 2 */
+        .min-corner {
+            position: absolute;
+            color: #b4853e;
+            /* Gold */
+            font-size: 1.5rem;
+            opacity: 0.6;
+        }
+
+        .mc-tl {
+            top: 20px;
+            left: 20px;
+        }
+
+        .mc-tr {
+            top: 20px;
+            right: 20px;
+        }
+
+        .mc-bl {
+            bottom: 20px;
+            left: 20px;
+        }
+
+        .mc-br {
+            bottom: 20px;
+            right: 20px;
+        }
     </style>
 </head>
 
@@ -505,6 +802,12 @@
                     <a href="/formatos" class="nav-link">
                         <span class="nav-icon"><i class="fa-solid fa-file-contract"></i></span>
                         Formatos
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/horarios" class="nav-link">
+                        <span class="nav-icon"><i class="fa-solid fa-calendar-days"></i></span>
+                        Horarios
                     </a>
                 </li>
             </ul>
@@ -610,6 +913,7 @@
                                         <option value="all">Todos los departamentos</option>
                                         <option value="Docente">Docente</option>
                                         <option value="Administrativo">Administrativo</option>
+                                        <option value="Personal de Limpieza">Personal de Limpieza</option>
                                     </select>
                                     <button class="btn-icon-only">
                                         <i class="fa-solid fa-filter"></i>
@@ -745,10 +1049,10 @@
                     </div>
                     <div>
                         <label class="themed-label">Cargo / Puesto</label>
-                        <select class="themed-input form-select">
-                            <!-- kept form-select for any JS reliance, but styled with themed-input -->
-                            <option>Docente</option>
-                            <option>Administrativo</option>
+                        <select class="themed-input form-select" name="position">
+                            <option value="Docente">Docente</option>
+                            <option value="Administrativo">Administrativo</option>
+                            <option value="Personal de Limpieza">Personal de Limpieza</option>
                         </select>
                     </div>
                 </div>
@@ -759,52 +1063,55 @@
             </form>
         </div>
     </div>
+    <!-- Blank Modal for Greeting -->
+    <!-- Template Selection Modal for Greeting -->
+    <div id="greetingModal" class="modal">
+        <div class="modal-content" style="max-width: 900px; width: 90%; position: relative; overflow: visible;">
 
-    <!-- Modal for Formal Greeting -->
-    <div id="greetingModal" class="modal" style="backdrop-filter: blur(5px);">
-        <div class="modal-content" style="max-width: 600px; background: transparent; border: none; box-shadow: none;">
-            <div style="text-align: right; margin-bottom: 10px;">
-                <button onclick="closeGreetingModal()"
-                    style="background: white; border: none; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; font-weight: bold;">&times;</button>
-            </div>
+            <!-- Floating Close Button -->
+            <span class="close-modal-floating" onclick="closeGreetingModal()"
+                style="position: absolute; top: -45px; right: 0; color: #ef4444; font-size: 3rem; font-weight: bold; cursor: pointer; text-shadow: 0 2px 4px rgba(0,0,0,0.5); line-height: 1; z-index: 1010;">
+                &times;
+            </span>
 
-            <div class="greeting-card" id="captureCard">
-                <div class="card-border">
-                    <div class="card-header">
-                        <div class="school-logo">
-                            <img src="/img/Logo2.jpg" alt="Logo" style="height: 60px; opacity: 0.9;">
-                        </div>
-                        <div class="formal-title">Feliz Cumpleaños</div>
-                    </div>
-
-                    <div class="card-body">
-                        <p class="intro-text">El equipo directivo y la comunidad educativa del</p>
-                        <h2 class="institution-name">I.E.S.P. "Francisco de Paula Gonzales Vigil"</h2>
-
-                        <p class="greet-text">Expresan su más cálido saludo y reconocimiento a:</p>
-
-                        <h1 class="honoree-name" id="greetingName">Nombre del Docente</h1>
-
-                        <p class="message-text">
-                            En esta fecha significativa, expresamos nuestro reconocimiento a su valiosa gestión,
-                            liderazgo y entrega constante en favor del fortalecimiento de nuestra institución. Que este
-                            nuevo año de vida le traiga bienestar, prosperidad y muchos logros junto a toda la comunidad
-                            educativa vigiliana.
-                        </p>
-                    </div>
-
-                    <div class="card-footer">
-                        <img src="/img/books_footer.png" alt="Decoración" class="footer-illustration">
-                        <div class="date-display" id="greetingDate">Tacna, 19 de Enero de 2026</div>
-                    </div>
+            <div class="modal-header"
+                style="display: flex; justify-content: center; padding: 5px 20px; align-items: center;">
+                <div>
+                    <h3 style="margin: 0; font-size: 1.2rem;">Enviar Saludo</h3>
                 </div>
             </div>
+            <div class="modal-body" id="greetingModalBody" style="padding-top: 10px;">
 
-            <!-- Action Buttons -->
-            <div style="margin-top: 15px; display: flex; justify-content: center; gap: 10px;">
-                <button onclick="downloadGreeting()" class="btn"
-                    style="background: #e74c3c; color: white; border: none;">
-                    <i class="fa-solid fa-download"></i> Descargar Tarjeta
+                <!-- Template Selection -->
+                <h4 style="margin-bottom: 5px; margin-top: 0; color: #334155;">Elige una plantilla:</h4>
+                <div class="template-selector" style="margin-bottom: 10px;">
+                    <button class="template-btn active" onclick="selectTemplate('clasica')" id="btn-clasica">Diseño
+                        1</button>
+                    <button class="template-btn" onclick="selectTemplate('minimalista')" id="btn-minimalista">Diseño
+                        2</button>
+                    <button class="template-btn" onclick="selectTemplate('moderna')" id="btn-moderna">Diseño 3</button>
+                    <button class="template-btn" onclick="selectTemplate('ilustracion')" id="btn-ilustracion">Diseño
+                        4</button>
+                </div>
+
+                <!-- Preview Section -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <h4 style="margin: 0; color: #334155;">Vista Previa Final:</h4>
+                    <span class="badge-admin" id="preview-recipient">DESTINATARIO: ...</span>
+                </div>
+
+                <div class="preview-container" id="main-preview">
+                    <div class="preview-placeholder">
+                        <i class="fa-solid fa-image" style="font-size: 3rem; margin-bottom: 10px; display: block;"></i>
+                        Selecciona una plantilla para visualizar
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer" style="justify-content: center; padding: 10px;">
+                <button class="themed-btn-primary" onclick="downloadGreeting()"
+                    style="width: auto; padding: 8px 20px; font-size: 0.9rem;">
+                    <i class="fa-solid fa-download"></i> Descargar Imagen
                 </button>
             </div>
         </div>
@@ -823,8 +1130,6 @@
                 <div style="display: flex; border-bottom: 1px solid #e2e8f0; background: #f8fafc;">
                     <button class="history-tab active" onclick="filterHistory('all')" id="tab-all"
                         style="flex: 1; padding: 15px; border: none; background: transparent; cursor: pointer; font-weight: 600; color: #475569; border-bottom: 2px solid #2563eb;">Todo</button>
-                    <button class="history-tab" onclick="filterHistory('greeting')" id="tab-greeting"
-                        style="flex: 1; padding: 15px; border: none; background: transparent; cursor: pointer; font-weight: 600; color: #94a3b8; border-bottom: 2px solid transparent;">Saludos</button>
                     <button class="history-tab" onclick="filterHistory('register')" id="tab-register"
                         style="flex: 1; padding: 15px; border: none; background: transparent; cursor: pointer; font-weight: 600; color: #94a3b8; border-bottom: 2px solid transparent;">Registros</button>
                 </div>

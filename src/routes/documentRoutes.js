@@ -7,6 +7,7 @@ const { isAuthenticated } = require('../middleware/auth');
 router.get('/', isAuthenticated, documentController.showDashboard);
 router.get('/register', isAuthenticated, documentController.showRegisterPage);
 router.get('/formatos', isAuthenticated, documentController.showFormatosPage);
+router.get('/horarios', isAuthenticated, documentController.showHorariosPage);
 
 // API
 router.get('/api/documents', isAuthenticated, documentController.getAllDocuments);

@@ -201,29 +201,20 @@ function renderActivity(workers) {
         return;
     }
 
-    allActivity.forEach(act => {
+    if (act.type === 'register') {
         const div = document.createElement('div');
         div.style.cssText = "display: flex; gap: 15px; margin-bottom: 20px;";
-
-        let iconHtml = '';
-        if (act.type === 'register') {
-            iconHtml = `<div style="width: 32px; height: 32px; background: #ecfdf5; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #10b981;"><i class="fa-solid fa-user-plus"></i></div>`;
-        } else {
-            iconHtml = `<div style="width: 32px; height: 32px; background: #f5f3ff; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #8b5cf6;"><i class="fa-solid fa-cake-candles"></i></div>`;
-        }
-
-        // Time ago
+        iconHtml = `<div style="width: 32px; height: 32px; background: #ecfdf5; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #10b981;"><i class="fa-solid fa-user-plus"></i></div>`;
         const timeAgo = getTimeAgo(new Date(act.date));
-
         div.innerHTML = `
-            ${iconHtml}
-            <div>
-                <div style="font-size: 0.9rem; color: #334155;">${act.text}<b>${escapeHtml(act.name.split(' ')[0])}</b></div>
-                <div style="font-size: 0.75rem; color: #94a3b8;">${timeAgo}</div>
-            </div>
-        `;
+                ${iconHtml}
+                <div>
+                    <div style="font-size: 0.9rem; color: #334155;">${act.text}<b>${escapeHtml(act.name.split(' ')[0])}</b></div>
+                    <div style="font-size: 0.75rem; color: #94a3b8;">${timeAgo}</div>
+                </div>
+            `;
         container.appendChild(div);
-    });
+    }
 }
 
 function getTimeAgo(date) {
@@ -278,6 +269,8 @@ function renderWorkers(workers) {
             badgeClass = 'badge-docente'; // Blue
         } else if (worker.position === 'Dirección') {
             badgeClass = 'badge-docente'; // Reuse blue for now or add purple
+        } else if (worker.position === 'Personal de Limpieza') {
+            badgeClass = 'badge-limpieza'; // Amber / Orange
         }
 
         // Date Logic (Birthdate)
@@ -334,7 +327,7 @@ function renderWorkers(workers) {
                     <i class="fa-solid fa-wand-magic-sparkles"></i> Saludar
                 </button>
                 
-                <button class="action-btn" onclick="sendBirthdayEmail(${worker.id})" title="Enviar Correo con Tarjeta">
+                <button class="action-btn" title="Opción Deshabilitada" style="opacity: 0.6; cursor: not-allowed;">
                     <i class="fa-regular fa-envelope"></i>
                 </button>
 
@@ -445,135 +438,465 @@ async function loadBirthdays() {
 }
 
 // --- Greeting Modal & Share Functions (Preserved) ---
+
+let currentTemplate = 'clasica';
+let currentWorkerName = '';
+
 function openGreetingModal(name) {
-    const modal = document.getElementById('greetingModal');
-    const nameElement = document.getElementById('greetingName');
-    const dateElement = document.getElementById('greetingDate');
+    currentWorkerName = name;
+    document.getElementById('greetingModal').style.display = 'block';
 
-    nameElement.textContent = name;
+    // Reset to default
+    selectTemplate('clasica');
 
-    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-    const today = new Date().toLocaleDateString('es-ES', options);
-    const formattedDate = "Tacna, " + today.charAt(0).toUpperCase() + today.slice(1);
-
-    dateElement.textContent = formattedDate;
-    modal.style.display = 'block';
-
-    // Save Activity
-    try {
-        const greetings = JSON.parse(localStorage.getItem('recentGreetings') || '[]');
-        greetings.unshift({ name: name, date: new Date().toISOString() });
-        // Keep last 10
-        if (greetings.length > 10) greetings.pop();
-        localStorage.setItem('recentGreetings', JSON.stringify(greetings));
-
-        // Refresh Activity if possible (safe check)
-        if (typeof renderActivity === 'function' && typeof allWorkers !== 'undefined') {
-            renderActivity(allWorkers);
-        }
-    } catch (e) { console.error(e); }
+    // Update Recipient Badge
+    const badge = document.getElementById('preview-recipient');
+    if (badge) badge.textContent = `DESTINATARIO: ${name.toUpperCase()}`;
 }
 
 function closeGreetingModal() {
     document.getElementById('greetingModal').style.display = 'none';
 }
 
-function downloadGreeting() {
-    const card = document.getElementById('captureCard');
-    html2canvas(card, { useCORS: true }).then(canvas => {
-        const link = document.createElement('a');
-        link.download = 'Saludo_' + document.getElementById('greetingName').textContent + '.png';
-        link.href = canvas.toDataURL();
-        link.click();
+function selectTemplate(templateId) {
+    currentTemplate = templateId;
+
+    // Update Visual Selection
+    document.querySelectorAll('.template-btn').forEach(btn => {
+        btn.classList.remove('active');
     });
+    // Add active class to the clicked button
+    const activeBtn = document.getElementById(`btn-${templateId}`);
+    if (activeBtn) activeBtn.classList.add('active');
+
+    // Update Preview (Mockup Logic)
+    updatePreview(templateId);
 }
 
+function updatePreview(templateId) {
+    const previewContainer = document.getElementById('main-preview');
+    let content = '';
 
+    // Date Helper
+    const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    const dateStr = new Date().toLocaleDateString('es-ES', dateOptions).toUpperCase();
 
+    switch (templateId) {
+        case 'clasica':
+            content = `
+            <div class="card-classic">
+                <div class="card-classic-border">
+                    <span class="card-corner c-tl">✦</span>
+                    <span class="card-corner c-br">✦</span>
 
+                    <img src="/img/Logo2.jpg" class="card-logo-img" alt="Vigil">
+                    
+                    <h1 class="card-title-script">Feliz Cumpleaños</h1>
 
-async function sendBirthdayEmail(workerId) {
-    const worker = allWorkers.find(w => w.id === workerId);
-    if (!worker) return;
+                    <p class="card-header-text">El equipo directivo y la comunidad educativa del</p>
+                    <h2 class="card-institution">I.E.S.T.P. "FRANCISCO DE PAULA GONZALES VIGIL"</h2>
+                    
+                    <p class="card-header-text" style="font-style: normal; margin-top: 10px;">Expresan su más cálido saludo y reconocimiento a:</p>
+                    
+                    <h2 class="card-recipient-name">${currentWorkerName}</h2>
+                    
+                    <p class="card-message">
+                        En esta fecha significativa, expresamos nuestro reconocimiento a su valiosa gestión, 
+                        liderazgo y entrega constante en favor del fortalecimiento de nuestra institución. 
+                        Que este nuevo año de vida le traiga bienestar, prosperidad y muchos logros junto 
+                        a toda la comunidad educativa vigiliana.
+                    </p>
+                    
+                     <!-- Custom Footer Image -->
+                    <div style="margin-top: auto; margin-bottom: 5px; text-align: center;">
+                        <img src="/img/books_footer.png" style="max-width: 180px; opacity: 0.9;" alt="Decoración">
+                    </div>
 
-    // 1. Setup the Card
-    openGreetingModal(worker.fullName);
+                    <p class="card-footer-date">TACNA, ${dateStr}</p>
+                </div>
+            </div>`;
+            break;
+        case 'minimalista':
+            content = `
+            <div class="card-minimalista">
+                <div class="card-min-left">
+                    <img src="/img/lapiz.png" alt="Decoración Lápiz">
+                </div>
+                <div class="card-min-right">
+                    <!-- Corner Decorations -->
+                    <span class="min-corner mc-tl">✦</span>
+                    <span class="min-corner mc-tr">✦</span>
+                    <span class="min-corner mc-bl">✦</span>
+                    <span class="min-corner mc-br">✦</span>
 
-    // Slight delay to ensure rendering
-    await new Promise(r => setTimeout(r, 500));
+                    <h1 class="min-title">¡Feliz Cumpleaños!</h1>
+                    <p class="min-subtitle">LE DESEAMOS UN DÍA EXCEPCIONAL</p>
+                    
+                    <h2 class="min-name">${currentWorkerName}</h2>
+                    
+                    <p class="min-message">
+                        "Su dedicación y profesionalismo son piezas clave en nuestro equipo. 
+                        Esperamos que este nuevo año de vida esté lleno de éxitos y alegrías."
+                    </p>
+                    
+                    <div class="min-footer">
+                        <p style="margin: 0; font-size: 0.6rem; color: #6b7280; text-transform: none;">El equipo directivo y la comunidad educativa del</p>
+                        <p style="margin: 3px 0 0 0; font-weight: 700; font-size: 0.7rem; color: #4b5563;">I.E.S.P. "FRANCISCO DE PAULA GONZALES VIGIL"</p>
+                    </div>
+                </div>
+            </div>`;
+            break;
+        case 'moderna':
+            content = `
+            <div class="card-excellence" style="
+                width: 100%; 
+                max-width: 800px;
+                aspect-ratio: 16/14;
+                display: flex;
+                background-color: #060b1a; /* Very Dark Navy */
+                border-radius: 4px;
+                overflow: hidden;
+                box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+                margin: 0 auto;
+                position: relative;
+                font-family: 'Montserrat', sans-serif;
+            ">
+                <!-- Left Side: Visual/Image -->
+                <div style="
+                    width: 45%;
+                    background: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.1)), url('/img/fondo_verde.png');
+                    background-size: cover;
+                    background-position: center;
+                    position: relative;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: flex-end;
+                    padding: 30px;
+                    border-right: 1px solid rgba(212, 175, 55, 0.2);
+                ">
+                    <div style="width: 40px; height: 3px; background: #d4af37; margin-bottom: 10px; position: relative; z-index: 1;"></div>
+                    <p style="
+                        color: white; 
+                        font-family: 'Playfair Display', serif; 
+                        font-style: italic; 
+                        font-size: 1.1rem; 
+                        margin: 0;
+                        opacity: 0.9;
+                    ">Excelencia & Compromiso</p>
+                </div>
 
-    const card = document.getElementById('captureCard');
+                <!-- Right Side: Content -->
+                <div style="
+                    width: 55%;
+                    padding: 40px 45px 30px;
+                    position: relative;
+                    display: flex;
+                    flex-direction: column;
+                ">
+                    <!-- VIP Triangle Ribbon -->
+                    <div style="
+                        position: absolute;
+                        top: 0;
+                        right: 0;
+                        width: 0;
+                        height: 0;
+                        border-style: solid;
+                        border-width: 0 60px 60px 0;
+                        border-color: transparent #f97316 transparent transparent;
+                    "></div>
+                    <i class="fa-solid fa-star" style="
+                        position: absolute;
+                        top: 10px;
+                        right: 10px;
+                        color: white;
+                        font-size: 0.8rem;
+                    "></i>
 
-    try {
-        console.log('Generating canvas...');
-        // Removed allowTaint:true to prevent security blocking
-        const canvas = await html2canvas(card, {
-            scale: 2,
-            backgroundColor: null,
-            useCORS: true
-        });
+                    <h1 style="
+                        font-family: 'Playfair Display', serif;
+                        font-size: 3.1rem;
+                        color: #d4af37;
+                        margin: 0 0 15px 0;
+                        line-height: 1.1;
+                        font-weight: 700;
+                        font-style: italic;
+                    ">
+                        <span style="display: block; text-align: center;">¡Feliz</span>
+                        <span style="display: block; text-align: center;">Cumpleaños!</span>
+                    </h1>
 
-        // Convert to blob
-        canvas.toBlob(async (blob) => {
-            if (!blob) {
-                console.error('Canvas returned empty blob');
-                Swal.fire('Error', 'No se pudo generar la imagen.', 'error');
-                closeGreetingModal();
-                return;
-            }
+                    <!-- Spacer to lower the rest of the content -->
+                    <div style="margin-top: 15px;">
+                        <p style="color: white; font-size: 1.1rem; margin-bottom: 15px;">
+                            Estimado/a <span style="color: #d4af37; font-weight: 700;">${currentWorkerName}</span>,
+                        </p>
 
-            // Try to Copy to Clipboard
-            try {
-                await navigator.clipboard.write([
-                    new ClipboardItem({ [blob.type]: blob })
-                ]);
+                        <div style="color: rgba(255,255,255,0.85); font-size: 0.9rem; line-height: 1.5;">
+                            <p style="margin-bottom: 10px;">
+                                Hoy celebramos no solo un año más de tu vida, sino también la valiosa huella que dejas día tras día en nuestra institución. Gracias por ser parte fundamental de nuestra historia.
+                            </p>
+                            <p>
+                                Que tu camino siga iluminado por nuevos retos y grandes satisfacciones. ¡Felicidades en tu día!
+                            </p>
+                        </div>
+                    </div>
 
-                Swal.fire({
-                    title: '¡Tarjeta Copiada!',
-                    html: 'Imagen copiada.<br>Se abrirá tu correo predeterminado.',
-                    icon: 'success',
-                    timer: 3000,
-                    showConfirmButton: false
-                });
-            } catch (err) {
-                console.warn('Clipboard write failed:', err);
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Imagen no copiada',
-                    text: 'Usa "Descargar Tarjeta" si la necesitas.',
-                    timer: 3000,
-                    showConfirmButton: false
-                });
-            }
+                    <!-- Framed Cake Image (borde3) - Centered in Right Panel -->
+                    <div style="
+                        width: 100%;
+                        display: flex;
+                        justify-content: center;
+                        margin: 40px 0 20px 0;
+                    ">
+                        <div style="
+                            padding: 8px;
+                            background: rgba(255,255,255,0.05);
+                            border: 1px solid rgba(212, 175, 55, 0.3);
+                            border-radius: 12px;
+                            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+                        ">
+                            <img src="/img/borde3.png" alt="Torta" style="
+                                max-width: 130px;
+                                height: auto;
+                                display: block;
+                                filter: drop-shadow(0 5px 15px rgba(212, 175, 55, 0.2));
+                            ">
+                        </div>
+                    </div>
 
-            // 2. Open Email Client
-            // Check if user likely has Gmail (could be inferred or just ask, but here we default to mailto for broad support)
-            // Or provide both options? For now, the user mentioned success with Google accounts, so we can stick to Gmail 
-            // BUT the specific error "descarga archivo corrupto" when NOT logged in suggests the 'window.open' failed or behaved oddly.
+                    <div style="margin-top: auto; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px; text-align: center; position: relative;">
+                        <div style="display: inline-block; vertical-align: middle;">
+                            <p style="
+                                color: rgba(255,255,255,0.8); 
+                                font-size: 0.7rem; 
+                                margin: 0;
+                                font-family: 'Montserrat', sans-serif;
+                            ">El equipo directivo y la comunidad educativa del</p>
+                            <p style="
+                                font-family: 'Montserrat', sans-serif; 
+                                font-weight: 700;
+                                color: #d4af37; 
+                                font-size: 0.85rem; 
+                                margin: 5px 0 0 0;
+                                letter-spacing: 1px;
+                                font-style: italic;
+                                line-height: 1.3;
+                            ">
+                                I.E.S.P. "FRANCISCO DE PAULA<br>
+                                GONZALES VIGIL"
+                            </p>
+                        </div>
+                        <div style="
+                            display: inline-block;
+                            vertical-align: middle;
+                            margin-left: 15px;
+                            width: 35px;
+                            height: 35px;
+                            border: 2px solid #d4af37;
+                            border-radius: 50%;
+                            color: #d4af37;
+                            line-height: 31px;
+                            text-align: center;
+                            filter: drop-shadow(0 0 5px rgba(212, 175, 55, 0.5));
+                        ">
+                            <i class="fa-solid fa-certificate" style="font-size: 0.9rem;"></i>
+                        </div>
+                    </div>
 
-            // Let's use a standard mailto for SAFETY. This works for Outlook, Thunderbird, and System Default.
-            const subject = encodeURIComponent("Saludos institucionales por su cumpleaños");
-            const body = encodeURIComponent("Estimado(a) " + worker.fullName + ",\n\nReciba un cordial saludo...\n(Pegue la tarjeta aquí con Ctrl+V)");
+                    <!-- Decorative Sparkle Background (Vibrant) -->
+                    <i class="fa-solid fa-sparkles" style="position: absolute; top: 80px; right: 40px; color: #f5d173; opacity: 0.25; font-size: 4rem; filter: drop-shadow(0 0 10px rgba(245, 209, 115, 0.4));"></i>
+                    <i class="fa-solid fa-sparkle" style="position: absolute; top: 180px; right: 20px; color: #d4af37; opacity: 0.3; font-size: 2rem; filter: drop-shadow(0 0 5px rgba(212, 175, 55, 0.4));"></i>
+                </div>
+            </div>`;
+            break;
+        case 'ilustracion':
+            content = `
+            <div class="card-floral" style="
+                width: 100%; 
+                max-width: 800px;
+                aspect-ratio: 16/14;
+                display: flex;
+                background-color: #fdf2f2; /* Soft Floral Pink */
+                border-radius: 4px;
+                overflow: hidden;
+                box-shadow: 0 30px 60px rgba(0,0,0,0.2);
+                margin: 0 auto;
+                position: relative;
+                font-family: 'Montserrat', sans-serif;
+            ">
+                <!-- Left Side: Floral Visual -->
+                <div style="
+                    width: 45%;
+                    background: url('/img/izquierdo.png');
+                    background-size: cover;
+                    background-position: center;
+                    position: relative;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: flex-end;
+                    padding: 30px;
+                ">
+                    <div style="width: 40px; height: 3px; background: #b4853e; margin-bottom: 10px;"></div>
+                    <p style="
+                        color: #57534e; 
+                        font-family: 'Playfair Display', serif; 
+                        font-style: italic; 
+                        font-size: 1.1rem; 
+                        margin: 0;
+                        opacity: 0.9;
+                    ">Excelencia & Compromiso</p>
+                </div>
 
-            // Allow user to choose or just default to Gmail web if they insist, but standard mailto is safer for "Outlook" users.
-            // Given the user wants "Gmail defaults", we keep the Gmail link but maybe handle the "not logged in" case better?
-            // Actually, the user said "when I open with a non-Google account it happens". 
-            // So let's provide a Mailto fallback or just switch to Mailto.
+                <!-- Right Side: Content with Floral Decor -->
+                <div style="
+                    width: 55%;
+                    padding: 85px 45px 30px;
+                    position: relative;
+                    display: flex;
+                    flex-direction: column;
+                    background: url('/img/derecha.png');
+                    background-size: cover;
+                    background-position: center;
+                ">
+                    <!-- Ribbon Decoration -->
+                    <div style="
+                        position: absolute;
+                        top: 0;
+                        right: 0;
+                        width: 0;
+                        height: 0;
+                        border-style: solid;
+                        border-width: 0 60px 60px 0;
+                        border-color: transparent #b4853e transparent transparent;
+                    "></div>
+                    <i class="fa-solid fa-star" style="
+                        position: absolute;
+                        top: 10px;
+                        right: 10px;
+                        color: white;
+                        font-size: 0.8rem;
+                    "></i>
 
-            const gmailLink = `https://mail.google.com/mail/?view=cm&fs=1&to=${escapeHtml(worker.email)}&su=${subject}`;
+                    <h1 style="
+                        font-family: 'Playfair Display', serif;
+                        font-size: 3.2rem;
+                        color: #b4853e;
+                        margin: 0 0 20px 0;
+                        line-height: 1.1;
+                        font-weight: 700;
+                        font-style: italic;
+                    ">
+                        <span style="display: block; text-align: center;">¡Feliz</span>
+                        <span style="display: block; text-align: center;">Cumpleaños!</span>
+                    </h1>
 
-            // Open immediately
-            setTimeout(() => {
-                window.open(gmailLink, '_blank');
-                closeGreetingModal();
-            }, 1000);
+                    <p style="color: #4b5563; font-size: 1.1rem; margin-bottom: 20px;">
+                        Estimado/a <span style="color: #b4853e; font-weight: 700;">${currentWorkerName}</span>,
+                    </p>
 
-        });
+                    <div style="color: #6b7280; font-size: 0.95rem; line-height: 1.6; flex-grow: 0.5;">
+                        <p style="margin-bottom: 20px;">
+                            Hoy celebramos no solo otro año de tu vida, sino además la importante marca que imprimes día tras día en nuestra organización. Gracias por ser pilar esencial de nuestra trayectoria compartida.
+                        </p>
+                        <p>
+                            Que tu senda continúe iluminada por desafíos nuevos y enormes alegrías. ¡Feliz jornada para ti!
+                        </p>
+                    </div>
 
-    } catch (error) {
-        console.error('Html2Canvas Error:', error);
-        closeGreetingModal();
+                    <div style="margin-top: -80px; border-top: 1px solid rgba(180, 133, 62, 0.2); padding-top: 0px; display: flex; justify-content: space-between; align-items: flex-end; margin-left: 40px;">
+                        <div>
+                            <p style="
+                                color: #6b7280; 
+                                font-size: 0.7rem; 
+                                margin: 0;
+                                font-family: 'Montserrat', sans-serif;
+                            ">El equipo directivo y la comunidad educativa del</p>
+                            <p style="
+                                font-family: 'Montserrat', sans-serif; 
+                                font-weight: 700;
+                                color: #b4853e; 
+                                font-size: 0.85rem; 
+                                margin: 2px 0 0 0;
+                                letter-spacing: 1px;
+                                font-style: italic;
+                                line-height: 1.3;
+                            ">
+                                I.E.S.P. "FRANCISCO DE PAULA<br>
+                                GONZALES VIGIL"
+                            </p>
+                        </div>
+                        <div style="
+                            width: 35px;
+                            height: 35px;
+                            border: 2px solid #b4853e;
+                            border-radius: 50%;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            color: #b4853e;
+                            filter: drop-shadow(0 0 5px rgba(180, 133, 62, 0.3));
+                        ">
+                            <i class="fa-solid fa-certificate"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+            break;
     }
+
+    previewContainer.innerHTML = content;
+}
+
+function downloadGreeting() {
+    const elementToCapture = document.querySelector('.card-classic') || document.getElementById('main-preview').firstElementChild;
+
+    if (!elementToCapture || elementToCapture.classList.contains('preview-placeholder')) {
+        Swal.fire('Error', 'No hay diseño seleccionado para descargar.', 'error');
+        return;
+    }
+
+    // Show loading state
+    Swal.fire({
+        title: 'Generando imagen...',
+        text: 'Por favor espere',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
+    html2canvas(elementToCapture, {
+        scale: 2, // High resolution
+        useCORS: true,
+        backgroundColor: null // Transparent background if supported
+    }).then(canvas => {
+        // Create link and download
+        const link = document.createElement('a');
+        const filename = `Saludo-${currentWorkerName.replace(/\s+/g, '-')}.png`;
+        link.download = filename;
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+
+        Swal.close();
+
+        // Optional: Close modal after download or show success toast
+        // closeGreetingModal(); 
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true
+        });
+        Toast.fire({
+            icon: 'success',
+            title: 'Imagen descargada correctamente'
+        });
+
+    }).catch(err => {
+        console.error(err);
+        Swal.fire('Error', 'Hubo un problema al generar la imagen.', 'error');
+    });
 }
 
 async function deleteWorker(id) {
@@ -748,21 +1071,8 @@ function loadFullHistory() {
         details: `Nuevo registro en el sistema (${w.position})`
     }));
 
-    // 2. Greetings
-    let greetings = [];
-    try {
-        greetings = JSON.parse(localStorage.getItem('recentGreetings') || '[]');
-    } catch (e) { }
-
-    const mappedGreetings = greetings.map(g => ({
-        type: 'greeting',
-        name: g.name,
-        date: g.date,
-        details: 'Se envió una tarjeta de saludo'
-    }));
-
-    // Merge and Sort
-    fullHistory = [...registrations, ...mappedGreetings].sort((a, b) => new Date(b.date) - new Date(a.date));
+    // 2. Greetings - Removed
+    fullHistory = [...registrations].sort((a, b) => new Date(b.date) - new Date(a.date));
 }
 
 function filterHistory(type) {

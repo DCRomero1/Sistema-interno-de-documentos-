@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Horarios - Sistema de Registro</title>
+    <link rel="icon" type="image/png" href="/img/user_avatar.svg">
+    <link rel="stylesheet" href="/css/style.css?v=5">
+    <link rel="stylesheet" href="/css/fontawesome.all.min.css">
+    <!-- Tailwind CSS CDN for schedule table -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <style data-purpose="table-layout">
+        /* Custom spacing and typography for density matching the source image */
+        .schedule-table th,
+        .schedule-table td {
+            border: 1px solid #2d3748;
+            padding: 0.5rem;
+            vertical-align: top;
+            font-size: 0.7rem;
+            line-height: 1.1;
+        }
+
+        .vertical-text {
+            writing-mode: vertical-rl;
+            transform: rotate(180deg);
+            text-transform: uppercase;
+            font-weight: bold;
+            letter-spacing: 0.1em;
+            color: white;
+            /* Ensure vertical text is white/yellow */
+        }
+
+        /* Staff Color Coding Classes */
+        .bg-alodia {
+            background-color: #fef3c7;
+        }
+
+        .bg-rosario {
+            background-color: #fef08a;
+        }
+
+        .bg-julian {
+            background-color: #93c5fd;
+        }
+
+        .bg-luisa {
+            background-color: #f5d0fe;
+        }
+
+        .bg-nilda {
+            background-color: #e0f2fe;
+        }
+
+        .bg-david {
+            background-color: #bef264;
+        }
+
+        .bg-demetrio {
+            background-color: #67e8f9;
+        }
+
+        .bg-alfredo {
+            background-color: #fca5a5;
+        }
+
+        .bg-gilmer {
+            background-color: #fed7aa;
+        }
+
+        .bg-caner {
+            background-color: #ffedd5;
+        }
+
+        .shift-header {
+            background-color: #1e293b;
+            color: #fbbf24;
+            /* Yellow text for contrast */
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        /* Override Tailwind resets that may conflict with app styles */
+        .schedule-area * {
+            box-sizing: border-box;
+        }
+
+        .schedule-area ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        /* Edit Mode Styles para Celdas (Table Data) Completas */
+        .edit-mode .editable-cell {
+            cursor: pointer;
+            outline: 2px dashed #ef4444;
+            /* Rojo para hacer juego con "Finalizar Edición" */
+            outline-offset: -2px;
+            position: relative;
+            transition: all 0.2s;
+        }
+
+        .edit-mode .editable-cell:hover {
+            box-shadow: inset 0 0 0 1000px rgba(239, 68, 68, 0.15) !important;
+        }
+
+        .edit-mode .editable-cell::after {
+            content: "✎ Asignar";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.95);
+            color: #ef4444;
+            font-weight: bold;
+            font-size: 0.85rem;
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: 1px solid #ef4444;
+            opacity: 0;
+            transition: opacity 0.2s;
+            pointer-events: none;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+        }
+
+        .edit-mode .editable-cell:hover::after {
+            opacity: 1;
+        }
+
+        .edit-active {
+            background-color: #3b82f6 !important;
+            color: white !important;
+            border-radius: 4px;
+        }
+
+        /* Simplified View Styles */
+        .simple-view ul,
+        .simple-view .schedule-area p {
+            display: none !important;
+        }
+
+        .simple-view .slot-worker {
+            border-bottom: none !important;
+            margin-bottom: 0 !important;
+            padding: 12px 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 50px;
+            text-align: center;
+        }
+
+        /* Ocultar divisores internos en vista simple si existen */
+        .simple-view td br {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header"
+            style="justify-content: space-between; padding: 0 20px; height: 70px; align-items: center;">
+            <div class="sidebar-brand">
+                <div class="brand-icon-container">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <span class="brand-text">Vigil<span class="brand-suffix">Docs</span></span>
+            </div>
+        </div>
+
+        <div class="sidebar-section-header">MENU PRINCIPAL</div>
+        <div class="sidebar-scroll-area">
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="/" class="nav-link">
+                        <span class="nav-icon"><i class="fa-solid fa-table-list"></i></span>
+                        Panel General
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/register" class="nav-link">
+                        <span class="nav-icon"><i class="fa-solid fa-plus-circle"></i></span>
+                        Nuevo Documento
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/reports" class="nav-link">
+                        <span class="nav-icon"><i class="fa-solid fa-chart-line"></i></span>
+                        Reporte
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/workers" class="nav-link">
+                        <span class="nav-icon"><i class="fa-solid fa-users"></i></span>
+                        Trabajadores
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/formatos" class="nav-link">
+                        <span class="nav-icon"><i class="fa-solid fa-file-contract"></i></span>
+                        Formatos
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/horarios" class="nav-link active">
+                        <span class="nav-icon"><i class="fa-solid fa-calendar-days"></i></span>
+                        Horarios
+                    </a>
+                </li>
+            </ul>
+
+            <div class="sidebar-section-header">ADMINISTRACIÓN</div>
+            <ul class="nav-menu">
+                <li class="nav-item" id="nav-admin-users" style="display: none;">
+                    <a href="/users" class="nav-link">
+                        <span class="nav-icon"><i class="fa-solid fa-user-shield"></i></span>
+                        Usuarios
+                    </a>
+                </li>
+            </ul>
+            <div class="sidebar-bottom-logo">
+                <img src="/img/Logo2.jpg" alt="Vigil Logo">
+            </div>
+        </div>
+        <div class="sidebar-footer">
+            <div class="sidebar-user-card">
+                <div class="user-avatar-container">
+                    <img src="/img/user_avatar.svg" alt="Avatar" class="u-avatar-sidebar">
+                    <span class="status-indicator"></span>
+                </div>
+                <div class="u-info-sidebar">
+                    <span class="u-name-sidebar" id="sidebar-username">Cargando...</span>
+                    <span class="u-role-sidebar" id="sidebar-role">Usuario</span>
+                </div>
+                <a href="/logout" class="u-logout-card-btn" title="Cerrar Sesión">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Wrapper -->
+    <div class="main-wrapper">
+        <header class="top-bar" style="position: relative;">
+            <h2
+                style="position: absolute; left: 50%; transform: translateX(-50%); margin: 0; font: oblique bold 120% cursive; color: var(--primary-color);">
+                Horarios</h2>
+            <div style="flex-grow: 1;"></div>
+            <div class="user-controls">
+                <button id="themeToggle" class="btn-icon-toggle" title="Cambiar Tema">
+                    <i class="fa-regular fa-moon"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <div class="content-area">
+                <div class="schedule-area">
+
+                    <!-- Gran Panel de Asignación (Fullscreen Modal) -->
+                    <div id="fullScreenAssignModal"
+                        class="hidden fixed inset-0 bg-gray-900 bg-opacity-75 overflow-y-auto h-full w-full flex justify-center items-center"
+                        style="z-index: 100;">
+                        <div
+                            class="relative bg-white w-11/12 md:w-5/6 lg:w-4/5 xl:w-3/4 h-5/6 rounded-xl shadow-2xl flex flex-col overflow-hidden">
+                            <!-- Cabecera del Panel -->
+                            <div class="bg-blue-800 text-white px-6 py-4 flex justify-between items-center shrink-0">
+                                <div>
+                                    <h2 class="text-2xl font-bold flex items-center gap-2">
+                                        <i class="fa-solid fa-calendar-check"></i> Asignación de Turno y Áreas
+                                    </h2>
+                                    <p id="selectedSlotHeader" class="text-blue-200 mt-1 font-medium text-lg">Turno:
+                                        Seleccionando...</p>
+                                </div>
+                                <button id="btnCloseAssignPanel"
+                                    class="text-white hover:text-red-300 transition text-2xl">
+                                    <i class="fa-solid fa-xmark"></i>
+                                </button>
+                            </div>
+
+                            <!-- Cuerpo del Panel -->
+                            <div class="flex-1 overflow-y-auto p-6 bg-gray-50 flex flex-col md:flex-row gap-6">
+                                <!-- Columna Izquierda: Trabajador -->
+                                <div
+                                    class="w-full md:w-1/3 bg-white p-5 rounded-lg shadow-sm border border-gray-200 shrink-0 h-fit">
+                                    <h3 class="text-lg font-bold text-gray-800 mb-4 border-b pb-2">1. Personal
+                                        Responsable</h3>
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="panelWorkerSelect">
+                                        Seleccionar Trabajador
+                                    </label>
+                                    <select id="panelWorkerSelect"
+                                        class="shadow border border-gray-300 rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base">
+                                        <option value="">-- Seleccione un trabajador --</option>
+                                    </select>
+                                    <p class="text-sm text-gray-500 mt-3 text-justify">
+                                        <i class="fa-solid fa-circle-info text-blue-500"></i> Al seleccionar un
+                                        trabajador, se cargarán los pabellones que actualmente tiene asignados en
+                                        memoria.
+                                    </p>
+                                </div>
+
+                                <!-- Columna Derecha: Pabellones -->
+                                <div
+                                    class="w-full md:w-2/3 bg-white p-5 rounded-lg shadow-sm border border-gray-200 flex flex-col">
+                                    <h3
+                                        class="text-lg font-bold text-gray-800 mb-2 border-b pb-2 flex justify-between items-end">
+                                        <span>2. Pabellones y Áreas de Limpieza</span>
+                                        <span
+                                            class="text-xs font-normal text-gray-500 bg-gray-100 px-2 py-1 rounded">Configuración
+                                            global del trabajador</span>
+                                    </h3>
+                                    <p class="text-sm text-gray-600 mb-4">Márque las casillas de los pabellones que este
+                                        trabajador es responsable de limpiar en la institución.</p>
+
+                                    <div id="panelPavilionsContainer"
+                                        class="grid grid-cols-1 lg:grid-cols-2 gap-3 overflow-y-auto flex-1 pr-2 pb-2">
+                                        <!-- Checkboxes generados por JS -->
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Pie del Panel -->
+                            <div class="bg-gray-100 px-6 py-4 flex justify-end gap-3 shrink-0 border-t border-gray-200">
+                                <button id="btnCancelAssignPanel"
+                                    class="px-6 py-2.5 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium transition shadow-sm">
+                                    Cancelar
+                                </button>
+                                <button id="btnSaveAssignPanel"
+                                    class="px-6 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 font-bold transition shadow-md flex items-center gap-2">
+                                    <i class="fa-solid fa-floppy-disk"></i> Guardar Asignación Temporal
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Toolbar -->
+                    <div class="flex flex-col gap-4 mb-6 bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-lg font-bold text-gray-700 flex items-center gap-2">
+                                <i class="fa-solid fa-clock text-blue-600"></i> Gestión de Horarios
+                            </h3>
+                            <div class="flex gap-2">
+                                <button id="btnSimpleView"
+                                    class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition flex items-center gap-2">
+                                    <i class="fa-solid fa-table-cells"></i> <span>Vista Turnos</span>
+                                </button>
+                                <button id="btnEditMode"
+                                    class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition flex items-center gap-2">
+                                    <i class="fa-solid fa-pen-to-square"></i> <span>Activar Edición</span>
+                                </button>
+                                <button onclick="window.print()"
+                                    class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-semibold transition flex items-center gap-2 border border-gray-300">
+                                    <i class="fa-solid fa-print"></i> Imprimir
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!-- Print Toolbar -->
+                    <div class="bg-white shadow-2xl overflow-hidden" style="border-radius: 12px;">
+                        <!-- Header Section -->
+                        <header class="bg-[#2d3748] text-yellow-400 p-4 text-center border-b-4 border-yellow-500">
+                            <h1 class="text-xl font-bold uppercase tracking-widest">
+                                ROL DE LIMPIEZA DEL AÑO ACADÉMICO 2025 DEL IES FCO. DE PAULA GONZALES VIGIL
+                            </h1>
+                        </header>
+
+                        <!-- Schedule Table -->
+                        <div class="overflow-x-auto">
+                            <table class="w-full border-collapse schedule-table text-gray-900">
+                                <!-- Table Headings -->
+                                <thead>
+                                    <tr class="shift-header">
+                                        <th class="w-12">TURNO</th>
+                                        <th class="w-24">HORARIO</th>
+                                        <th class="w-40">LUNES</th>
+                                        <th class="w-40">MARTES</th>
+                                        <th class="w-40">MIERCOLES</th>
+                                        <th class="w-40">JUEVES</th>
+                                        <th class="w-40">VIERNES</th>
+                                        <th class="w-12">TURNO</th>
+                                        <th class="w-48">SABADO</th>
+                                        <th class="w-48">DOMINGO</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- BEGIN: Mañana Section -->
+                                    <tr>
+                                        <td class="shift-header text-center align-middle" rowspan="4">
+                                            <span class="vertical-text">MAÑANA</span>
+                                        </td>
+                                        <td class="text-center font-bold bg-gray-50">05:00 - 12:45</td>
+                                        <td class="bg-gray-50 italic text-gray-400">Sin Asignación</td>
+                                        <td class="bg-alodia">
+                                            <div class="font-bold border-b border-black mb-1 slot-worker"
+                                                data-slot-id="m1-mar">ALODIA CHACNAQUE</div>
+                                            <ul class="list-none">
+                                                <li>C-102, C-103, C-104</li>
+                                                <li>A-108</li>
+                                                <li>APETI (CC, CE)</li>
+                                            </ul>
+                                        </td>
+                                        <td class="bg-alodia">
+                                            <div class="font-bold border-b border-black mb-1 slot-worker"
+                                                data-slot-id="m1-mie">ALODIA CHACNAQUE</div>
+                                            <ul class="list-none">
+                                                <li>C-102, C-103, C-104</li>
+                                                <li>A-108</li>
+                                                <li>APETI</li>
+                                            </ul>
+                                        </td>
+
+                                        <td class="bg-caner">
+                                            <div class="font-bold border-b border-black mb-1 slot-worker"
+                                                data-slot-id="m1-jue">CANER MEZA</div>
+                                            <ul class="list-none">
+                                                <li>C-102, C-103, C-104</li>
+                                                <li>K-101B, K-102B</li>
+                                                <li>Acondicionamiento de aulas</li>
+                                            </ul>
+                                        </td>
+                                        <td class="bg-caner">
+                                            <div class="font-bold border-b border-black mb-1 slot-worker"
+                                                data-slot-id="m1-vie">CANER MEZA</div>
+                                            <ul class="list-none">
+                                                <li>C-102, C-103, C-104</li>
+                                                <li>K-201</li>
+                                            </ul>
+                                        </td>
+
+                                        <td class="shift-header text-center align-middle" rowspan="4">
+                                            <span class="vertical-text">MAÑANA</span>
+                                        </td>
+                                        <td class="bg-julian" rowspan="2">
+                                            <div class="font-bold border-b border-black mb-1 text-center slot-worker"
+                                                data-slot-id="m-sab-1">JULIAN APARICIO</div>
+                                            <div class="mb-1 font-bold">06:00 - 14:00</div>
+                                            <ul class="list-none">
+                                                <li><b>Sábado:</b> Mantenimiento de áreas administrativas</li>
+                                            </ul>
+
+                                        </td>
+                                        <td class="bg-luisa" rowspan="4">
+                                            <div class="font-bold border-b border-black mb-1 text-center slot-worker"
+                                                data-slot-id="m-dom-1">LUISA CAMA</div>
+                                            <ul class="list-none text-center">
+                                                <li><b>Domingo:</b> Limpieza General</li>
+                                            </ul>
+
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center font-bold bg-gray-50">06:00 - 13:45</td>
+                                        <td class="bg-nilda">
+                                            <div class="font-bold border-b border-black mb-1 slot-worker"
+                                                data-slot-id="m2-lun">NILDA LAURA</div>
+                                            <ul class="list-none">
+                                                <li>Tópico, Biblioteca, Psicología</li>
+                                                <li>RRHH, Jefatura</li>
+                                            </ul>
+                                        </td>
+                                        <td class="bg-rosario">
+                                            <div class="font-bold border-b border-black mb-1 slot-worker"
+                                                data-slot-id="m2-mar">ROSARIO CHURA</div>
+                                            <ul class="list-none">
+                                                <li>Dirección, Tópico</li>
+                                                <li>Laboratorio: MP 2do piso</li>
+                                            </ul>
+                                        </td>
+                                        <td class="bg-rosario">
+                                            <div class="font-bold border-b border-black mb-1 slot-worker"
+                                                data-slot-id="m2-mie">ROSARIO CHURA</div>
+                                            <ul class="list-none">
+                                                <li>Dirección, Psicología</li>
+                                                <li>Jefatura: APETI, MP</li>
+                                            </ul>
+                                        </td>
+                                        <td class="bg-rosario">
+                                            <div class="font-bold border-b border-black mb-1 slot-worker"
+                                                data-slot-id="m2-jue">ROSARIO CHURA</div>
+                                            <ul class="list-none">
+                                                <li>Dirección, Tópico</li>
+                                                <li>Apoyo de otras áreas</li>
+                                            </ul>
+                                        </td>
+                                        <td class="bg-alodia">
+                                            <div class="font-bold border-b border-black mb-1 slot-worker"
+                                                data-slot-id="m2-vie">ALODIA CHACNAQUE</div>
+                                            <ul class="list-none">
+                                                <li>Jefatura: AC, CC</li>
+                                                <li>RRHH: BANAR</li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center font-bold bg-gray-50">06:45 - 14:30</td>
+                                        <td class="bg-julian">
+                                            <div class="font-bold border-b border-black mb-1 slot-worker"
+                                                data-slot-id="m3-lun">JULIAN APARICIO</div>
+                                            <ul class="list-none">
+                                                <li>Administrativas, Pasadizos</li>
+                                                <li>Estantería: PI</li>
+                                            </ul>
+                                        </td>
+                                        <td class="bg-julian">
+                                            <div class="font-bold border-b border-black mb-1 slot-worker"
+                                                data-slot-id="m3-mar">JULIAN APARICIO</div>
+                                            <ul class="list-none">
+                                                <li>Aula APETI I (1er y 3er)</li>
+                                                <li>Jefatura: PI</li>
+                                            </ul>
+                                        </td>
+                                        <td class="bg-julian">
+                                            <div class="font-bold border-b border-black mb-1 slot-worker"
+                                                data-slot-id="m3-mie">JULIAN APARICIO</div>
+                                            <ul class="list-none">
+                                                <li>Administrativas, Pasadizos</li>
+                                                <li>RRHH (alumnos)</li>
+                                            </ul>
+                                        </td>
+                                        <td class="bg-julian">
+                                            <div class="font-bold border-b border-black mb-1 slot-worker"
+                                                data-slot-id="m3-jue">JULIAN APARICIO</div>
+                                            <ul class="list-none">
+                                                <li>Aula APETI I (1er y 3er)</li>
+                                                <li>Jefatura: PI</li>
+                                            </ul>
+                                        </td>
+                                        <td class="bg-julian">
+                                            <div class="font-bold border-b border-black mb-1 slot-worker"
+                                                data-slot-id="m3-vie">JULIAN APARICIO</div>
+                                            <ul class="list-none">
+                                                <li>Aula APETI I (1er y 3er)</li>
+                                                <li>Jefatura: PI</li>
+                                            </ul>
+                                        </td>
+                                        <td class="bg-luisa" rowspan="2">
+                                            <div class="font-bold border-b border-black mb-1 text-center slot-worker"
+                                                data-slot-id="m-sab-2">LUISA CAMA</div>
+                                            <div class="mb-1 font-bold">06:00 - 14:00</div>
+                                            <ul class="list-none">
+                                                <li><b>Sábado:</b> Limpieza de aulas MA</li>
+                                                <li>Patio central</li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center font-bold bg-gray-50">08:00 - 16:00</td>
+                                        <td class="bg-rosario">
+                                            <div class="font-bold border-b border-black mb-1 slot-worker"
+                                                data-slot-id="m4-lun">ROSARIO CHURA</div>
+                                            <ul class="list-none">
+                                                <li>Dirección, Tópico</li>
+                                                <li>Jefatura: APETI, MP</li>
+                                            </ul>
+                                        </td>
+                                        <td class="bg-luisa">
+                                            <div class="font-bold border-b border-black mb-1 slot-worker"
+                                                data-slot-id="m4-mar">LUISA CAMA</div>
+                                            <ul class="list-none">
+                                                <li>MANTENIMIENTO DE JARDINES</li>
+                                                <li>CONTORNO PARQUE PE</li>
+                                            </ul>
+                                        </td>
+                                        <td class="bg-luisa">
+                                            <div class="font-bold border-b border-black mb-1 slot-worker"
+                                                data-slot-id="m4-mie">LUISA CAMA</div>
+                                            <ul class="list-none">
+                                                <li>Jefatura: CD, MA</li>
+                                                <li>Laboratorio: PM</li>
+                                            </ul>
+                                        </td>
+                                        <td class="bg-luisa">
+                                            <div class="font-bold border-b border-black mb-1 slot-worker"
+                                                data-slot-id="m4-jue">LUISA CAMA</div>
+                                            <ul class="list-none">
+                                                <li>MANTENIMIENTO DE JARDINES</li>
+                                                <li>CONTORNO PARQUE PE</li>
+                                            </ul>
+                                        </td>
+                                        <td class="bg-rosario">
+                                            <div class="font-bold border-b border-black mb-1 slot-worker"
+                                                data-slot-id="m4-vie">ROSARIO CHURA</div>
+                                            <ul class="list-none">
+                                                <li>Dirección, Tópico</li>
+                                                <li>Jefatura: MA, PM</li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                    <!-- END: Mañana Section -->
+
+                                    <!-- BEGIN: Tarde Section -->
+                                    <tr>
+                                        <td class="shift-header text-center align-middle" rowspan="2">
+                                            <span class="vertical-text">TARDE</span>
+                                        </td>
+                                        <td class="text-center font-bold bg-gray-50">14:00 - 21:45</td>
+                                        <td class="bg-luisa">
+                                            <div class="font-bold border-b border-black mb-1 slot-worker"
+                                                data-slot-id="t1-lun">LUISA CAMA</div>
+                                            <ul class="list-none area-list" data-slot-id="t1-lun"></ul>
+                                        </td>
+
+                                        <td class="bg-nilda">
+                                            <div class="font-bold border-b border-black mb-1 slot-worker"
+                                                data-slot-id="t1-mar">NILDA LAURA</div>
+                                            <ul class="list-none area-list" data-slot-id="t1-mar"></ul>
+                                        </td>
+
+                                        <td class="bg-nilda">
+                                            <div class="font-bold border-b border-black mb-1 slot-worker"
+                                                data-slot-id="t1-mie">NILDA LAURA</div>
+                                            <ul class="list-none area-list" data-slot-id="t1-mie"></ul>
+                                        </td>
+
+                                        <td class="bg-nilda">
+                                            <div class="font-bold border-b border-black mb-1 slot-worker"
+                                                data-slot-id="t1-jue">NILDA LAURA</div>
+                                            <ul class="list-none area-list" data-slot-id="t1-jue"></ul>
+                                        </td>
+
+                                        <td class="bg-nilda">
+                                            <div class="font-bold border-b border-black mb-1 slot-worker"
+                                                data-slot-id="t1-vie">NILDA LAURA</div>
+                                            <ul class="list-none area-list" data-slot-id="t1-vie"></ul>
+                                        </td>
+
+                                        <td class="shift-header text-center align-middle" rowspan="2">
+                                            <span class="vertical-text">TARDE</span>
+                                        </td>
+                                        <td class="bg-rosario" rowspan="2">
+                                            <div class="font-bold border-b border-black mb-1 text-center slot-worker"
+                                                data-slot-id="t-sab-1">ROSARIO CHURA
+                                            </div>
+                                            <div class="mb-1 font-bold">14:00 - 22:00 (Sáb)</div>
+                                            <div class="mb-2 font-bold">14:00 - 21:45 (Dom)</div>
+                                            <ul class="list-none area-list" data-slot-id="t-sab-1"></ul>
+                                        </td>
+
+                                        <td class="bg-david" rowspan="2">
+                                            <div class="font-bold border-b border-black mb-1 text-center slot-worker"
+                                                data-slot-id="t-dom-1">DAVID TURPO
+                                            </div>
+                                            <ul class="list-none area-list" data-slot-id="t-dom-1"></ul>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center font-bold bg-gray-50">14:15 - 22:00</td>
+                                        <td class="bg-alodia">
+                                            <div class="font-bold border-b border-black mb-1 slot-worker"
+                                                data-slot-id="t2-lun">ALODIA CHACNAQUE</div>
+                                            <ul class="list-none area-list" data-slot-id="t2-lun"></ul>
+                                        </td>
+
+                                        <td class="bg-david">
+                                            <div class="font-bold border-b border-black mb-1 slot-worker"
+                                                data-slot-id="t2-mar">DAVID TURPO</div>
+                                            <ul class="list-none area-list" data-slot-id="t2-mar"></ul>
+                                        </td>
+
+                                        <td class="bg-demetrio">
+                                            <div class="font-bold border-b border-black mb-1 slot-worker"
+                                                data-slot-id="t2-mie">DEMETRIO JUSTO</div>
+                                            <ul class="list-none area-list" data-slot-id="t2-mie"></ul>
+                                        </td>
+
+                                        <td class="bg-alodia">
+                                            <div class="font-bold border-b border-black mb-1 slot-worker"
+                                                data-slot-id="t2-jue">ALODIA CHACNAQUE</div>
+                                            <ul class="list-none area-list" data-slot-id="t2-jue"></ul>
+                                        </td>
+
+                                        <td class="bg-demetrio">
+                                            <div class="font-bold border-b border-black mb-1 slot-worker"
+                                                data-slot-id="t2-vie">DEMETRIO JUSTO</div>
+                                            <ul class="list-none area-list" data-slot-id="t2-vie"></ul>
+                                        </td>
+
+                                    </tr>
+                                    <!-- END: Tarde Section -->
+
+                                    <!-- BEGIN: Noche Section -->
+                                    <tr>
+                                        <td class="shift-header text-center align-middle" rowspan="2">
+                                            <span class="vertical-text">NOCHE</span>
+                                        </td>
+                                        <td class="text-center font-bold bg-gray-50">22:00 - 05:45</td>
+                                        <td class="bg-alfredo">
+                                            <div class="font-bold border-b border-black mb-1 slot-worker"
+                                                data-slot-id="n1-lun">ALFREDO CORONADO</div>
+                                            <ul class="list-none area-list" data-slot-id="n1-lun"></ul>
+                                        </td>
+
+                                        <td class="bg-alfredo">
+                                            <div class="font-bold border-b border-black mb-1 slot-worker"
+                                                data-slot-id="n1-mar">ALFREDO CORONADO</div>
+                                            <ul class="list-none area-list" data-slot-id="n1-mar"></ul>
+                                        </td>
+
+                                        <td class="bg-david">
+                                            <div class="font-bold border-b border-black mb-1 slot-worker"
+                                                data-slot-id="n1-mie">DAVID TURPO</div>
+                                            <ul class="list-none area-list" data-slot-id="n1-mie"></ul>
+                                        </td>
+
+                                        <td class="bg-demetrio">
+                                            <div class="font-bold border-b border-black mb-1 slot-worker"
+                                                data-slot-id="n1-jue">DEMETRIO JUSTO</div>
+                                            <ul class="list-none area-list" data-slot-id="n1-jue"></ul>
+                                        </td>
+
+                                        <td class="bg-david">
+                                            <div class="font-bold border-b border-black mb-1 slot-worker"
+                                                data-slot-id="n1-vie">DAVID TURPO</div>
+                                            <ul class="list-none area-list" data-slot-id="n1-vie"></ul>
+                                        </td>
+
+                                        <td class="shift-header text-center align-middle" rowspan="2">
+                                            <span class="vertical-text">NOCHE</span>
+                                        </td>
+                                        <td class="bg-demetrio">
+                                            <div class="font-bold border-b border-black mb-1 text-center slot-worker"
+                                                data-slot-id="n-sab-1">DEMETRIO JUSTO
+                                            </div>
+                                            <div class="mb-1 text-center font-bold text-[0.6rem]">SÁBADO 22:00 - 05:45 |
+                                                DOMINGO 21:45 - 05:30</div>
+                                            <ul class="list-none area-list" data-slot-id="n-sab-1"></ul>
+                                        </td>
+
+                                        <td class="bg-demetrio">
+                                            <div class="font-bold border-b border-black mb-1 text-center slot-worker"
+                                                data-slot-id="n-dom-1">DEMETRIO JUSTO
+                                            </div>
+                                            <ul class="list-none area-list" data-slot-id="n-dom-1"></ul>
+                                        </td>
+
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center font-bold bg-gray-50">22:15 - 06:00</td>
+                                        <td class="bg-gilmer">
+                                            <div class="font-bold border-b border-black mb-1 slot-worker"
+                                                data-slot-id="n2-lun">GILMER MEZA</div>
+                                            <ul class="list-none area-list" data-slot-id="n2-lun"></ul>
+                                        </td>
+
+                                        <td class="bg-gilmer">
+                                            <div class="font-bold border-b border-black mb-1 slot-worker"
+                                                data-slot-id="n2-mar">GILMER MEZA</div>
+                                            <ul class="list-none area-list" data-slot-id="n2-mar"></ul>
+                                        </td>
+
+                                        <td class="bg-alfredo">
+                                            <div class="font-bold border-b border-black mb-1 slot-worker"
+                                                data-slot-id="n2-jue">ALFREDO CORONADO</div>
+                                            <ul class="list-none area-list" data-slot-id="n2-jue"></ul>
+                                        </td>
+
+                                        <td class="bg-alfredo">
+                                            <div class="font-bold border-b border-black mb-1 slot-worker"
+                                                data-slot-id="n2-vie">ALFREDO CORONADO</div>
+                                            <ul class="list-none area-list" data-slot-id="n2-vie"></ul>
+                                        </td>
+
+                                        <td class="bg-alfredo">
+                                            <div class="font-bold border-b border-black mb-1 text-center slot-worker"
+                                                data-slot-id="n-sab-2">ALFREDO CORONADO</div>
+                                            <ul class="list-none area-list" data-slot-id="n-sab-2"></ul>
+                                        </td>
+
+                                        <td class="bg-david">
+                                            <div class="font-bold border-b border-black mb-1 text-center slot-worker"
+                                                data-slot-id="n-dom-2">DAVID TURPO
+                                            </div>
+                                            <ul class="list-none area-list" data-slot-id="n-dom-2"></ul>
+                                        </td>
+
+                                        <td class="bg-gilmer">
+                                            <div class="font-bold border-b border-black mb-1 text-center slot-worker"
+                                                data-slot-id="n-dom-3">GILMER MEZA
+                                            </div>
+                                            <ul class="list-none area-list" data-slot-id="n-dom-3"></ul>
+                                        </td>
+
+                                    </tr>
+                                    <!-- END: Noche Section -->
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Legend/Footer -->
+                        <footer class="bg-gray-100 p-4 border-t border-gray-300 text-[0.6rem] text-gray-500">
+                            <p>* Este rol está sujeto a cambios según necesidades institucionales. Los códigos
+                                representan áreas específicas del instituto (PI: Producción Industrial, CO: Computación,
+                                etc.)</p>
+                        </footer>
+                    </div>
+
+                </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="/js/common.js?v=3"></script>
+    <script src="/js/horarios.js?v=4"></script>
+    <script src="/js/theme-loader.js"></script>
+</body>
+
+</html>

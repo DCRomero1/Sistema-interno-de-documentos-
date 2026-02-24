@@ -140,6 +140,90 @@ function initializeTables() {
     )`, (err) => {
         if (err) console.error('Error creating document_history table:', err);
     });
+
+    // Tabla de Asignaciones de Horario
+    db.run(`CREATE TABLE IF NOT EXISTS schedule_assignments (
+        slotId TEXT PRIMARY KEY,
+        workerId INTEGER,
+        FOREIGN KEY(workerId) REFERENCES workers(id)
+    )`, (err) => {
+        if (err) console.error('Error creating schedule_assignments table:', err);
+    });
+
+    // Tabla de Pabellones
+    db.run(`CREATE TABLE IF NOT EXISTS pavilions (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        description TEXT
+    )`, (err) => {
+        if (err) console.error('Error creating pavilions table:', err);
+        else populatePavilions();
+    });
+
+    // Nueva Tabla de Áreas Específicas (hija de pavilions)
+    db.run(`CREATE TABLE IF NOT EXISTS areas (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        pavilion_id INTEGER,
+        name TEXT NOT NULL,
+        FOREIGN KEY(pavilion_id) REFERENCES pavilions(id)
+    )`, (err) => {
+        if (err) console.error('Error creating areas table:', err);
+    });
+
+    // Tabla de Asignaciones de Áreas a Trabajadores (reemplaza worker_pavilions)
+    db.run(`CREATE TABLE IF NOT EXISTS worker_areas (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        worker_id INTEGER,
+        area_id INTEGER,
+        FOREIGN KEY(worker_id) REFERENCES workers(id),
+        FOREIGN KEY(area_id) REFERENCES areas(id),
+        UNIQUE(worker_id, area_id)
+    )`, (err) => {
+        if (err) console.error('Error creating worker_areas table:', err);
+    });
+}
+
+function populatePavilions() {
+    db.get('SELECT COUNT(*) as count FROM pavilions', async (err, row) => {
+        if (err) return console.error('Error checking pavilions:', err);
+        if (row.count === 0) {
+            const initialPavilions = [
+                { name: 'Pabellón A', areas: ['Ingreso principal', 'Calidad', 'Secretaría Académica', 'Dirección General', 'Tesorería', 'RH', 'Patrimonio', 'Pasadizo de 1° Piso', 'Pasadizo de 2° Piso'] },
+                { name: 'Pabellón B', areas: ['Auditorio General'] },
+                { name: 'Pabellón C', areas: ['Depósitos', 'Aulas pedagógicas', 'Jefatura de Contabilidad', 'Pasadizos', 'SSHH'] },
+                { name: 'Pabellón D', areas: ['Tópico', 'Biblioteca', 'Psicología', 'Jefatura Producción', 'Aulas Producción'] },
+                { name: 'Pabellón E', areas: ['Aulas 1° piso APETI', 'Aulas 3° piso APETI', 'Laboratorios APETI', 'Jefatura APETI'] },
+                { name: 'Pabellón F', areas: ['Aulas Const. Civil', 'Jefatura Const. Civil', 'Laboratorio de Suelos', 'Cancha de básquet (mitad)'] },
+                { name: 'Pabellón G', areas: ['Oficinas Secretariado', 'Aulas Secretariado'] },
+                { name: 'Pabellones H, J, N', areas: ['Talleres Electrónica', 'Jefaturas Electrónica', 'Laboratorios Electrónica', 'Canal 45'] },
+                { name: 'Pabellón K', areas: ['Taller Máquinas-Herramientas', 'Soldadura', 'Control Calidad', 'Jefatura MP', 'Aulas MP', 'Salón CAD/CAM'] },
+                { name: 'Pabellón L', areas: ['Jefatura Automotriz', 'Laboratorios Automotriz', 'Taller de motores', 'Patio maniobras'] },
+                { name: 'Áreas Comunes', areas: ['Mantenimiento de jardines', 'Terrazas', 'Fachada principal', 'Pasadizos generales', 'SSHH Generales', 'Patio Bandera', 'Patronato'] }
+            ];
+
+            const runAsync = (sql, params = []) => new Promise((resolve, reject) => {
+                db.run(sql, params, function (error) {
+                    if (error) reject(error);
+                    else resolve(this.lastID);
+                });
+            });
+
+            try {
+                await runAsync("BEGIN TRANSACTION");
+                for (const p of initialPavilions) {
+                    const pavilionId = await runAsync('INSERT INTO pavilions (name) VALUES (?)', [p.name]);
+                    for (const areaName of p.areas) {
+                        await runAsync('INSERT INTO areas (pavilion_id, name) VALUES (?, ?)', [pavilionId, areaName]);
+                    }
+                }
+                await runAsync("COMMIT");
+                console.log('Catálogo inicial de pabellones y áreas independizadas creado con éxito.');
+            } catch (error) {
+                console.error("Error committing bulk insert of pavilions & areas", error);
+                db.run("ROLLBACK");
+            }
+        }
+    });
 }
 
 function createDefaultAdmin() {
@@ -148,8 +232,6 @@ function createDefaultAdmin() {
         if (err) return console.error(err.message);
         if (!row) {
             // Crear admin por defecto: admin / admin (hasheado)
-            // hash of 'admin' is approx: $2b$10$YourSalt...
-            // For simplicity in this async init, we'll hash it now.
             const saltRounds = 10;
             const myPlaintextPassword = 'admin';
 

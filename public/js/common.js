@@ -142,6 +142,13 @@ window.addEventListener('click', function (event) {
 
 // Clear session storage on logout
 document.addEventListener('DOMContentLoaded', () => {
+    // Escuchar clicks en cualquier botón de logout con la clase correcta
+    document.addEventListener('click', (e) => {
+        if (e.target.closest('.u-logout-card-btn')) {
+            sessionStorage.removeItem('birthdayShown');
+        }
+    });
+
     const logoutLink = document.querySelector('.logout-link');
     if (logoutLink) {
         logoutLink.addEventListener('click', () => {
@@ -203,5 +210,5 @@ async function checkBirthdays() {
     }
 }
 
-// Run check
+// Run check Correr.
 checkBirthdays();
