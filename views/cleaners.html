@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Directorio de Personal - VigilDocs</title>
+    <title>Personal de Servicio - VigilDocs</title>
     <link rel="stylesheet" href="/css/fontawesome.all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css?v=5">
@@ -793,13 +793,13 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="/workers" class="nav-link active">
+                    <a href="/workers" class="nav-link">
                         <span class="nav-icon"><i class="fa-solid fa-users"></i></span>
                         Trabajadores
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="/cleaners" class="nav-link">
+                    <a href="/cleaners" class="nav-link active">
                         <span class="nav-icon"><i class="fa-solid fa-broom"></i></span>
                         Servicio
                     </a>
@@ -878,9 +878,9 @@
                             <div>
                                 <h2
                                     style="color: var(--primary-color); font-weight: 700; margin: 0; font-size: 1.5rem;">
-                                    Directorio de Personal</h2>
-                                <p style="color: #64748b; margin: 0; font-size: 0.9rem;">Gestión de docentes y personal
-                                    administrativo</p>
+                                    Personal de Servicio</h2>
+                                <p style="color: #64748b; margin: 0; font-size: 0.9rem;">Gestión de operarios de
+                                    limpieza</p>
                             </div>
                         </div>
                     </div>
@@ -914,11 +914,9 @@
                                     <i class="fa-solid fa-magnifying-glass"></i>
                                     <input type="text" id="searchInput" placeholder="Buscar personal...">
                                 </div>
-                                <div class="filter-wrapper">
+                                <div class="filter-wrapper" style="display: none;">
                                     <select id="deptFilter" class="filter-select">
                                         <option value="all">Todos los departamentos</option>
-                                        <option value="Docente">Docente</option>
-                                        <option value="Administrativo">Administrativo</option>
                                         <option value="Personal de Limpieza">Personal de Limpieza</option>
                                     </select>
                                     <button class="btn-icon-only">
@@ -1056,8 +1054,6 @@
                     <div>
                         <label class="themed-label">Cargo / Puesto</label>
                         <select class="themed-input form-select" name="position">
-                            <option value="Docente">Docente</option>
-                            <option value="Administrativo">Administrativo</option>
                             <option value="Personal de Limpieza">Personal de Limpieza</option>
                         </select>
                     </div>
@@ -1155,7 +1151,7 @@
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <!-- Common JS for Sidebar -->
     <script src="/js/common.js?v=3"></script>
-    <script src="/js/workers.js?v=5"></script>
+    <script src="/js/cleaners.js"></script>
     <script>
         // Inline Modal Logic Helpers
         // openWorkerModal moved to workers.js to handle Edit state

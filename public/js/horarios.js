@@ -27,22 +27,73 @@ document.addEventListener('DOMContentLoaded', async () => {
     async function loadInitialData() {
         try {
             const [workersRes, pavilionsRes] = await Promise.all([
-                fetch('/api/workers'),
+                fetch('/api/cleaners'),
                 fetch('/api/pavilions')
             ]);
 
             const workersData = await workersRes.json();
-            workers = workersData.workers || [];
+            // La API de cleaners devuelve el array directamente (no envuelto en {cleaners: [...]})
+            workers = Array.isArray(workersData) ? workersData : (workersData.cleaners || []);
             allPavilions = await pavilionsRes.json();
 
-            // Preparar el select del panel grande
-            panelWorkerSelect.innerHTML = '<option value="">-- Seleccione un trabajador --</option>';
-            workers.sort((a, b) => a.fullName.localeCompare(b.fullName)).forEach(w => {
-                const option = document.createElement('option');
-                option.value = w.id;
-                option.textContent = w.fullName;
-                panelWorkerSelect.appendChild(option);
-            });
+            // Preparar la lista visual de selección de trabajadores
+            const workerPickerList = document.getElementById('workerPickerList');
+            const panelWorkerInput = document.getElementById('panelWorkerSelect');
+
+            if (workerPickerList) {
+                workerPickerList.innerHTML = '';
+                panelWorkerInput.value = '';
+
+                const avatarColors = [
+                    'bg-blue-100 text-blue-700',
+                    'bg-purple-100 text-purple-700',
+                    'bg-yellow-100 text-yellow-700',
+                    'bg-green-100 text-green-700',
+                    'bg-red-100 text-red-700',
+                    'bg-indigo-100 text-indigo-700',
+                    'bg-pink-100 text-pink-700',
+                    'bg-orange-100 text-orange-700',
+                ];
+
+                // Ahora todos los elementos en 'workers' son personal de limpieza
+                const cleaningStaff = workers;
+
+                cleaningStaff.sort((a, b) => a.fullName.localeCompare(b.fullName)).forEach((w, idx) => {
+                    const names = w.fullName.trim().split(' ');
+                    const initials = names.slice(0, 2).map(n => n[0]).join('').toUpperCase();
+                    const colorClass = avatarColors[idx % avatarColors.length];
+
+                    const card = document.createElement('div');
+                    card.className = 'worker-picker-card flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-blue-50 transition select-none';
+                    card.dataset.workerId = w.id;
+                    card.innerHTML = `
+                        <div class="h-10 w-10 rounded-full ${colorClass} flex items-center justify-center font-bold text-sm shrink-0">${initials}</div>
+                        <div class="flex-1 min-w-0">
+                            <div class="font-semibold text-gray-800 text-sm truncate">${w.fullName}</div>
+                            <div class="text-[0.65rem] text-gray-500 uppercase tracking-wide">Personal de Limpieza</div>
+                        </div>
+                        <div class="worker-check-icon text-blue-600 opacity-0 transition-opacity">
+                            <i class="fa-solid fa-circle-check text-lg"></i>
+                        </div>
+                    `;
+
+                    card.addEventListener('click', () => {
+                        // Deselect all
+                        document.querySelectorAll('.worker-picker-card').forEach(c => {
+                            c.classList.remove('bg-blue-50', 'border-l-4', 'border-blue-500');
+                            c.querySelector('.worker-check-icon').style.opacity = '0';
+                        });
+                        // Select this one
+                        card.classList.add('bg-blue-50', 'border-l-4', 'border-blue-500');
+                        card.querySelector('.worker-check-icon').style.opacity = '1';
+                        panelWorkerInput.value = w.id;
+                        // Disparar cambio para cargar sus pabellones
+                        panelWorkerInput.dispatchEvent(new Event('change'));
+                    });
+
+                    workerPickerList.appendChild(card);
+                });
+            }
 
             // Preparar los checkboxes del panel grande estructurados por pabellón y área
             panelPavilionsContainer.innerHTML = '';
@@ -95,37 +146,63 @@ document.addEventListener('DOMContentLoaded', async () => {
             document.querySelectorAll('.slot-worker').forEach(slotEl => {
                 const parentTd = slotEl.closest('td');
                 parentTd.classList.add('editable-cell');
-                let ul = parentTd.querySelector('ul');
+                let ul = parentTd.querySelector('ul.area-list') || parentTd.querySelector('ul');
                 if (ul) ul.innerHTML = '';
-                slotEl.textContent = 'Sin Asignar';
+                slotEl.innerHTML = '<span class="text-gray-400 italic font-normal text-xs">Sin Asignar</span>'; // Empty format
+                slotEl.dataset.workerId = '';
+                slotEl.dataset.workers = ''; // Para listas
             });
-            assignments = {}; // Reiniciar
+            assignments = {}; // Reiniciar fallback
 
-            data.forEach(asig => {
-                assignments[asig.slotId] = asig;
-                const slotEl = document.querySelector(`.slot-worker[data-slot-id="${asig.slotId}"]`);
-                if (slotEl && asig.fullName) {
-                    slotEl.textContent = asig.fullName;
+            // Group data by slotId
+            const slotData = {};
+            data.forEach(asg => {
+                if (!slotData[asg.slotId]) slotData[asg.slotId] = [];
+                slotData[asg.slotId].push(asg);
+            });
 
+            Object.keys(slotData).forEach(slotId => {
+                const workersInSlot = slotData[slotId];
+                const slotEl = document.querySelector(`.slot-worker[data-slot-id="${slotId}"]`);
+                if (slotEl) {
+                    slotEl.innerHTML = ''; // Limpiar fallback
                     const parentTd = slotEl.closest('td');
-                    let ul = parentTd.querySelector('ul');
+                    let ul = parentTd.querySelector('ul.area-list') || parentTd.querySelector('ul');
                     if (!ul) {
                         ul = document.createElement('ul');
                         ul.className = 'list-none area-list mt-2 space-y-1';
                         parentTd.appendChild(ul);
                     }
-
                     ul.innerHTML = '';
-                    if (asig.areas && asig.areas.length > 0) {
-                        asig.areas.forEach(area => {
+
+                    workersInSlot.forEach((w, idx) => {
+                        // Renderizar Nombre en el Div Slot-Worker
+                        const nameDiv = document.createElement('div');
+                        nameDiv.textContent = w.fullName;
+                        if (idx < workersInSlot.length - 1) {
+                            nameDiv.className = 'border-b border-gray-400 pb-1 mb-1';
+                        }
+                        slotEl.appendChild(nameDiv);
+
+                        // Renderizar las áreas
+                        if (w.areas && w.areas.length > 0) {
+                            w.areas.forEach(area => {
+                                const li = document.createElement('li');
+                                li.className = 'text-[0.65rem] text-gray-700 bg-yellow-50 p-1 rounded border border-yellow-100 flex gap-1 items-start leading-tight';
+                                const shortName = w.fullName.split(' ')[0];
+                                li.innerHTML = `<b class="text-gray-900 shrink-0">${shortName}:</b> <span>${area.name} (${area.description})</span>`;
+                                ul.appendChild(li);
+                            });
+                        } else {
                             const li = document.createElement('li');
-                            li.className = 'text-xs text-gray-700 bg-yellow-50 p-1 rounded border border-yellow-100';
-                            li.innerHTML = `<b class="text-gray-900">${area.name}:</b> ${area.description}`;
+                            li.className = 'text-[0.65rem] text-red-500 italic mt-1 leading-tight';
+                            li.innerHTML = `<b>${w.fullName.split(' ')[0]}:</b> Sin áreas`;
                             ul.appendChild(li);
-                        });
-                    } else {
-                        ul.innerHTML = '<li class="text-xs text-red-500 italic mt-1">Sin áreas marcadas</li>';
-                    }
+                        }
+                    });
+
+                    // Almacenar string para las cards del modal
+                    slotEl.dataset.workers = JSON.stringify(workersInSlot.map(w => ({ id: w.workerId, fullName: w.fullName })));
                 }
             });
         } catch (error) {
@@ -193,31 +270,121 @@ document.addEventListener('DOMContentLoaded', async () => {
         currentlyEditingSlotId = element.dataset.slotId;
         currentlyEditingCellEl = element;
 
-        // Extraer info amigable del turno leyendo la tabla
+        // Extraer info amigable del turno leyendo la tabla o el ID
         const row = element.closest('tr');
-        const headerCell = row.querySelector('.time-header');
-        const thElement = element.closest('table').querySelector(`th:nth-child(${element.closest('td').cellIndex + 1})`);
+        const headerCell = row.querySelector('.time-header') || row.querySelector('td:nth-child(2)');
 
-        let timeLabel = headerCell ? headerCell.textContent.trim() : 'Horario no detectado';
-        let dayLabel = thElement ? thElement.textContent.trim() : 'Día';
+        let timeLabel = headerCell ? headerCell.textContent.trim() : '';
+
+        // Mapa para reconocer los días por el ID del slot (ej: m1-mar, m-sab-1)
+        const dayMap = {
+            'lun': 'LUNES', 'mar': 'MARTES', 'mie': 'MIÉRCOLES',
+            'jue': 'JUEVES', 'vie': 'VIERNES', 'sab': 'SÁBADO', 'dom': 'DOMINGO'
+        };
+
+        const slotParts = currentlyEditingSlotId.split('-');
+        let dayCode = slotParts.find(p => dayMap[p]);
+        let dayLabel = dayMap[dayCode] || 'Día';
+
+        // Fixes manuales para el horario de sábados y domingos (la tabla es irregular ahí)
+        if (!timeLabel || timeLabel === 'TURNO' || timeLabel === 'MAÑANA' || timeLabel === 'TARDE' || timeLabel === 'NOCHE') {
+            if (currentlyEditingSlotId.includes('m-sab')) timeLabel = '06:00 - 14:00';
+            else if (currentlyEditingSlotId.includes('m-dom')) timeLabel = '06:00 - 14:00';
+            else if (currentlyEditingSlotId.includes('t-sab')) timeLabel = '14:00 - 22:00';
+            else if (currentlyEditingSlotId.includes('t-dom')) timeLabel = '14:00 - 21:45';
+            else if (currentlyEditingSlotId.includes('n-sab')) timeLabel = 'Sáb 22:00 - 05:45';
+            else if (currentlyEditingSlotId.includes('n-dom')) timeLabel = 'Dom 21:45 - 05:30';
+            else timeLabel = 'Horario General';
+        }
+
         currentlyEditingSlotLabel = `${dayLabel} (${timeLabel})`;
 
         selectedSlotHeader.textContent = `Turno: ${currentlyEditingSlotLabel} | ID: ${currentlyEditingSlotId}`;
 
-        // Limpiar
+        // Limpiar checkboxes y reset de selección de lista
         document.querySelectorAll('.area-checkbox').forEach(cb => cb.checked = false);
+        panelWorkerSelect.value = "";
+        // Deseleccionar todas las tarjetas visualmente
+        document.querySelectorAll('.worker-picker-card').forEach(c => {
+            c.classList.remove('bg-blue-50', 'border-l-4', 'border-blue-500');
+            const icon = c.querySelector('.worker-check-icon');
+            if (icon) icon.style.opacity = '0';
+        });
 
-        // Cargar selección actual de la base de datos (assignments poblado en loadAssignments)
-        const currentAsig = assignments[currentlyEditingSlotId];
-        if (currentAsig && currentAsig.workerId) {
-            panelWorkerSelect.value = currentAsig.workerId.toString();
-            // Disparar evento para que lea de BD sus pabellones
-            panelWorkerSelect.dispatchEvent(new Event('change'));
-        } else {
-            panelWorkerSelect.value = "";
+        // Renderizado de las tarjetas internas "Asignados actualmente"
+        const workersDataStr = element.dataset.workers;
+        let workersInSlot = [];
+        if (workersDataStr) {
+            try { workersInSlot = JSON.parse(workersDataStr); } catch (e) { }
         }
+        renderAssignedWorkerCards(workersInSlot);
 
         fullScreenAssignModal.classList.remove('hidden');
+    }
+
+    function renderAssignedWorkerCards(workersInSlot) {
+        const container = document.getElementById('panelAssignedWorkers');
+        if (!container) return;
+        container.innerHTML = '';
+        if (workersInSlot.length === 0) {
+            container.innerHTML = '<span class="text-xs text-gray-500 italic">Nadie asignado aún</span>';
+            return;
+        }
+
+        workersInSlot.forEach(w => {
+            const card = document.createElement('div');
+            card.className = 'flex items-center gap-3 bg-white border border-gray-200 p-2 rounded-lg shadow-sm';
+
+            // Generar iniciales
+            const names = w.fullName.split(' ');
+            const initials = names.slice(0, 2).map(n => n[0]).join('').toUpperCase();
+
+            card.innerHTML = `
+                <div class="h-8 w-8 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-xs shrink-0">${initials}</div>
+                <div class="flex-1">
+                    <div class="text-sm font-bold text-gray-800 leading-tight">${w.fullName}</div>
+                    <div class="text-[0.65rem] text-gray-500">Personal de Limpieza</div>
+                </div>
+                <button class="btn-remove-worker text-red-500 hover:text-red-700 px-2 py-1 bg-red-50 hover:bg-red-100 rounded transition" data-worker-id="${w.id}" title="Quitar este trabajador del turno">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            `;
+
+            // Listener borrar individual
+            const btnRemove = card.querySelector('.btn-remove-worker');
+            btnRemove.addEventListener('click', async (e) => {
+                e.preventDefault();
+                await removeSpecificWorker(w.id);
+            });
+
+            container.appendChild(card);
+        });
+    }
+
+    async function removeSpecificWorker(workerId) {
+        try {
+            await fetch('/api/schedule/assign', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ slotId: currentlyEditingSlotId, workerId: workerId, action: 'remove' })
+            });
+            showToast('Trabajador retirado del turno');
+            await loadAssignments();
+
+            // Re-leer datos y repintar la vista
+            const updatedSlot = document.querySelector(`.slot-worker[data-slot-id="${currentlyEditingSlotId}"]`);
+            if (updatedSlot) {
+                const workersDataStr = updatedSlot.dataset.workers;
+                let workersInSlot = [];
+                if (workersDataStr) {
+                    try { workersInSlot = JSON.parse(workersDataStr); } catch (e) { }
+                }
+                renderAssignedWorkerCards(workersInSlot);
+            }
+        } catch (error) {
+            console.error('Error', error);
+            Swal.fire('Error', 'Hubo un error al retirar al trabajador.', 'error');
+        }
     }
 
     function closeAssignPanel() {
@@ -226,8 +393,94 @@ document.addEventListener('DOMContentLoaded', async () => {
         currentlyEditingCellEl = null;
     }
 
+    // Guardar: asigna el trabajador seleccionado al slot Y guarda sus areas marcadas
+    async function saveAreasForSlot() {
+        if (!currentlyEditingSlotId) {
+            Swal.fire('Error', 'No hay ningún turno seleccionado.', 'error');
+            return;
+        }
+
+        const workerId = panelWorkerSelect.value;
+
+        // Obtener las areas chequeadas
+        const checkedAreas = [];
+        document.querySelectorAll('.area-checkbox:checked').forEach(cb => {
+            checkedAreas.push(parseInt(cb.value));
+        });
+
+        const slotEl = document.querySelector(`.slot-worker[data-slot-id="${currentlyEditingSlotId}"]`);
+        let workerIds = [];
+        if (slotEl && slotEl.dataset.workers) {
+            try {
+                const arr = JSON.parse(slotEl.dataset.workers);
+                workerIds = arr.map(w => w.id);
+            } catch (e) { }
+        }
+
+        if (!workerId) {
+            // Si no hay trabajador seleccionado visualmente, guardamos para los ya asignados
+            if (workerIds.length === 0) {
+                Swal.fire('Sin trabajador', 'Primero escoge un trabajador de la lista.', 'warning');
+                return;
+            }
+
+            try {
+                // Solo guardar areas para los ya asignados
+                await Promise.all(workerIds.map(wId =>
+                    fetch('/api/cleaners/pavilions/assign', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ workerId: parseInt(wId), pavilionIds: checkedAreas })
+                    })
+                ));
+                showToast('\u00c1reas guardadas correctamente en el horario');
+                closeAssignPanel();
+                await loadAssignments();
+            } catch (err) {
+                console.error('Error guardando áreas:', err);
+                Swal.fire('Error', 'No se pudo guardar las áreas.', 'error');
+            }
+        } else {
+            // Si hay un trabajador seleccionado, primero lo asignamos y luego guardamos sus áreas
+            try {
+                if (!workerIds.includes(parseInt(workerId))) {
+                    // 1. Asignar el trabajador al slot (solo si no estaba asignado ya)
+                    const assignRes = await fetch('/api/schedule/assign', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ slotId: currentlyEditingSlotId, workerId: parseInt(workerId), action: 'add' })
+                    });
+
+                    if (!assignRes.ok) throw new Error('Error al asignar trabajador');
+                }
+
+                // 2. Guardar sus areas marcadas
+                const areasRes = await fetch('/api/cleaners/pavilions/assign', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ workerId: parseInt(workerId), pavilionIds: checkedAreas })
+                });
+
+                if (!areasRes.ok) throw new Error('Error al guardar áreas');
+
+                showToast('Trabajador y áreas guardados en el horario');
+                closeAssignPanel();
+                await loadAssignments();
+            } catch (error) {
+                console.error('Error guardando:', error);
+                Swal.fire('Error', 'Hubo un problema al guardar la información.', 'error');
+            }
+        }
+    }
+
     btnCloseAssignPanel.addEventListener('click', closeAssignPanel);
     btnCancelAssignPanel.addEventListener('click', closeAssignPanel);
+
+    // Boton Guardar del footer (guarda areas)
+    const btnSaveAreaPanel = document.getElementById('btnSaveAreaPanel');
+    if (btnSaveAreaPanel) {
+        btnSaveAreaPanel.addEventListener('click', saveAreasForSlot);
+    }
 
     // Evento al cambiar el trabajador: Lee de BD
     panelWorkerSelect.addEventListener('change', async (e) => {
@@ -238,7 +491,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (!workerId) return;
 
         try {
-            const res = await fetch(`/api/workers/${workerId}/pavilions`);
+            const res = await fetch(`/api/cleaners/${workerId}/pavilions`);
             const assignedAreas = await res.json();
 
             assignedAreas.forEach(a => {
@@ -250,55 +503,73 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
 
-    // Guardar en la Base de Datos nativa
-    btnSaveAssignPanel.addEventListener('click', async () => {
-        const workerId = panelWorkerSelect.value;
-
-        try {
-            // Caso 1: Deseleccionó limpiando el turno.
-            if (!workerId) {
-                // Sobreescribir el assignment actual por null
+    // Evento de "Liberar Turno" nativo
+    const btnClearAssignPanel = document.getElementById('btnClearAssignPanel');
+    if (btnClearAssignPanel) {
+        btnClearAssignPanel.addEventListener('click', async () => {
+            try {
+                // Sobreescribir el assignment actual por clear global
                 await fetch('/api/schedule/assign', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ slotId: currentlyEditingSlotId, workerId: null })
+                    body: JSON.stringify({ slotId: currentlyEditingSlotId, action: 'clear' })
                 });
 
-                showToast('Turno liberado');
+                showToast('Turno liberado completamente');
                 closeAssignPanel();
                 await loadAssignments();
-                return;
+            } catch (error) {
+                console.error('Error al liberar turno:', error);
+                Swal.fire('Error', 'Hubo un error al liberar el turno.', 'error');
             }
+        });
+    }
 
-            // Caso 2: Asignación normal
+    // Funciones comunes de Guardado para Adds y Replaces
+    async function processAssignment(actionType) {
+        const workerId = panelWorkerSelect.value;
+        if (!workerId) {
+            Swal.fire('Advertencia', 'Debe seleccionar un trabajador.', 'warning');
+            return;
+        }
+
+        try {
             const checkedBoxes = document.querySelectorAll('.area-checkbox:checked');
-            const pavilionIds = Array.from(checkedBoxes).map(cb => parseInt(cb.value)); // Conservamos el nombre payload pavilionIds por legacy API
+            const pavilionIds = Array.from(checkedBoxes).map(cb => parseInt(cb.value));
 
-            // Promise All para guardar turnos y áreas de manera asincronía en Node Backend
             await Promise.all([
                 // Guardar las áreas al trabajador
-                fetch('/api/workers/pavilions/assign', {
+                fetch('/api/cleaners/pavilions/assign', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ workerId, pavilionIds })
                 }),
-                // Ubicar al trabajador en la celda
+                // Ubicar al trabajador en la celda con la acción pedida ('add' o 'replace')
                 fetch('/api/schedule/assign', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ slotId: currentlyEditingSlotId, workerId })
+                    body: JSON.stringify({ slotId: currentlyEditingSlotId, workerId, action: actionType })
                 })
             ]);
 
-            showToast('Turno y Áreas guardadas');
+            showToast(actionType === 'add' ? 'Trabajador agregado' : 'Turno reemplazado');
             closeAssignPanel();
-            await loadAssignments(); // Repinta visualmente trayéndolo de SQL
-
+            await loadAssignments();
         } catch (error) {
             console.error('Error saving assignments:', error);
             Swal.fire('Error', 'Hubo un error al guardar en la Base de Datos.', 'error');
         }
-    });
+    }
+
+    const btnAddAssignPanel = document.getElementById('btnAddAssignPanel');
+    if (btnAddAssignPanel) {
+        btnAddAssignPanel.addEventListener('click', () => processAssignment('add'));
+    }
+
+    const btnReplaceAssignPanel = document.getElementById('btnReplaceAssignPanel');
+    if (btnReplaceAssignPanel) {
+        btnReplaceAssignPanel.addEventListener('click', () => processAssignment('replace'));
+    }
 
     function showToast(msg) {
         Swal.fire({
@@ -314,4 +585,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Inicialización
     await loadInitialData();
     await loadAssignments();
+
+    // los datos tienen que cambiar para que las funciones sean mejores
 });

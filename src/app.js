@@ -47,9 +47,11 @@ app.use(authRoutes);
 app.use(documentRoutes);
 app.use(userRoutes);
 app.use(workerRoutes);
+app.use(require('./routes/cleanerRoutes'));
 app.use(reportRoutes);
 app.use(settingsRoutes);
 app.use(require('./routes/scheduleRoutes'));
+
 
 // Manejo de error 404 (Opcional, pero buena práctica)
 app.use((req, res) => {

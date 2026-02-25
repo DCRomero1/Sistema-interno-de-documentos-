@@ -141,11 +141,25 @@ function initializeTables() {
         if (err) console.error('Error creating document_history table:', err);
     });
 
-    // Tabla de Asignaciones de Horario
+    // Tabla de Personal de Limpieza (Independiente)
+    db.run(`CREATE TABLE IF NOT EXISTS cleaning_staff (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        fullName TEXT NOT NULL,
+        dni TEXT UNIQUE NOT NULL,
+        birthDate TEXT,
+        position TEXT DEFAULT 'Personal de Limpieza',
+        email TEXT,
+        phone TEXT,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )`, (err) => {
+        if (err) console.error('Error creating cleaning_staff table:', err);
+    });
+
+    // Tabla de Asignaciones de Horario (Actualizada para apuntar a Personal de Limpieza)
     db.run(`CREATE TABLE IF NOT EXISTS schedule_assignments (
         slotId TEXT PRIMARY KEY,
-        workerId INTEGER,
-        FOREIGN KEY(workerId) REFERENCES workers(id)
+        cleanerId INTEGER,
+        FOREIGN KEY(cleanerId) REFERENCES cleaning_staff(id)
     )`, (err) => {
         if (err) console.error('Error creating schedule_assignments table:', err);
     });
@@ -170,16 +184,42 @@ function initializeTables() {
         if (err) console.error('Error creating areas table:', err);
     });
 
-    // Tabla de Asignaciones de Áreas a Trabajadores (reemplaza worker_pavilions)
-    db.run(`CREATE TABLE IF NOT EXISTS worker_areas (
+    // Tabla de Asignaciones de Áreas a Personal de Limpieza
+    db.run(`CREATE TABLE IF NOT EXISTS cleaner_areas (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        worker_id INTEGER,
+        cleaner_id INTEGER,
         area_id INTEGER,
-        FOREIGN KEY(worker_id) REFERENCES workers(id),
+        FOREIGN KEY(cleaner_id) REFERENCES cleaning_staff(id),
         FOREIGN KEY(area_id) REFERENCES areas(id),
-        UNIQUE(worker_id, area_id)
+        UNIQUE(cleaner_id, area_id)
     )`, (err) => {
-        if (err) console.error('Error creating worker_areas table:', err);
+        if (err) console.error('Error creating cleaner_areas table:', err);
+        else seedCleaners(); // Seed initial cleaners after creating tables
+    });
+}
+
+function seedCleaners() {
+    db.get('SELECT COUNT(*) as count FROM cleaning_staff', [], (err, row) => {
+        if (err) return console.error('Error checking cleaners:', err);
+
+        if (row.count === 0) {
+            const initialCleaners = [
+                'ALODIA CHACNAQUE', 'CANER MEZA', 'JULIAN APARICIO', 'LUISA CAMA',
+                'NILDA LAURA', 'ROSARIO CHURA', 'DEMETRIO JUSTO', 'ALFREDO CORONADO', 'DAVID TURPO'
+            ];
+
+            initialCleaners.forEach((name, i) => {
+                const dni = '8000000' + i;
+                db.run(
+                    `INSERT OR IGNORE INTO cleaning_staff (fullName, dni, position) VALUES (?, ?, ?)`,
+                    [name, dni, 'Personal de Limpieza'],
+                    (err) => {
+                        if (err) console.error('Error seeding cleaner:', err);
+                    }
+                );
+            });
+            console.log('Catálogo inicial de 9 Conserjes sembrado exitosamente en cleaning_staff.');
+        }
     });
 }
 

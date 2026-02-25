@@ -8,17 +8,17 @@ exports.getAssignments = (req, res) => {
     const sql = `
         SELECT 
             sa.slotId, 
-            sa.workerId, 
+            sa.cleanerId as workerId, 
             w.fullName, 
             w.position,
             GROUP_CONCAT(p.name, '||') as pavilion_names,
             GROUP_CONCAT(a.name, '||') as area_names
         FROM schedule_assignments sa
-        LEFT JOIN workers w ON sa.workerId = w.id
-        LEFT JOIN worker_areas wa ON sa.workerId = wa.worker_id
+        LEFT JOIN cleaning_staff w ON sa.cleanerId = w.id
+        LEFT JOIN cleaner_areas wa ON sa.cleanerId = wa.cleaner_id
         LEFT JOIN areas a ON wa.area_id = a.id
         LEFT JOIN pavilions p ON a.pavilion_id = p.id
-        GROUP BY sa.slotId
+        GROUP BY sa.slotId, sa.cleanerId
     `;
     db.all(sql, [], (err, rows) => {
         if (err) return res.status(500).json({ error: err.message });
@@ -46,15 +46,45 @@ exports.getAssignments = (req, res) => {
 };
 
 exports.assignWorker = (req, res) => {
-    const { slotId, workerId } = req.body;
+    const { slotId, workerId, action } = req.body; // action: 'add', 'replace', 'remove', 'clear'
 
     if (!slotId) {
         return res.status(400).json({ error: 'slotId is required' });
     }
 
-    const sql = `INSERT OR REPLACE INTO schedule_assignments (slotId, workerId) VALUES (?, ?)`;
+    if (action === 'clear' || (!action && workerId === null)) {
+        db.run(`DELETE FROM schedule_assignments WHERE slotId = ?`, [slotId], function (err) {
+            if (err) return res.status(500).json({ error: err.message });
+            return res.json({ success: true, slotId });
+        });
+        return;
+    }
 
-    db.run(sql, [slotId, workerId], function (err) {
+    if (!workerId || isNaN(parseInt(workerId))) {
+        return res.status(400).json({ error: 'Se requiere un workerId válido' });
+    }
+
+    if (action === 'replace') {
+        db.run(`DELETE FROM schedule_assignments WHERE slotId = ?`, [slotId], function (err) {
+            if (err) return res.status(500).json({ error: err.message });
+            db.run(`INSERT OR IGNORE INTO schedule_assignments (slotId, cleanerId) VALUES (?, ?)`, [slotId, workerId], function (err) {
+                if (err) return res.status(500).json({ error: err.message });
+                return res.json({ success: true, slotId, workerId });
+            });
+        });
+        return;
+    }
+
+    if (action === 'remove') {
+        db.run(`DELETE FROM schedule_assignments WHERE slotId = ? AND cleanerId = ?`, [slotId, workerId], function (err) {
+            if (err) return res.status(500).json({ error: err.message });
+            return res.json({ success: true, slotId, workerId });
+        });
+        return;
+    }
+
+    // Default 'add'
+    db.run(`INSERT OR IGNORE INTO schedule_assignments (slotId, cleanerId) VALUES (?, ?)`, [slotId, workerId], function (err) {
         if (err) return res.status(500).json({ error: err.message });
         res.json({ success: true, slotId, workerId });
     });

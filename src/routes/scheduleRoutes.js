@@ -12,7 +12,7 @@ router.post('/api/schedule/assign', scheduleController.assignWorker);
 
 // API Pabellones y Áreas
 router.get('/api/pavilions', pavilionsController.getAllPavilions);
-router.get('/api/workers/:workerId/pavilions', pavilionsController.getWorkerPavilions);
-router.post('/api/workers/pavilions/assign', pavilionsController.assignPavilionsToWorker);
+router.get('/api/cleaners/:workerId/pavilions', pavilionsController.getWorkerPavilions);
+router.post('/api/cleaners/pavilions/assign', pavilionsController.assignPavilionsToWorker);
 
 module.exports = router;

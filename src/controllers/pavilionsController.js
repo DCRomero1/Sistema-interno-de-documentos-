@@ -28,8 +28,8 @@ exports.getWorkerPavilions = (req, res) => {
     const sql = `
         SELECT a.* 
         FROM areas a
-        JOIN worker_areas wa ON a.id = wa.area_id
-        WHERE wa.worker_id = ?
+        JOIN cleaner_areas wa ON a.id = wa.area_id
+        WHERE wa.cleaner_id = ?
     `;
     db.all(sql, [workerId], (err, rows) => {
         if (err) return res.status(500).json({ error: err.message });
@@ -52,7 +52,7 @@ exports.assignPavilionsToWorker = (req, res) => {
         db.run('BEGIN TRANSACTION');
 
         // Eliminar asignaciones anteriores
-        db.run(`DELETE FROM worker_areas WHERE worker_id = ?`, [workerId], (err) => {
+        db.run(`DELETE FROM cleaner_areas WHERE cleaner_id = ?`, [workerId], (err) => {
             if (err) {
                 db.run('ROLLBACK');
                 return res.status(500).json({ error: err.message });
@@ -65,7 +65,7 @@ exports.assignPavilionsToWorker = (req, res) => {
             }
 
             // Insertar nuevas asignaciones usando transaction param
-            const stmt = db.prepare(`INSERT INTO worker_areas (worker_id, area_id) VALUES (?, ?)`);
+            const stmt = db.prepare(`INSERT INTO cleaner_areas (cleaner_id, area_id) VALUES (?, ?)`);
             let hasError = false;
 
             areaIds.forEach(aId => {
