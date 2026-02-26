@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     let workers = [];
     let assignments = {};
     let allPavilions = [];
+    let workerColorMap = {}; // Mapa dinámico workerId -> color
 
     // Variables para el flujo del panel
     let currentlyEditingSlotId = null;
@@ -36,13 +37,47 @@ document.addEventListener('DOMContentLoaded', async () => {
             workers = Array.isArray(workersData) ? workersData : (workersData.cleaners || []);
             allPavilions = await pavilionsRes.json();
 
+            // Construir mapa de colores único por trabajador
+            const colorPalette = [
+                '#fef3c7', // Amarillo claro
+                '#fef08a', // Amarillo fuerte
+                '#93c5fd', // Azul claro
+                '#f5d0fe', // Rosa/Lila
+                '#bae6fd', // Celeste
+                '#bef264', // Verde lima
+                '#67e8f9', // Cyan/Turquesa
+                '#fca5a5', // Rojo/Salmón
+                '#fdba74', // Naranja
+                '#c4b5fd', // Violeta/Púrpura
+                '#86efac', // Verde menta
+                '#fda4af', // Rosa fuerte
+                '#a5b4fc', // Índigo claro
+                '#d9f99d', // Lima pálido
+                '#fbcfe8', // Pink pastel
+                '#99f6e4', // Teal claro
+                '#fed7aa', // Melocotón
+                '#e9d5ff', // Lavanda
+                '#a7f3d0', // Esmeralda claro
+                '#fde68a', // Ámbar
+            ];
+            workerColorMap = {};
+            workers.forEach((w, idx) => {
+                workerColorMap[w.id] = colorPalette[idx % colorPalette.length];
+            });
+
             // Preparar la lista visual de selección de trabajadores
             const workerPickerList = document.getElementById('workerPickerList');
             const panelWorkerInput = document.getElementById('panelWorkerSelect');
 
+            if (panelWorkerInput) {
+                panelWorkerInput.innerHTML = '<option value="">-- Seleccione un trabajador --</option>';
+            }
+
+            const cleaningStaff = workers;
+            cleaningStaff.sort((a, b) => a.fullName.localeCompare(b.fullName));
+
             if (workerPickerList) {
                 workerPickerList.innerHTML = '';
-                panelWorkerInput.value = '';
 
                 const avatarColors = [
                     'bg-blue-100 text-blue-700',
@@ -55,10 +90,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     'bg-orange-100 text-orange-700',
                 ];
 
-                // Ahora todos los elementos en 'workers' son personal de limpieza
-                const cleaningStaff = workers;
-
-                cleaningStaff.sort((a, b) => a.fullName.localeCompare(b.fullName)).forEach((w, idx) => {
+                cleaningStaff.forEach((w, idx) => {
                     const names = w.fullName.trim().split(' ');
                     const initials = names.slice(0, 2).map(n => n[0]).join('').toUpperCase();
                     const colorClass = avatarColors[idx % avatarColors.length];
@@ -92,6 +124,16 @@ document.addEventListener('DOMContentLoaded', async () => {
                     });
 
                     workerPickerList.appendChild(card);
+                });
+            }
+
+            // Populating Select Menu directly
+            if (panelWorkerInput) {
+                cleaningStaff.forEach(w => {
+                    const option = document.createElement('option');
+                    option.value = w.id;
+                    option.textContent = w.fullName;
+                    panelWorkerInput.appendChild(option);
                 });
             }
 
@@ -143,9 +185,14 @@ document.addEventListener('DOMContentLoaded', async () => {
             const data = await response.json();
 
             // Limpiar datos estáticos
+            const colorClasses = ['bg-alodia', 'bg-rosario', 'bg-julian', 'bg-luisa', 'bg-nilda', 'bg-david', 'bg-demetrio', 'bg-alfredo', 'bg-gilmer', 'bg-caner'];
             document.querySelectorAll('.slot-worker').forEach(slotEl => {
                 const parentTd = slotEl.closest('td');
                 parentTd.classList.add('editable-cell');
+                // Limpiar color anterior
+                colorClasses.forEach(c => parentTd.classList.remove(c));
+                parentTd.style.backgroundColor = '';
+                parentTd.classList.add('bg-gray-50');
                 let ul = parentTd.querySelector('ul.area-list') || parentTd.querySelector('ul');
                 if (ul) ul.innerHTML = '';
                 slotEl.innerHTML = '<span class="text-gray-400 italic font-normal text-xs">Sin Asignar</span>'; // Empty format
@@ -153,6 +200,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 slotEl.dataset.workers = ''; // Para listas
             });
             assignments = {}; // Reiniciar fallback
+
 
             // Group data by slotId
             const slotData = {};
@@ -167,6 +215,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                 if (slotEl) {
                     slotEl.innerHTML = ''; // Limpiar fallback
                     const parentTd = slotEl.closest('td');
+                    parentTd.classList.remove('bg-gray-50');
+
+                    // Asignar color de fondo según primer trabajador del slot
+                    const firstWorkerId = workersInSlot[0].workerId;
+                    const bgColor = workerColorMap[firstWorkerId] || '#f3f4f6';
+                    parentTd.style.backgroundColor = bgColor;
+
                     let ul = parentTd.querySelector('ul.area-list') || parentTd.querySelector('ul');
                     if (!ul) {
                         ul = document.createElement('ul');
@@ -188,7 +243,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         if (w.areas && w.areas.length > 0) {
                             w.areas.forEach(area => {
                                 const li = document.createElement('li');
-                                li.className = 'text-[0.65rem] text-gray-700 bg-yellow-50 p-1 rounded border border-yellow-100 flex gap-1 items-start leading-tight';
+                                li.className = 'text-[0.65rem] text-gray-700 p-1 rounded flex gap-1 items-start leading-tight';
                                 const shortName = w.fullName.split(' ')[0];
                                 li.innerHTML = `<b class="text-gray-900 shrink-0">${shortName}:</b> <span>${area.name} (${area.description})</span>`;
                                 ul.appendChild(li);
@@ -266,7 +321,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
 
-    function openAssignPanel(element) {
+    async function openAssignPanel(element) {
         currentlyEditingSlotId = element.dataset.slotId;
         currentlyEditingCellEl = element;
 
@@ -320,6 +375,18 @@ document.addEventListener('DOMContentLoaded', async () => {
         renderAssignedWorkerCards(workersInSlot);
 
         fullScreenAssignModal.classList.remove('hidden');
+
+        // Cargar áreas específicas de este turno (slot)
+        try {
+            const slotAreasRes = await fetch(`/api/schedule/slot/${currentlyEditingSlotId}/areas`);
+            const slotAreas = await slotAreasRes.json();
+            slotAreas.forEach(a => {
+                const cb = document.getElementById(`panel-area-${a.id}`);
+                if (cb) cb.checked = true;
+            });
+        } catch (error) {
+            console.error('Error cargando áreas del turno:', error);
+        }
     }
 
     function renderAssignedWorkerCards(workersInSlot) {
@@ -425,14 +492,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
 
             try {
-                // Solo guardar areas para los ya asignados
-                await Promise.all(workerIds.map(wId =>
-                    fetch('/api/cleaners/pavilions/assign', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ workerId: parseInt(wId), pavilionIds: checkedAreas })
-                    })
-                ));
+                // Guardar areas para este slot específico
+                await fetch('/api/schedule/slot/assign-areas', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ slotId: currentlyEditingSlotId, areaIds: checkedAreas })
+                });
                 showToast('\u00c1reas guardadas correctamente en el horario');
                 closeAssignPanel();
                 await loadAssignments();
@@ -454,11 +519,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                     if (!assignRes.ok) throw new Error('Error al asignar trabajador');
                 }
 
-                // 2. Guardar sus areas marcadas
-                const areasRes = await fetch('/api/cleaners/pavilions/assign', {
+                // 2. Guardar areas marcadas para este slot específico
+                const areasRes = await fetch('/api/schedule/slot/assign-areas', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ workerId: parseInt(workerId), pavilionIds: checkedAreas })
+                    body: JSON.stringify({ slotId: currentlyEditingSlotId, areaIds: checkedAreas })
                 });
 
                 if (!areasRes.ok) throw new Error('Error al guardar áreas');
@@ -476,31 +541,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     btnCloseAssignPanel.addEventListener('click', closeAssignPanel);
     btnCancelAssignPanel.addEventListener('click', closeAssignPanel);
 
-    // Boton Guardar del footer (guarda areas)
-    const btnSaveAreaPanel = document.getElementById('btnSaveAreaPanel');
-    if (btnSaveAreaPanel) {
-        btnSaveAreaPanel.addEventListener('click', saveAreasForSlot);
+    // Boton Guardar del footer (guarda areas y turno)
+    if (btnSaveAssignPanel) {
+        btnSaveAssignPanel.addEventListener('click', saveAreasForSlot);
     }
 
-    // Evento al cambiar el trabajador: Lee de BD
+    // Evento al cambiar el trabajador: Ya no pisa los checkboxes de áreas
+    // Las áreas ahora son por turno (slot), no por trabajador
     panelWorkerSelect.addEventListener('change', async (e) => {
-        const workerId = e.target.value;
-        const checkboxes = document.querySelectorAll('.area-checkbox');
-        checkboxes.forEach(cb => cb.checked = false);
-
-        if (!workerId) return;
-
-        try {
-            const res = await fetch(`/api/cleaners/${workerId}/pavilions`);
-            const assignedAreas = await res.json();
-
-            assignedAreas.forEach(a => {
-                const cb = document.getElementById(`panel-area-${a.id}`);
-                if (cb) cb.checked = true;
-            });
-        } catch (error) {
-            console.error('Error fetching worker areas:', error);
-        }
+        // No hacer nada con los checkboxes de áreas al cambiar de trabajador
+        // Las áreas ya se cargaron al abrir el panel para este slot
     });
 
     // Evento de "Liberar Turno" nativo
@@ -581,6 +631,259 @@ document.addEventListener('DOMContentLoaded', async () => {
             timer: 2000
         });
     }
+
+    // --- Funciones para Modal de Personal de Servicio ---
+    window.openCleanersModal = async function () {
+        document.getElementById('cleanersManageModal').classList.remove('hidden');
+        await loadCleanersIntoModal();
+    };
+
+    window.closeCleanersModal = function () {
+        document.getElementById('cleanersManageModal').classList.add('hidden');
+    };
+
+    window.openCleanerAddModal = function () {
+        document.getElementById('cleanerAddForm').reset();
+        document.getElementById('cleanerAddModal').classList.remove('hidden');
+    };
+
+    window.closeCleanerAddModal = function () {
+        document.getElementById('cleanerAddModal').classList.add('hidden');
+    };
+
+    async function loadCleanersIntoModal() {
+        try {
+            const res = await fetch('/api/cleaners');
+            const data = await res.json();
+            const cleaners = Array.isArray(data) ? data : (data.cleaners || []);
+
+            const tbody = document.getElementById('cleanersListBody');
+            tbody.innerHTML = '';
+
+            if (cleaners.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="3" class="p-4 text-center text-gray-500 italic">No hay personal registrado</td></tr>';
+                return;
+            }
+
+            cleaners.forEach(c => {
+                const tr = document.createElement('tr');
+                tr.className = 'border-b hover:bg-gray-50';
+                tr.innerHTML = `
+                    <td class="p-3">${c.dni || '---'}</td>
+                    <td class="p-3 font-bold text-gray-800">${c.fullName}</td>
+                    <td class="p-3 text-center">
+                        <button onclick="substituteCleanerModal(${c.id}, '${c.fullName.replace(/'/g, "\\'")}')" class="text-blue-500 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 p-2 rounded transition mr-2" title="Sustituir trabajador (Transferir turnos)">
+                            <i class="fa-solid fa-arrows-rotate"></i>
+                        </button>
+                        <button onclick="deleteCleaner(${c.id})" class="text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 p-2 rounded transition" title="Eliminar trabajador">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        } catch (error) {
+            console.error('Error loading cleaners for modal:', error);
+            tbody.innerHTML = '<tr><td colspan="3" class="p-4 text-center text-red-500">Error al cargar datos</td></tr>';
+        }
+    }
+
+    window.substituteCleanerModal = async function (id, name) {
+        try {
+            const res = await fetch('/api/cleaners');
+            const data = await res.json();
+            const cleaners = Array.isArray(data) ? data : (data.cleaners || []);
+
+            let optionsHtml = '<option value="">-- Seleccione el reemplazo --</option>';
+            cleaners.forEach(c => {
+                if (c.id !== id) {
+                    optionsHtml += `<option value="${c.id}">${c.fullName}</option>`;
+                }
+            });
+
+            const { value: newCleanerId, isConfirmed } = await Swal.fire({
+                title: 'Sustituir Trabajador',
+                html: `
+                    <p class="text-sm text-gray-600 mb-4 text-center">Vas a transferir todos los turnos y áreas de <b>${name}</b> a otro trabajador.</p>
+                    <select id="swalSubstituteSelect" class="swal2-select" style="display: flex; width: 100%;">
+                        ${optionsHtml}
+                    </select>
+                `,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: '<i class="fa-solid fa-arrows-rotate"></i> Sí, Sustituir',
+                cancelButtonText: 'Cancelar',
+                preConfirm: () => {
+                    const select = document.getElementById('swalSubstituteSelect');
+                    if (!select.value) {
+                        Swal.showValidationMessage('Debes seleccionar un trabajador.');
+                    }
+                    return select.value;
+                }
+            });
+
+            if (isConfirmed && newCleanerId) {
+                const response = await fetch(`/api/cleaners/${id}/substitute`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ newCleanerId })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    showToast('Sustitución completada');
+                    closeCleanersModal();
+                    await loadInitialData();
+                    await loadAssignments();
+                } else {
+                    Swal.fire('Error', result.error || 'No se pudo hacer la sustitución.', 'error');
+                }
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            Swal.fire('Error', 'Error de conexión', 'error');
+        }
+    };
+
+    window.deleteCleaner = async function (id) {
+        const confirm = await Swal.fire({
+            title: '¿Estás seguro?',
+            text: "No podrás revertir esto. Se eliminará al trabajador.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+        });
+
+        if (confirm.isConfirmed) {
+            try {
+                const response = await fetch(`/api/cleaners/${id}`, { method: 'DELETE' });
+                if (response.ok) {
+                    showToast('Trabajador eliminado');
+                    await loadCleanersIntoModal();
+                    await loadInitialData(); // Refrescar lista principal
+                } else {
+                    Swal.fire('Error', 'No se pudo eliminar al trabajador.', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                Swal.fire('Error', 'Hubo un error en la solicitud.', 'error');
+            }
+        }
+    };
+
+    document.getElementById('cleanerAddForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const dni = document.getElementById('addCleanerDni').value;
+        const fullName = document.getElementById('addCleanerName').value;
+
+        try {
+            const response = await fetch('/api/cleaners', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ dni, fullName, position: 'Personal de Limpieza' })
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                showToast('Trabajador registrado exitosamente');
+                closeCleanerAddModal();
+                await loadCleanersIntoModal(); // Refrescar la tabla del modal
+                await loadInitialData(); // Refrescar lista de Horarios principal si está referenciado
+            } else {
+                Swal.fire('Error', result.error || 'No se pudo registrar', 'error');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            Swal.fire('Error', 'Error de conexión', 'error');
+        }
+    });
+
+    // --- Modal Reporte de Cobertura ---
+    window.openCoverageModal = async function () {
+        document.getElementById('coverageModal').classList.remove('hidden');
+        const container = document.getElementById('coverageReportContent');
+        container.innerHTML = '<div class="col-span-full text-center text-gray-500 py-10"><i class="fa-solid fa-spinner fa-spin text-3xl mb-3"></i><p>Cargando información de cobertura...</p></div>';
+
+        try {
+            const res = await fetch('/api/schedule/coverage-report');
+            const data = await res.json();
+
+            // Agrupar por Pabellón
+            const pavilionsMap = {};
+            data.forEach(row => {
+                if (!pavilionsMap[row.pavilion_name]) {
+                    pavilionsMap[row.pavilion_name] = {};
+                }
+                if (!pavilionsMap[row.pavilion_name][row.area_name]) {
+                    pavilionsMap[row.pavilion_name][row.area_name] = [];
+                }
+
+                if (row.cleaner_name && row.slotId) {
+                    pavilionsMap[row.pavilion_name][row.area_name].push({
+                        cleaner: row.cleaner_name,
+                        slot: row.slotId
+                    });
+                }
+            });
+
+            container.innerHTML = '';
+
+            if (Object.keys(pavilionsMap).length === 0) {
+                container.innerHTML = '<div class="col-span-full text-center text-gray-500 py-10">No hay áreas configuradas en el sistema.</div>';
+                return;
+            }
+
+            // Renderizar
+            for (const [pavName, areas] of Object.entries(pavilionsMap)) {
+                let html = `
+                    <div class="border border-gray-200 rounded-lg shadow-sm bg-white overflow-hidden flex flex-col h-full">
+                        <div class="bg-gray-100 px-4 py-3 border-b font-bold text-gray-800 flex justify-between items-center">
+                            <span><i class="fa-solid fa-building text-gray-500 mr-2"></i> ${pavName}</span>
+                        </div>
+                        <ul class="divide-y divide-gray-100 flex-1 overflow-y-auto max-h-80">
+                `;
+
+                for (const [areaName, assignments] of Object.entries(areas)) {
+                    if (assignments.length > 0) {
+                        html += `
+                            <li class="p-3 hover:bg-gray-50 flex flex-col gap-1">
+                                <span class="text-sm font-semibold text-gray-700">${areaName}</span>
+                                <div class="flex flex-wrap gap-1 mt-1">
+                        `;
+                        assignments.forEach(a => {
+                            html += `<span class="inline-block bg-green-100 text-green-800 text-[0.65rem] px-2 py-0.5 rounded border border-green-200" title="Turno: ${a.slot}"><i class="fa-solid fa-check-circle mr-1"></i>${a.cleaner.split(' ')[0]} (${a.slot})</span>`;
+                        });
+                        html += `</div></li>`;
+                    } else {
+                        html += `
+                            <li class="p-3 bg-red-50 hover:bg-red-100 flex flex-col gap-1 border-l-4 border-red-500">
+                                <span class="text-sm font-semibold text-red-700">${areaName}</span>
+                                <span class="inline-block text-red-600 text-xs font-bold mt-1"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Sin Asignar / Pendiente</span>
+                            </li>
+                        `;
+                    }
+                }
+
+                html += `</ul></div>`;
+                container.innerHTML += html;
+            }
+
+        } catch (error) {
+            console.error('Error fetching coverage', error);
+            container.innerHTML = '<div class="col-span-full text-center text-red-500 py-10"><i class="fa-solid fa-triangle-exclamation text-3xl mb-3"></i><p>Error al cargar el reporte de cobertura.</p></div>';
+        }
+    };
+
+    window.closeCoverageModal = function () {
+        document.getElementById('coverageModal').classList.add('hidden');
+    };
 
     // Inicialización
     await loadInitialData();

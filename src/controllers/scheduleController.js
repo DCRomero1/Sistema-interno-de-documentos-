@@ -14,9 +14,9 @@ exports.getAssignments = (req, res) => {
             GROUP_CONCAT(p.name, '||') as pavilion_names,
             GROUP_CONCAT(a.name, '||') as area_names
         FROM schedule_assignments sa
-        LEFT JOIN cleaning_staff w ON sa.cleanerId = w.id
-        LEFT JOIN cleaner_areas wa ON sa.cleanerId = wa.cleaner_id
-        LEFT JOIN areas a ON wa.area_id = a.id
+        INNER JOIN cleaning_staff w ON sa.cleanerId = w.id
+        LEFT JOIN slot_areas sla ON sa.slotId = sla.slot_id
+        LEFT JOIN areas a ON sla.area_id = a.id
         LEFT JOIN pavilions p ON a.pavilion_id = p.id
         GROUP BY sa.slotId, sa.cleanerId
     `;
@@ -90,5 +90,23 @@ exports.assignWorker = (req, res) => {
     });
 };
 
+exports.getCoverageReport = (req, res) => {
+    const sql = `
+        SELECT 
+            p.id as pavilion_id, p.name as pavilion_name,
+            a.id as area_id, a.name as area_name,
+            sa.slotId,
+            c.id as cleaner_id, c.fullName as cleaner_name
+        FROM pavilions p
+        JOIN areas a ON p.id = a.pavilion_id
+        LEFT JOIN slot_areas sla ON a.id = sla.area_id
+        LEFT JOIN schedule_assignments sa ON sla.slot_id = sa.slotId
+        LEFT JOIN cleaning_staff c ON sa.cleanerId = c.id
+        ORDER BY p.name ASC, a.name ASC, sa.slotId ASC
+    `;
 
-
+    db.all(sql, [], (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(rows);
+    });
+};

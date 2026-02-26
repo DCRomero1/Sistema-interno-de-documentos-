@@ -89,3 +89,69 @@ exports.assignPavilionsToWorker = (req, res) => {
         });
     });
 };
+
+// Obtener áreas asignadas a un turno (Slot) específico
+exports.getSlotAreas = (req, res) => {
+    const { slotId } = req.params;
+    const sql = `
+        SELECT a.* 
+        FROM areas a
+        JOIN slot_areas sa ON a.id = sa.area_id
+        WHERE sa.slot_id = ?
+    `;
+    db.all(sql, [slotId], (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(rows);
+    });
+};
+
+// Asignar áreas a un turno (Slot) específico
+exports.assignAreasToSlot = (req, res) => {
+    const { slotId, areaIds } = req.body;
+
+    if (!slotId || !Array.isArray(areaIds)) {
+        return res.status(400).json({ error: 'Faltan datos requeridos o formato inválido.' });
+    }
+
+    db.serialize(() => {
+        db.run('BEGIN TRANSACTION');
+
+        // Eliminar asignaciones anteriores de este slot
+        db.run('DELETE FROM slot_areas WHERE slot_id = ?', [slotId], (err) => {
+            if (err) {
+                console.error('Delete slot areas error:', err);
+                db.run('ROLLBACK');
+                return res.status(500).json({ error: err.message });
+            }
+
+            // Si no hay áreas seleccionadas, terminar (se limpió el slot)
+            if (areaIds.length === 0) {
+                db.run('COMMIT');
+                return res.json({ success: true, message: 'Áreas del turno limpiadas.' });
+            }
+
+            // Insertar nuevas asignaciones para el slot
+            const stmt = db.prepare('INSERT INTO slot_areas (slot_id, area_id) VALUES (?, ?)');
+            let hasError = false;
+
+            areaIds.forEach(aId => {
+                stmt.run([slotId, aId], (err) => {
+                    if (err) {
+                        hasError = true;
+                        console.error('Insert slot area error:', err);
+                    }
+                });
+            });
+
+            stmt.finalize((err) => {
+                if (hasError || err) {
+                    db.run('ROLLBACK');
+                    return res.status(500).json({ error: 'Error al insertar asignaciones en el turno.' });
+                } else {
+                    db.run('COMMIT');
+                    res.json({ success: true, message: 'Áreas asignadas al turno correctamente.' });
+                }
+            });
+        });
+    });
+};

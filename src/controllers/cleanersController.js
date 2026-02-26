@@ -1,9 +1,7 @@
 const db = require('../database');
 const path = require('path');
 
-exports.showCleanersPage = (req, res) => {
-    res.sendFile(path.join(__dirname, '../../views/cleaners.html'));
-};
+
 
 exports.getAllCleaners = (req, res) => {
     db.all('SELECT * FROM cleaning_staff ORDER BY fullName', [], (err, rows) => {
@@ -66,8 +64,33 @@ exports.updateCleaner = (req, res) => {
 
 exports.deleteCleaner = (req, res) => {
     const { id } = req.params;
-    db.run('DELETE FROM cleaning_staff WHERE id = ?', id, function (err) {
-        if (err) return res.status(500).json({ error: err.message });
-        res.json({ success: true, changes: this.changes });
+    db.run('DELETE FROM schedule_assignments WHERE cleanerId = ?', id, function (err) {
+        if (err) console.error('Error al limpiar los turnos del trabajador:', err);
+        db.run('DELETE FROM cleaning_staff WHERE id = ?', id, function (err) {
+            if (err) return res.status(500).json({ error: err.message });
+            res.json({ success: true, changes: this.changes });
+        });
     });
+};
+
+exports.substituteCleaner = (req, res) => {
+    const oldCleanerId = req.params.id;
+    const { newCleanerId } = req.body;
+
+    if (!newCleanerId) {
+        return res.status(400).json({ error: 'Falta el ID del nuevo trabajador.' });
+    }
+
+    // Las áreas ahora pertenecen al slot (slot_areas), no al trabajador.
+    // Solo necesitamos transferir las asignaciones de horario.
+    db.run('UPDATE schedule_assignments SET cleanerId = ? WHERE cleanerId = ?',
+        [newCleanerId, oldCleanerId],
+        function (err) {
+            if (err) {
+                console.error('Error transfiriendo turnos:', err);
+                return res.status(500).json({ error: 'Error transfiriendo turnos.' });
+            }
+            res.json({ success: true, message: 'Sustitución completada con éxito.' });
+        }
+    );
 };

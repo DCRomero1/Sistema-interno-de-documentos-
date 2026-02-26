@@ -557,8 +557,25 @@
 
     <script>
         const urlParams = new URLSearchParams(window.location.search);
+        const errorMsg = document.getElementById('errorMsg');
+
         if (urlParams.has('error')) {
-            document.getElementById('errorMsg').style.display = 'flex';
+            const errorType = urlParams.get('error');
+            const attempts = urlParams.get('attempts');
+
+            errorMsg.style.display = 'flex';
+
+            if (errorType === 'limit') {
+                errorMsg.style.backgroundColor = 'rgba(239, 68, 68, 0.3)';
+                errorMsg.innerHTML = '<i class="fa-solid fa-clock-rotate-left"></i> Demasiados intentos. Acceso bloqueado por 1 minuto.';
+            } else if (attempts !== null) {
+                const remaining = parseInt(attempts);
+                if (remaining > 0) {
+                    errorMsg.innerHTML = `<i class="fa-solid fa-circle-exclamation"></i> Credenciales incorrectas. Te quedan ${remaining} intentos.`;
+                } else {
+                    errorMsg.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> Último intento fallido. El próximo error bloqueará el acceso.`;
+                }
+            }
         }
 
         // Limpiar el flag de cumpleaños para que se muestre en la nueva sesión

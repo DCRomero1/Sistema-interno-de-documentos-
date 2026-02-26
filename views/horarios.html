@@ -156,6 +156,78 @@
         .simple-view td br {
             display: none;
         }
+
+        /* Print Styles: Only show the schedule table */
+        @media print {
+            @page {
+                size: landscape;
+                margin: 5mm;
+            }
+
+            /* Hide everything not needed */
+            #sidebar,
+            .top-bar,
+            .schedule-area>.flex.flex-col.gap-4.mb-6,
+            #fullScreenAssignModal,
+            #cleanersManageModal,
+            #cleanerAddModal {
+                display: none !important;
+            }
+
+            /* Remove all overflow/height constraints so the full table prints */
+            body {
+                overflow: visible !important;
+                height: auto !important;
+                display: block !important;
+                background: white !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            .main-wrapper {
+                margin-left: 0 !important;
+                padding: 0 !important;
+                width: 100% !important;
+                height: auto !important;
+                overflow: visible !important;
+                display: block !important;
+            }
+
+            .schedule-area,
+            .schedule-area>div {
+                padding: 0 !important;
+                margin: 0 !important;
+                overflow: visible !important;
+                height: auto !important;
+            }
+
+            /* Make table fit the page */
+            .schedule-table {
+                width: 100% !important;
+                font-size: 0.55rem !important;
+                page-break-inside: auto;
+            }
+
+            .schedule-table tr {
+                page-break-inside: avoid;
+            }
+
+            /* Remove shadows and rounded corners for clean print */
+            .bg-white.shadow-2xl,
+            [style*="border-radius"] {
+                box-shadow: none !important;
+                border-radius: 0 !important;
+            }
+
+            /* Hide scrollbars */
+            *::-webkit-scrollbar {
+                display: none !important;
+            }
+
+            * {
+                scrollbar-width: none !important;
+            }
+        }
     </style>
 </head>
 
@@ -286,22 +358,40 @@
                             <!-- Cuerpo del Panel -->
                             <div class="flex-1 overflow-y-auto p-6 bg-gray-50 flex flex-col md:flex-row gap-6">
                                 <!-- Columna Izquierda: Trabajador -->
-                                <div
-                                    class="w-full md:w-1/3 bg-white p-5 rounded-lg shadow-sm border border-gray-200 shrink-0 h-fit">
-                                    <h3 class="text-lg font-bold text-gray-800 mb-4 border-b pb-2">1. Personal
-                                        Responsable</h3>
-                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="panelWorkerSelect">
-                                        Seleccionar Trabajador
-                                    </label>
-                                    <select id="panelWorkerSelect"
-                                        class="shadow border border-gray-300 rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base">
-                                        <option value="">-- Seleccione un trabajador --</option>
-                                    </select>
-                                    <p class="text-sm text-gray-500 mt-3 text-justify">
-                                        <i class="fa-solid fa-circle-info text-blue-500"></i> Al seleccionar un
-                                        trabajador, se cargarán los pabellones que actualmente tiene asignados en
-                                        memoria.
-                                    </p>
+                                <div class="w-full md:w-1/3 flex flex-col gap-4 shrink-0 h-fit">
+
+                                    <!-- Trabajadores Asignados Actualmente -->
+                                    <div class="bg-white p-5 rounded-lg shadow-sm border border-gray-200">
+                                        <h3 class="text-lg font-bold text-gray-800 mb-3 border-b pb-2">Personal Asignado
+                                        </h3>
+                                        <div id="panelAssignedWorkers" class="flex flex-col gap-2">
+                                            <!-- Tarjetas de trabajadores asignados (Renderizadas por JS) -->
+                                        </div>
+                                    </div>
+
+                                    <!-- Seleccionar Nuevo Trabajador -->
+                                    <div class="bg-white p-5 rounded-lg shadow-sm border border-gray-200">
+                                        <h3 class="text-lg font-bold text-gray-800 mb-4 border-b pb-2">Asignar Nuevo
+                                            Responsable</h3>
+                                        <label class="block text-gray-700 text-sm font-bold mb-2"
+                                            for="panelWorkerSelect">
+                                            Seleccionar Trabajador
+                                        </label>
+                                        <select id="panelWorkerSelect"
+                                            class="shadow border border-gray-300 rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base mb-3">
+                                            <option value="">-- Seleccione un trabajador --</option>
+                                        </select>
+                                        <div class="flex gap-2">
+                                            <button id="btnAddAssignPanel"
+                                                class="flex-1 bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition text-[0.8rem] font-bold flex items-center justify-center gap-1 shadow-sm">
+                                                <i class="fa-solid fa-user-plus"></i> Añadir
+                                            </button>
+                                            <button id="btnReplaceAssignPanel"
+                                                class="flex-1 bg-orange-500 text-white py-2 rounded hover:bg-orange-600 transition text-[0.8rem] font-bold flex items-center justify-center gap-1 shadow-sm px-1">
+                                                <i class="fa-solid fa-user-group"></i> Reemplazar
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <!-- Columna Derecha: Pabellones -->
@@ -312,10 +402,10 @@
                                         <span>2. Pabellones y Áreas de Limpieza</span>
                                         <span
                                             class="text-xs font-normal text-gray-500 bg-gray-100 px-2 py-1 rounded">Configuración
-                                            global del trabajador</span>
+                                            por turno</span>
                                     </h3>
-                                    <p class="text-sm text-gray-600 mb-4">Márque las casillas de los pabellones que este
-                                        trabajador es responsable de limpiar en la institución.</p>
+                                    <p class="text-sm text-gray-600 mb-4">Márque las casillas de los pabellones que el o
+                                        los responsables deberán limpiar durante este turno.</p>
 
                                     <div id="panelPavilionsContainer"
                                         class="grid grid-cols-1 lg:grid-cols-2 gap-3 overflow-y-auto flex-1 pr-2 pb-2">
@@ -325,15 +415,22 @@
                             </div>
 
                             <!-- Pie del Panel -->
-                            <div class="bg-gray-100 px-6 py-4 flex justify-end gap-3 shrink-0 border-t border-gray-200">
-                                <button id="btnCancelAssignPanel"
-                                    class="px-6 py-2.5 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium transition shadow-sm">
-                                    Cancelar
+                            <div
+                                class="bg-gray-100 px-6 py-4 flex flex-col sm:flex-row justify-between gap-3 shrink-0 border-t border-gray-200 items-center">
+                                <button id="btnClearAssignPanel"
+                                    class="w-full sm:w-auto px-4 py-2.5 bg-red-100 text-red-700 border border-red-200 rounded-lg hover:bg-red-200 font-bold transition shadow-sm flex items-center justify-center gap-2">
+                                    <i class="fa-solid fa-trash-can"></i> Liberar Turno Completo
                                 </button>
-                                <button id="btnSaveAssignPanel"
-                                    class="px-6 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 font-bold transition shadow-md flex items-center gap-2">
-                                    <i class="fa-solid fa-floppy-disk"></i> Guardar Asignación Temporal
-                                </button>
+                                <div class="flex gap-3 w-full sm:w-auto">
+                                    <button id="btnCancelAssignPanel"
+                                        class="px-6 py-2.5 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium transition shadow-sm">
+                                        Cerrar
+                                    </button>
+                                    <button id="btnSaveAssignPanel"
+                                        class="px-6 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 font-bold transition shadow-md flex items-center gap-2">
+                                        <i class="fa-solid fa-check"></i> Guardar Áreas
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -345,6 +442,14 @@
                                 <i class="fa-solid fa-clock text-blue-600"></i> Gestión de Horarios
                             </h3>
                             <div class="flex gap-2">
+                                <button onclick="openCoverageModal()"
+                                    class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition flex items-center gap-2 shadow-sm">
+                                    <i class="fa-solid fa-list-check"></i> <span>Ver Cobertura</span>
+                                </button>
+                                <button onclick="openCleanersModal()"
+                                    class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition flex items-center gap-2 shadow-sm">
+                                    <i class="fa-solid fa-users"></i> <span>Vista Personal de Servicio</span>
+                                </button>
                                 <button id="btnSimpleView"
                                     class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition flex items-center gap-2">
                                     <i class="fa-solid fa-table-cells"></i> <span>Vista Turnos</span>
@@ -367,7 +472,7 @@
                         <!-- Header Section -->
                         <header class="bg-[#2d3748] text-yellow-400 p-4 text-center border-b-4 border-yellow-500">
                             <h1 class="text-xl font-bold uppercase tracking-widest">
-                                ROL DE LIMPIEZA DEL AÑO ACADÉMICO 2025 DEL IES FCO. DE PAULA GONZALES VIGIL
+                                ROL DE LIMPIEZA DEL AÑO ACADÉMICO 2026 DEL IES FCO. DE PAULA GONZALES VIGIL
                             </h1>
                         </header>
 
@@ -803,6 +908,113 @@
 
                 </div>
         </main>
+    </div>
+
+    <!-- Modal for Managing Cleaners -->
+    <div id="cleanersManageModal"
+        class="hidden fixed inset-0 bg-gray-900 bg-opacity-75 overflow-y-auto h-full w-full flex justify-center items-center"
+        style="z-index: 100;">
+        <div
+            class="relative bg-white w-[90vw] md:w-[800px] h-[80vh] rounded-lg shadow-2xl flex flex-col overflow-hidden">
+            <div class="bg-blue-800 text-white px-6 py-4 flex justify-between items-center shrink-0">
+                <h2 class="text-2xl font-bold flex items-center gap-2">
+                    <i class="fa-solid fa-users"></i> Gestión de Personal de Servicio
+                </h2>
+                <button onclick="closeCleanersModal()" class="text-white hover:text-red-300 transition text-2xl">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="p-6 bg-gray-50 flex justify-between items-center border-b border-gray-200">
+                <p class="text-gray-600">Personal de limpieza registrado en el sistema.</p>
+                <button onclick="openCleanerAddModal()"
+                    class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-bold transition flex items-center gap-2 shadow-sm">
+                    <i class="fa-solid fa-plus"></i> Nuevo Trabajador
+                </button>
+            </div>
+            <div class="flex-1 overflow-y-auto p-6 bg-white">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-gray-100 text-gray-700 text-sm">
+                            <th class="p-3 border-b">ID / DNI</th>
+                            <th class="p-3 border-b">Nombre Completo</th>
+                            <th class="p-3 border-b text-center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cleanersListBody" class="text-sm">
+                        <!-- Cargado por JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Coverage Report -->
+    <div id="coverageModal"
+        class="hidden fixed inset-0 bg-gray-900 bg-opacity-75 overflow-y-auto h-full w-full flex justify-center items-center"
+        style="z-index: 100;">
+        <div
+            class="relative bg-white w-[95vw] md:w-[900px] h-[85vh] rounded-lg shadow-2xl flex flex-col overflow-hidden">
+            <div class="bg-orange-600 text-white px-6 py-4 flex justify-between items-center shrink-0">
+                <h2 class="text-2xl font-bold flex items-center gap-2">
+                    <i class="fa-solid fa-list-check"></i> Reporte de Cobertura de Áreas
+                </h2>
+                <button onclick="closeCoverageModal()" class="text-white hover:text-red-200 transition text-2xl">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="p-6 bg-gray-50 flex justify-between items-center border-b border-gray-200">
+                <p class="text-gray-600">Revisa qué áreas están siendo atendidas y detecta zonas sin cobertura.</p>
+                <div class="flex gap-4">
+                    <span class="flex items-center gap-2 text-sm text-gray-600">
+                        <div class="w-3 h-3 rounded-full bg-green-500"></div> Cubierto
+                    </span>
+                    <span class="flex items-center gap-2 text-sm text-gray-600">
+                        <div class="w-3 h-3 rounded-full bg-red-500"></div> Sin Asignar
+                    </span>
+                </div>
+            </div>
+            <div class="flex-1 overflow-y-auto p-6 bg-white">
+                <div id="coverageReportContent" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Dynamic Pavilions Here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Adding New Cleaner -->
+    <div id="cleanerAddModal"
+        class="hidden fixed inset-0 bg-gray-900 bg-opacity-80 overflow-y-auto h-full w-full flex justify-center items-center"
+        style="z-index: 105;">
+        <div class="relative bg-white w-[90vw] md:w-[500px] rounded-lg shadow-2xl flex flex-col overflow-hidden">
+            <div class="bg-green-700 text-white px-6 py-4 flex justify-between items-center shrink-0">
+                <h2 class="text-xl font-bold flex items-center gap-2">
+                    <i class="fa-solid fa-user-plus"></i> Registrar Trabajador
+                </h2>
+                <button onclick="closeCleanerAddModal()" class="text-white hover:text-red-300 transition text-2xl">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <form id="cleanerAddForm" class="p-6 flex flex-col gap-4">
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-1">DNI <span
+                            class="text-red-500">*</span></label>
+                    <input type="text" id="addCleanerDni" class="w-full border border-gray-300 rounded p-2"
+                        placeholder="8 dígitos" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-1">Nombre Completo <span
+                            class="text-red-500">*</span></label>
+                    <input type="text" id="addCleanerName" class="w-full border border-gray-300 rounded p-2 uppercase"
+                        placeholder="Ej. JUAN PEREZ" required>
+                </div>
+                <div class="flex justify-end gap-2 mt-4">
+                    <button type="button" onclick="closeCleanerAddModal()"
+                        class="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 font-bold">Cancelar</button>
+                    <button type="submit"
+                        class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 font-bold">Guardar</button>
+                </div>
+            </form>
+        </div>
     </div>
 
     <!-- Scripts -->

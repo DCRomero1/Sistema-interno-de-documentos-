@@ -20,8 +20,12 @@ exports.login = (req, res) => {
             console.error(err);
             return res.redirect('/login?error=1');
         }
+
+        const remaining = req.rateLimit ? req.rateLimit.remaining : null;
+        const attemptsQuery = remaining !== null ? `&attempts=${remaining}` : '';
+
         if (!user) {
-            return res.redirect('/login?error=1');
+            return res.redirect(`/login?error=1${attemptsQuery}`);
         }
 
         // Comparar contraseñas
@@ -34,7 +38,7 @@ exports.login = (req, res) => {
                 };
                 res.redirect('/');
             } else {
-                res.redirect('/login?error=1');
+                res.redirect(`/login?error=1${attemptsQuery}`);
             }
         });
     });
@@ -65,10 +69,11 @@ exports.checkAuth = (req, res) => {
 // Recuperación de contraseña (Master Key)
 exports.recoverPassword = (req, res) => {
     const { masterKey, newPassword } = req.body;
-    const MASTER_KEY = process.env.MASTER_KEY || 'vigil2026';
+    // La MASTER_KEY debe estar definida en el archivo .env para mayor seguridad.
+    const MASTER_KEY = process.env.MASTER_KEY;
 
-    if (masterKey !== MASTER_KEY) {
-        return res.status(401).json({ success: false, error: 'Clave maestra incorrecta' });
+    if (!MASTER_KEY || masterKey !== MASTER_KEY) {
+        return res.status(401).json({ success: false, error: 'Acceso denegado: Clave maestra no configurada o incorrecta' });
     }
 
     if (!newPassword) {

@@ -1,1 +1,0 @@
-const sqlite3 = require('sqlite3').verbose(); const db = new sqlite3.Database('./database.sqlite'); db.all('SELECT sa.slotId, sa.workerId FROM schedule_assignments sa', [], (err, rows) => { if(err) console.error(err); else console.log(rows); });

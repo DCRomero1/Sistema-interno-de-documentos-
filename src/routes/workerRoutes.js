@@ -10,4 +10,7 @@ router.get('/api/workers/birthdays', isAuthenticated, workerController.getUpcomi
 router.put('/api/workers/:id', isAuthenticated, workerController.updateWorker);
 router.delete('/api/workers/:id', isAuthenticated, workerController.deleteWorker);
 
+
+
+
 module.exports = router;

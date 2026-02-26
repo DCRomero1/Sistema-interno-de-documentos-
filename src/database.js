@@ -184,7 +184,7 @@ function initializeTables() {
         if (err) console.error('Error creating areas table:', err);
     });
 
-    // Tabla de Asignaciones de Áreas a Personal de Limpieza
+    // Tabla de Asignaciones de Áreas a Personal de Limpieza (Legacy - Global)
     db.run(`CREATE TABLE IF NOT EXISTS cleaner_areas (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         cleaner_id INTEGER,
@@ -195,6 +195,18 @@ function initializeTables() {
     )`, (err) => {
         if (err) console.error('Error creating cleaner_areas table:', err);
         else seedCleaners(); // Seed initial cleaners after creating tables
+    });
+
+    // Nueva Tabla de Asignaciones de Áreas por Turno (Slot-Specific)
+    db.run(`CREATE TABLE IF NOT EXISTS slot_areas (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        slot_id TEXT NOT NULL,
+        area_id INTEGER NOT NULL,
+        FOREIGN KEY(slot_id) REFERENCES schedule_assignments(slotId) ON DELETE CASCADE,
+        FOREIGN KEY(area_id) REFERENCES areas(id),
+        UNIQUE(slot_id, area_id)
+    )`, (err) => {
+        if (err) console.error('Error creating slot_areas table:', err);
     });
 }
 
@@ -211,7 +223,7 @@ function seedCleaners() {
             initialCleaners.forEach((name, i) => {
                 const dni = '8000000' + i;
                 db.run(
-                    `INSERT OR IGNORE INTO cleaning_staff (fullName, dni, position) VALUES (?, ?, ?)`,
+                    `INSERT OR IGNORE INTO cleaning_staff(fullName, dni, position) VALUES(?, ?, ?)`,
                     [name, dni, 'Personal de Limpieza'],
                     (err) => {
                         if (err) console.error('Error seeding cleaner:', err);
@@ -228,17 +240,120 @@ function populatePavilions() {
         if (err) return console.error('Error checking pavilions:', err);
         if (row.count === 0) {
             const initialPavilions = [
-                { name: 'Pabellón A', areas: ['Ingreso principal', 'Calidad', 'Secretaría Académica', 'Dirección General', 'Tesorería', 'RH', 'Patrimonio', 'Pasadizo de 1° Piso', 'Pasadizo de 2° Piso'] },
-                { name: 'Pabellón B', areas: ['Auditorio General'] },
-                { name: 'Pabellón C', areas: ['Depósitos', 'Aulas pedagógicas', 'Jefatura de Contabilidad', 'Pasadizos', 'SSHH'] },
-                { name: 'Pabellón D', areas: ['Tópico', 'Biblioteca', 'Psicología', 'Jefatura Producción', 'Aulas Producción'] },
-                { name: 'Pabellón E', areas: ['Aulas 1° piso APETI', 'Aulas 3° piso APETI', 'Laboratorios APETI', 'Jefatura APETI'] },
-                { name: 'Pabellón F', areas: ['Aulas Const. Civil', 'Jefatura Const. Civil', 'Laboratorio de Suelos', 'Cancha de básquet (mitad)'] },
-                { name: 'Pabellón G', areas: ['Oficinas Secretariado', 'Aulas Secretariado'] },
-                { name: 'Pabellones H, J, N', areas: ['Talleres Electrónica', 'Jefaturas Electrónica', 'Laboratorios Electrónica', 'Canal 45'] },
-                { name: 'Pabellón K', areas: ['Taller Máquinas-Herramientas', 'Soldadura', 'Control Calidad', 'Jefatura MP', 'Aulas MP', 'Salón CAD/CAM'] },
-                { name: 'Pabellón L', areas: ['Jefatura Automotriz', 'Laboratorios Automotriz', 'Taller de motores', 'Patio maniobras'] },
-                { name: 'Áreas Comunes', areas: ['Mantenimiento de jardines', 'Terrazas', 'Fachada principal', 'Pasadizos generales', 'SSHH Generales', 'Patio Bandera', 'Patronato'] }
+                {
+                    name: 'Pabellón A: Administración (1° y 2° Piso)',
+                    areas: [
+                        'Ingreso principal del Instituto',
+                        'Calidad (A-001)',
+                        'Secretaría Académica (A-101, A-102, A-105, A-106)',
+                        'Dirección General (A-201)',
+                        'Secretaría de Dirección (A-202)',
+                        'Tesorería - Caja (A-116)',
+                        'Administración (A-110)',
+                        'Recursos Humanos (A-112)',
+                        'Servicios Higiénicos (Mujeres / Varones)',
+                        'Jefatura de Formación Continua e Investigación',
+                        'Patrimonio y Almacén (A-113)',
+                        'Jefatura de Unidad Académica y su Secretaría'
+                    ]
+                },
+                {
+                    name: 'Pabellón B: Auditoría',
+                    areas: ['Auditorio General']
+                },
+                {
+                    name: 'Pabellón C: Contabilidad',
+                    areas: [
+                        'Depósitos (C-101, C-102)',
+                        'Aulas pedagógicas (C-103 en adelante)',
+                        'Jefatura de Contabilidad',
+                        'Pasadizos de los tres niveles y escaleras',
+                        'Servicios Higiénicos'
+                    ]
+                },
+                {
+                    name: 'Pabellón D: Producción Agropecuaria / Tópico',
+                    areas: [
+                        'Tópico (D-101)',
+                        'Biblioteca',
+                        'Psicología',
+                        'Jefatura de Producción Agropecuaria',
+                        'Aulas del pabellón y pasadizos'
+                    ]
+                },
+                {
+                    name: 'Pabellón E: Arquitectura de Plataformas y TI (APETI)',
+                    areas: [
+                        'Aulas del primer piso',
+                        'Aulas del tercer piso',
+                        'Laboratorios de Cómputo (incluyendo Laboratorio PM)',
+                        'Jefatura de Carrera',
+                        'Pasadizos de los tres niveles'
+                    ]
+                },
+                {
+                    name: 'Pabellón F: Construcción Civil',
+                    areas: [
+                        'Aulas pedagógicas (F-101, F-102, F-103)',
+                        'Jefatura de Construcción Civil',
+                        'Laboratorio de Suelos',
+                        'Pasadizos y escaleras',
+                        'Mitad de la cancha de básquet frontera a CC'
+                    ]
+                },
+                {
+                    name: 'Pabellón G: Asistencia Administrativa',
+                    areas: [
+                        'Oficinas de Asistencia Administrativa',
+                        'Aulas asignadas a Secretariado Ejecutivo'
+                    ]
+                },
+                {
+                    name: 'Pabellones H, J, N: Electrónica y Electricidad Industrial',
+                    areas: [
+                        'Talleres de Electricidad (J-101, J-102, etc.)',
+                        'Jefatura de Electricidad',
+                        'Laboratorio de Mediciones',
+                        'Talleres de Electrónica (J-103)',
+                        'Jefatura de Electrónica',
+                        'Instalaciones de Canal 45'
+                    ]
+                },
+                {
+                    name: 'Pabellón K: Mecánica de Producción Industrial (PI/MP)',
+                    areas: [
+                        'Talleres de Máquinas-Herramientas (K-101 A, B, C, D)',
+                        'Taller de Soldadura, Moldería y Fundición',
+                        'Laboratorio de Control de Calidad',
+                        'Jefatura y Sala de docentes (K-201)',
+                        'Aulas pedagógicas (K-202, K-203)',
+                        'Aula de Cómputo CAD/CAM / FAVLAB (K-204)',
+                        'Baños de taller (SSHH Damas/Varones)'
+                    ]
+                },
+                {
+                    name: 'Pabellón L: Mecatrónica Automotriz',
+                    areas: [
+                        'Sala de docentes y Jefatura (L-101, L-102)',
+                        'Laboratorio de sistema diesel / gasolina',
+                        'Talleres de motores de combustión interna',
+                        'Taller eléctrico / electrónico',
+                        'Taller de mecánica básica',
+                        'Patio de maniobras y Almacén interior'
+                    ]
+                },
+                {
+                    name: 'Áreas Comunes, Exteriores y Periféricas',
+                    areas: [
+                        'Mantenimiento de jardines y contorno del Parque PE',
+                        'Terrazas y parte del patio central',
+                        'Fachada principal del Instituto',
+                        'Pasadizos generales (bus-ped)',
+                        'Servicios Higiénicos Generales (detrás de la cafetería)',
+                        'Patio de la Bandera',
+                        'Áreas periféricas al local del Patronato'
+                    ]
+                }
             ];
 
             const runAsync = (sql, params = []) => new Promise((resolve, reject) => {
@@ -268,20 +383,23 @@ function populatePavilions() {
 
 function createDefaultAdmin() {
     const checkSql = 'SELECT * FROM users WHERE username = ?';
-    db.get(checkSql, ['admin'], (err, row) => {
+    // Cambiamos el usuario por defecto de 'admin' a algo menos común
+    const defaultUser = 'admin_vigil';
+
+    db.get(checkSql, [defaultUser], (err, row) => {
         if (err) return console.error(err.message);
         if (!row) {
-            // Crear admin por defecto: admin / admin (hasheado)
+            // Se recomienda encarecidamente cambiar esta contraseña tras el primer inicio
             const saltRounds = 10;
-            const myPlaintextPassword = 'admin';
+            const defaultPassword = process.env.INITIAL_ADMIN_PASSWORD || 'Vigil2026#Secure';
 
-            bcrypt.hash(myPlaintextPassword, saltRounds, function (err, hash) {
+            bcrypt.hash(defaultPassword, saltRounds, function (err, hash) {
                 if (err) return console.error('Error hashing default password');
 
-                const insertSql = 'INSERT INTO users (username, password, name) VALUES (?, ?, ?)';
-                db.run(insertSql, ['admin', hash, 'Administrador'], (err) => {
+                const insertSql = 'INSERT INTO users (username, password, name, role) VALUES (?, ?, ?, ?)';
+                db.run(insertSql, [defaultUser, hash, 'Administrador Principal', 'admin'], (err) => {
                     if (err) console.error('Error creating admin user:', err.message);
-                    else console.log('Default admin user created.');
+                    else console.log(`Usuario administrador inicial creado: ${defaultUser}`);
                 });
             });
         }

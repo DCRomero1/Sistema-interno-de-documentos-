@@ -6,6 +6,9 @@ const session = require('express-session');
 const app = express();
 const port = process.env.PORT || 3000;
 
+// Confiar en el proxy (necesario para express-rate-limit en VPS)
+app.set('trust proxy', 1);
+
 // Importar Rutas
 const authRoutes = require('./routes/authRoutes');
 const documentRoutes = require('./routes/documentRoutes');
