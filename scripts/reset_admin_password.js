@@ -2,6 +2,8 @@ const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const bcrypt = require('bcrypt');
 
+require('dotenv').config({ path: path.join(__dirname, '../.env') });
+
 const dbPath = path.join(__dirname, '../src/database.sqlite');
 const db = new sqlite3.Database(dbPath, (err) => {
     if (err) {
@@ -11,8 +13,14 @@ const db = new sqlite3.Database(dbPath, (err) => {
     console.log('Conectado a la base de datos.');
 });
 
-const username = 'admin';
-const newPassword = 'admin'; // Contraseña por defecto
+const username = 'admin_vigil'; // Usuario por defecto ajustado al nuevo estándar
+const newPassword = process.env.ADMIN_PASSWORD;
+
+if (!newPassword) {
+    console.error('CRITICAL: ADMIN_PASSWORD no está definida en el archivo .env');
+    process.exit(1);
+}
+
 const saltRounds = 10;
 
 console.log(`Restableciendo contraseña para el usuario '${username}' a '${newPassword}'...`);

@@ -286,7 +286,7 @@ function renderTable(documents) {
                     </button>
                     <div id="dropdown-${safeId}" class="action-dropdown">
                         <button class="action-item" onclick="openModal('${safeId}', '${safeFecha}', '${safeUbicacion}', '${safeCargo}')">
-                            <i class="fa-solid fa-pen-to-square"></i> Editar
+                            <i class="fa-solid fa-pen-to-square"></i> Actualizar
                         </button>
                         ${doc.pdf_path ?
                 `<a href="${doc.pdf_path}" target="_blank" class="action-item">
@@ -301,7 +301,7 @@ function renderTable(documents) {
                              </button>`
             }
                         <button class="action-item" onclick="viewHistory('${safeId}')">
-                             <i class="fa-solid fa-clock-rotate-left"></i> Ver detalles
+                             <i class="fa-solid fa-clock-rotate-left"></i> Historial
                         </button>
                     </div>
                 </div>
@@ -741,16 +741,30 @@ function viewHistory(docId) {
     ul.className = 'timeline';
 
     rawHistory.forEach(item => {
-        // PATCH: Replace old text with new text on the fly
+        // PATCH: Ya no reemplazaremos el nombre original, queremos que diga Jefatura de Unidad Administrativa
         const replaceText = (text) => {
             if (!text) return text;
-            return text.replace(/JEFATURA DE UNIDAD DE ADMINISTRACION/gi, 'OFICINA DE ADMINISTRACIÓN');
+            // Quitamos el reemplazo anterior para que preserve el nombre original de la BD
+            // return text.replace(/JEFATURA DE UNIDAD DE ADMINISTRACION/gi, 'OFICINA DE ADMINISTRACIÓN');
+            return text;
         };
 
         item.from = replaceText(item.from);
         item.to = replaceText(item.to);
         item.cargo = replaceText(item.cargo);
         item.action = replaceText(item.action);
+
+        // NUEVO PARCHE: Cualquier documento que recién ingresa (Recepción) y no tiene destino
+        // asignado todavía, debe ir a Jefatura de Unidad Administrativa por defecto.
+        if (item.action && item.action.toLowerCase().includes('recepción')) {
+            // Si el destino o cargo aparecen vacíos (o son nulos), le forzamos la oficina correspondiente correcta
+            if (!item.to || item.to.trim() === '') {
+                item.to = 'Jefatura de Unidad Administrativa';
+            }
+            if (!item.cargo || item.cargo.trim() === '') {
+                item.cargo = 'Jefatura de Unidad Administrativa';
+            }
+        }
 
         const li = document.createElement('li');
         li.className = 'timeline-item';

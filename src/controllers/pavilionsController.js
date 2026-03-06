@@ -2,7 +2,7 @@ const db = require('../database');
 
 // Obtener todos los pabellones con sus áreas anidadas
 exports.getAllPavilions = (req, res) => {
-    const sqlPavilions = `SELECT * FROM pavilions`;
+    const sqlPavilions = `SELECT * FROM pavilions ORDER BY sort_order ASC, id ASC`;
     const sqlAreas = `SELECT * FROM areas`;
 
     db.all(sqlPavilions, [], (err, pavilions) => {

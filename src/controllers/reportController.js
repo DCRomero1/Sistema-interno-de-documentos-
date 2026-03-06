@@ -42,17 +42,46 @@ exports.getSummary = (req, res) => {
                         const grouped = {};
 
                         rawRows.forEach(row => {
-                            let cleanType = row.tipo || 'Sin Tipo';
+                            let cleanType = row.tipo ? row.tipo.trim().toUpperCase() : 'SIN TIPO';
 
-                            if (cleanType.includes(':')) {
-                                cleanType = cleanType.split(':')[0];
-                            }
                             if (cleanType.includes('N°')) {
-                                cleanType = cleanType.split('N°')[0];
+                                cleanType = cleanType.split('N°')[0].trim();
                             }
 
-                            cleanType = cleanType.trim().toUpperCase();
-                            if (!cleanType) cleanType = 'SIN TIPO';
+                            // Normalization mapping
+                            if (cleanType.startsWith('INF') || cleanType === 'INFORME') {
+                                cleanType = 'INFORME';
+                            } else if (cleanType.startsWith('FUT S/N')) {
+                                cleanType = 'FUT S/N';
+                            } else if (cleanType.startsWith('FUT')) {
+                                cleanType = 'FUT';
+                            } else if (cleanType.startsWith('SABS') || cleanType === 'SAB') {
+                                cleanType = 'SABS';
+                            } else if (cleanType.startsWith('CARTA')) {
+                                cleanType = 'CARTA';
+                            } else if (cleanType.startsWith('REG') || cleanType === 'REGISTRO') {
+                                cleanType = 'REGISTRO';
+                            } else if (cleanType.startsWith('OFICIO INT')) {
+                                cleanType = 'OFICIO INTERNO';
+                            } else if (cleanType.startsWith('OFICIO EXT')) {
+                                cleanType = 'OFICIO EXTERNO';
+                            } else if (cleanType === 'OFICIO' || cleanType.startsWith('OFIC')) {
+                                cleanType = 'OFICIO';
+                            } else if (cleanType.startsWith('NOTA DE C') && cleanType.includes('INT')) {
+                                cleanType = 'NOTA DE CORDINACION INTERNA';
+                            } else if (cleanType.startsWith('NOTA DE C') && cleanType.includes('EXT')) {
+                                cleanType = 'NOTA DE COODINACION EXTERNA';
+                            } else if (cleanType.startsWith('RECIBO EL')) {
+                                cleanType = 'RECIBO ELECTRONICO';
+                            } else if (cleanType === 'RECIBO' || cleanType.startsWith('REC')) {
+                                cleanType = 'RECIBO';
+                            } else if (cleanType.startsWith('RES') && cleanType.includes('DIR')) {
+                                cleanType = 'RESOLUCION DIRECTORIAL';
+                            } else if (cleanType === 'SIN TIPO' || cleanType === '' || cleanType === '"') {
+                                cleanType = 'SIN TIPO';
+                            } else {
+                                cleanType = 'OTROS';
+                            }
 
                             if (!grouped[cleanType]) {
                                 grouped[cleanType] = 0;

@@ -27,58 +27,87 @@
             text-transform: uppercase;
             font-weight: bold;
             letter-spacing: 0.1em;
-            color: white;
-            /* Ensure vertical text is white/yellow */
+            color: #fbbf24;
         }
 
-        /* Staff Color Coding Classes */
+        /* Fix for html2canvas vertical text bug */
+        .pdf-compact-view .vertical-text {
+            writing-mode: horizontal-tb !important;
+            transform: none !important;
+            width: 1ch !important;
+            word-wrap: break-word !important;
+            line-height: 1.2 !important;
+            margin: 0 auto !important;
+            display: block !important;
+            color: #fbbf24 !important;
+        }
+
+        /* Staff Color Coding Classes - Enhanced Contrast */
         .bg-alodia {
-            background-color: #fef3c7;
+            background-color: #fde68a;
+            /* amber-200 (vs 100) */
         }
 
         .bg-rosario {
-            background-color: #fef08a;
+            background-color: #fde047;
+            /* yellow-300 (vs 200) */
         }
 
         .bg-julian {
-            background-color: #93c5fd;
+            background-color: #60a5fa;
+            /* blue-400 (vs 300) */
         }
 
         .bg-luisa {
-            background-color: #f5d0fe;
+            background-color: #e879f9;
+            /* fuchsia-400 (vs 200) */
         }
 
         .bg-nilda {
-            background-color: #e0f2fe;
+            background-color: #bae6fd;
+            /* sky-200 (vs 100) */
         }
 
         .bg-david {
-            background-color: #bef264;
+            background-color: #a3e635;
+            /* lime-400 (vs 300) */
         }
 
         .bg-demetrio {
-            background-color: #67e8f9;
+            background-color: #22d3ee;
+            /* cyan-400 (vs 300) */
         }
 
         .bg-alfredo {
-            background-color: #fca5a5;
+            background-color: #f87171;
+            /* red-400 (vs 300) */
         }
 
         .bg-gilmer {
-            background-color: #fed7aa;
+            background-color: #fdba74;
+            /* orange-300 (vs 200) */
         }
 
         .bg-caner {
-            background-color: #ffedd5;
+            background-color: #fed7aa;
+            /* orange-200 (vs 100) */
         }
 
         .shift-header {
-            background-color: #1e293b;
+            background-color: #0f172a;
+            /* Slate 900 for more contrast */
             color: #fbbf24;
             /* Yellow text for contrast */
             font-weight: bold;
             text-transform: uppercase;
         }
+
+        /* Highlight line separator for shifts */
+        .shift-separator td,
+        .shift-separator th {
+            border-top: 4px solid #1e293b !important;
+        }
+
 
         /* Override Tailwind resets that may conflict with app styles */
         .schedule-area * {
@@ -175,42 +204,95 @@
             }
 
             /* Remove all overflow/height constraints so the full table prints */
+            html,
             body {
                 overflow: visible !important;
                 height: auto !important;
+                max-height: none !important;
                 display: block !important;
                 background: white !important;
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
             }
 
-            .main-wrapper {
-                margin-left: 0 !important;
+            .main-wrapper,
+            .main-content,
+            .content-area,
+            .schedule-area,
+            .schedule-area>div,
+            .overflow-hidden,
+            .overflow-x-auto,
+            .shadow-2xl {
+                margin: 0 !important;
                 padding: 0 !important;
                 width: 100% !important;
                 height: auto !important;
+                max-height: none !important;
                 overflow: visible !important;
                 display: block !important;
-            }
-
-            .schedule-area,
-            .schedule-area>div {
-                padding: 0 !important;
-                margin: 0 !important;
-                overflow: visible !important;
-                height: auto !important;
+                position: static !important;
+                box-shadow: none !important;
+                border-radius: 0 !important;
             }
 
             /* Make table fit the page */
             .schedule-table {
                 width: 100% !important;
                 font-size: 0.55rem !important;
-                page-break-inside: auto;
+                /* Letra clara pero pequeña */
+                line-height: 1.1 !important;
+                page-break-inside: auto !important;
+                page-break-after: auto !important;
+            }
+
+            .schedule-table th,
+            .schedule-table td {
+                padding: 0.2rem !important;
             }
 
             .schedule-table tr {
-                page-break-inside: avoid;
+                page-break-inside: avoid !important;
+                height: auto !important;
             }
+
+            .schedule-table tbody {
+                page-break-inside: auto !important;
+            }
+
+            /* --- CLASE MAGICA PARA REDUCIR ALTURA DEL PDF --- */
+            .pdf-compact-view ul,
+            .pdf-compact-view li {
+                display: none !important;
+                /* Oculta los detalles menores de las aulas */
+            }
+
+            .pdf-compact-view .text-xs {
+                font-size: 0.70rem !important;
+                /* Letra un poco más grande */
+                font-weight: 700;
+                /* Letra más gruesa/negrita */
+                color: #000000 !important;
+                /* Forzar negro puro para mejor contraste */
+            }
+
+            .pdf-compact-view td,
+            .pdf-compact-view th {
+                padding: 0.35rem !important;
+                /* Un poco más de aire */
+                color: #000000 !important;
+                border: 2px solid #0f172a !important;
+                /* Bordes más oscuros y gruesos */
+            }
+
+            .pdf-compact-view .slot-worker {
+                font-size: 0.85rem !important;
+                font-weight: 900 !important;
+                /* Nombres muy marcados */
+                border-bottom: 2px solid #000000 !important;
+            }
+
+            /* ------------------------------------------------ */
+
 
             /* Remove shadows and rounded corners for clean print */
             .bg-white.shadow-2xl,
@@ -458,9 +540,9 @@
                                     class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition flex items-center gap-2">
                                     <i class="fa-solid fa-pen-to-square"></i> <span>Activar Edición</span>
                                 </button>
-                                <button onclick="window.print()"
-                                    class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-semibold transition flex items-center gap-2 border border-gray-300">
-                                    <i class="fa-solid fa-print"></i> Imprimir
+                                <button onclick="downloadPDF()" id="btnDownloadPdf"
+                                    class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition flex items-center gap-2 shadow-sm">
+                                    <i class="fa-solid fa-file-pdf"></i> Descargar PDF
                                 </button>
                             </div>
                         </div>
@@ -701,7 +783,7 @@
                                     <!-- END: Mañana Section -->
 
                                     <!-- BEGIN: Tarde Section -->
-                                    <tr>
+                                    <tr class="shift-separator">
                                         <td class="shift-header text-center align-middle" rowspan="2">
                                             <span class="vertical-text">TARDE</span>
                                         </td>
@@ -791,7 +873,7 @@
                                     <!-- END: Tarde Section -->
 
                                     <!-- BEGIN: Noche Section -->
-                                    <tr>
+                                    <tr class="shift-separator">
                                         <td class="shift-header text-center align-middle" rowspan="2">
                                             <span class="vertical-text">NOCHE</span>
                                         </td>
@@ -937,6 +1019,7 @@
                         <tr class="bg-gray-100 text-gray-700 text-sm">
                             <th class="p-3 border-b">ID / DNI</th>
                             <th class="p-3 border-b">Nombre Completo</th>
+                            <th class="p-3 border-b">Celular</th>
                             <th class="p-3 border-b text-center">Acciones</th>
                         </tr>
                     </thead>
@@ -1007,6 +1090,11 @@
                     <input type="text" id="addCleanerName" class="w-full border border-gray-300 rounded p-2 uppercase"
                         placeholder="Ej. JUAN PEREZ" required>
                 </div>
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-1">Celular</label>
+                    <input type="text" id="addCleanerPhone" class="w-full border border-gray-300 rounded p-2"
+                        placeholder="Ej. 987654321">
+                </div>
                 <div class="flex justify-end gap-2 mt-4">
                     <button type="button" onclick="closeCleanerAddModal()"
                         class="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 font-bold">Cancelar</button>
@@ -1017,11 +1105,158 @@
         </div>
     </div>
 
+    <!-- Modal for Editing Cleaner -->
+    <div id="cleanerEditModal"
+        class="hidden fixed inset-0 bg-gray-900 bg-opacity-80 overflow-y-auto h-full w-full flex justify-center items-center"
+        style="z-index: 105;">
+        <div class="relative bg-white w-[90vw] md:w-[500px] rounded-lg shadow-2xl flex flex-col overflow-hidden">
+            <div class="bg-blue-600 text-white px-6 py-4 flex justify-between items-center shrink-0">
+                <h2 class="text-xl font-bold flex items-center gap-2">
+                    <i class="fa-solid fa-user-pen"></i> Editar Trabajador
+                </h2>
+                <button onclick="closeCleanerEditModal()" class="text-white hover:text-red-300 transition text-2xl">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <form id="cleanerEditForm" class="p-6 flex flex-col gap-4">
+                <input type="hidden" id="editCleanerId">
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-1">DNI <span
+                            class="text-red-500">*</span></label>
+                    <input type="text" id="editCleanerDni" class="w-full border border-gray-300 rounded p-2"
+                        placeholder="8 dígitos" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-1">Nombre Completo <span
+                            class="text-red-500">*</span></label>
+                    <input type="text" id="editCleanerName" class="w-full border border-gray-300 rounded p-2 uppercase"
+                        placeholder="Ej. JUAN PEREZ" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-1">Celular</label>
+                    <input type="text" id="editCleanerPhone" class="w-full border border-gray-300 rounded p-2"
+                        placeholder="Ej. 987654321">
+                </div>
+                <div class="flex justify-end gap-2 mt-4">
+                    <button type="button" onclick="closeCleanerEditModal()"
+                        class="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 font-bold">Cancelar</button>
+                    <button type="submit"
+                        class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 font-bold">Actualizar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
     <script src="/js/common.js?v=3"></script>
     <script src="/js/horarios.js?v=4"></script>
     <script src="/js/theme-loader.js"></script>
+
+    <script>
+        async function downloadPDF() {
+            const btn = document.getElementById('btnDownloadPdf');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Generando...';
+            btn.disabled = true;
+
+            try {
+                // Guardar la posición de scroll actual y subir arriba del todo 
+                // para evitar que html2canvas corte por viewport desalineado
+                const originalScrollY = window.scrollY;
+                window.scrollTo(0, 0);
+
+                // Seleccionamos la parte específica que queremos imprimir
+                const element = document.querySelector('.schedule-area > div:last-child');
+                const scrollWrapper = element.querySelector('.overflow-x-auto');
+
+                // Desactivar temporalmente clases de overflow para que no corte el contenido por abajo
+                element.classList.add('pdf-compact-view'); // <-- Magia compacta
+                element.classList.remove('overflow-hidden');
+                element.classList.remove('shadow-2xl'); // Las sombras a veces manchan el PDF
+                if (scrollWrapper) scrollWrapper.classList.remove('overflow-x-auto');
+
+                // Forzar que el elemento tenga su propio layout de "papel horizontal ancho"
+                // Indiferentemente del tamaño de pantalla actual del usuario
+                const originalStyle = element.getAttribute('style');
+                element.style.height = 'auto';
+                element.style.maxHeight = 'none';
+                element.style.width = '1600px'; // Forzar un ancho grande apaisado (Landscape A4 ratio es ~1.41)
+                element.style.maxWidth = 'none'; // Quitar límites de contenedores padre
+
+                // Darle tiempo al navegador para aplicar los estilos y el nuevo flujo de texto (wrap)
+                await new Promise(r => setTimeout(r, 200));
+
+                // Configuración de html2canvas para mejor calidad y altura completa
+                const canvas = await html2canvas(element, {
+                    scale: 3, // Aumentado a 3 para altísima calidad / nitidez
+                    useCORS: true,
+                    logging: false,
+                    backgroundColor: '#ffffff',
+                    scrollY: 0,
+                    windowHeight: element.scrollHeight,
+                    windowWidth: 1600 // Forzar captura a 1600 px
+                });
+
+                // Restaurar estilos y clases originales
+                element.classList.remove('pdf-compact-view');
+                element.classList.add('overflow-hidden');
+                element.classList.add('shadow-2xl');
+                if (scrollWrapper) scrollWrapper.classList.add('overflow-x-auto');
+                if (originalStyle) {
+                    element.setAttribute('style', originalStyle);
+                } else {
+                    element.removeAttribute('style');
+                }
+                window.scrollTo(0, originalScrollY);
+
+                const imgData = canvas.toDataURL('image/jpeg', 1.0);
+
+                // Iniciar jsPDF en formato A4 Horizontal
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF({
+                    orientation: 'landscape',
+                    unit: 'mm',
+                    format: 'a4'
+                });
+
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                const pdfHeight = pdf.internal.pageSize.getHeight();
+
+                // Calcular proporciones de la imagen cuidando el Aspect Ratio perfecto
+                const imgProps = pdf.getImageProperties(imgData);
+                const margin = 5; // Margen en mm
+
+                // Intentamos llenar el ancho primero con su proporción natural
+                let printWidth = pdfWidth - (margin * 2);
+                let printHeight = (imgProps.height * printWidth) / imgProps.width;
+
+                // Si al llenar el ancho, resulta que es demasiado alto para la página A4 (se corta lo de abajo),
+                // entonces debemos guiarnos por la altura en lugar del ancho para que quepa todo dentro:
+                if (printHeight > (pdfHeight - (margin * 2))) {
+                    printHeight = pdfHeight - (margin * 2);
+                    printWidth = (imgProps.width * printHeight) / imgProps.height;
+                }
+
+                // Centrar horizontalmente y verticalmente la imagen en caso de que quede espacio 
+                const xPos = margin + ((pdfWidth - (margin * 2) - printWidth) / 2);
+                const yPos = margin + ((pdfHeight - (margin * 2) - printHeight) / 2);
+
+                pdf.addImage(imgData, 'JPEG', xPos, yPos, printWidth, printHeight);
+                pdf.save('Rol_de_Limpieza.pdf');
+
+            } catch (error) {
+                console.error("Error al generar PDF", error);
+                Swal.fire('Error', 'No se pudo generar el PDF', 'error');
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+    </script>
 </body>
 
 </html>

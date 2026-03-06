@@ -168,7 +168,8 @@ function initializeTables() {
     db.run(`CREATE TABLE IF NOT EXISTS pavilions (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
-        description TEXT
+        description TEXT,
+        sort_order INTEGER DEFAULT 0
     )`, (err) => {
         if (err) console.error('Error creating pavilions table:', err);
         else populatePavilions();
@@ -241,20 +242,34 @@ function populatePavilions() {
         if (row.count === 0) {
             const initialPavilions = [
                 {
-                    name: 'Pabellón A: Administración (1° y 2° Piso)',
+                    name: 'Pabellón A: Secretaría Académica (1° y 2° Piso)',
+                    sort_order: 1,
                     areas: [
                         'Ingreso principal del Instituto',
-                        'Calidad (A-001)',
-                        'Secretaría Académica (A-101, A-102, A-105, A-106)',
+                        'Jefatura de Formación Continua (A-001)',
+                        'Secretaría Académica (A-106)',
+                        'Secretaría Académica (A-105)',
+                        'SSHH (Piso 1)',
+                        'Secretaría Académica (A-102)',
+                        'Secretaría Académica (A-101)',
+                        'SSHH (Piso 2)',
                         'Dirección General (A-201)',
-                        'Secretaría de Dirección (A-202)',
+                        'Secretaría de Dirección (A-202)'
+                    ]
+                },
+                {
+                    name: 'PABELLON A - ADMINISTRACION PRIMER PISO',
+                    sort_order: 2,
+                    areas: [
                         'Tesorería - Caja (A-116)',
                         'Administración (A-110)',
                         'Recursos Humanos (A-112)',
-                        'Servicios Higiénicos (Mujeres / Varones)',
-                        'Jefatura de Formación Continua e Investigación',
-                        'Patrimonio y Almacén (A-113)',
-                        'Jefatura de Unidad Académica y su Secretaría'
+                        'SSHH Mujeres (A-110)',
+                        'SSHH Varones (A-111)',
+                        'Jefatura de Formación Continua, Jefatura de Investigación y JUBE',
+                        'Patrimonio, Almacén Abastecimiento (A-113)',
+                        'Jefatura de Unidad Académica (A-108)',
+                        'Secretaría de Jefatura de Unidad Académica'
                     ]
                 },
                 {
@@ -262,84 +277,178 @@ function populatePavilions() {
                     areas: ['Auditorio General']
                 },
                 {
-                    name: 'Pabellón C: Contabilidad',
+                    name: 'PABELLON - C CONTABILIDAD',
                     areas: [
-                        'Depósitos (C-101, C-102)',
-                        'Aulas pedagógicas (C-103 en adelante)',
-                        'Jefatura de Contabilidad',
-                        'Pasadizos de los tres niveles y escaleras',
-                        'Servicios Higiénicos'
+                        'Deposito (C-102)',
+                        'Aula pedagógica (C-102)',
+                        'Aula pedagógica (C-103)',
+                        'Aula pedagógica (C-104)',
+                        'Coordinacion Academica (C-105)',
+                        'Jefatura interior',
+                        'Deposito Coordinacion',
+                        'SS.HH (C-106)',
+                        'Deposito debajo de escalera (C-107)',
+                        'Aula de computo (C-201)',
+                        'Lab. de Computo (C-202)',
+                        'Sala de Docentes (C-203)',
+                        'Sala de Doc. Interior 1',
+                        'Sala de Doc. Interior 2',
+                        'Salon de Usos Multiples (C-301)',
+                        'Sala de lectura Docen - Estudiantes (C-302)',
+                        'S. lectura Interior',
+                        'Area de Investigación e Innovación Tec. (C-303)',
+                        'A. Investg. Interior',
+                        'Servicio Higienico'
                     ]
                 },
                 {
-                    name: 'Pabellón D: Producción Agropecuaria / Tópico',
+                    name: 'PABELLON "D" - PRODUCCION AGROPECUARIA/TOPICO',
                     areas: [
-                        'Tópico (D-101)',
-                        'Biblioteca',
-                        'Psicología',
-                        'Jefatura de Producción Agropecuaria',
-                        'Aulas del pabellón y pasadizos'
+                        'Laboratorio multifuncional 1 Procesos (D-104)',
+                        'SSHH Interior Procesos (D-104)',
+                        'Área de Bienestar (Asistencia Social -Psicología) (D-103)',
+                        'Tópico - Lab APSTI - SSHH (D-101)',
+                        'SSHH - Tópico (D-101)',
+                        'Aula de pedagógica (D-201)',
+                        'Aula de pedagógica (D-202)',
+                        'Laboratorio Multifuncional 2 (D-203)',
+                        'Aula Pedagógica (D-204)',
+                        'Coordinacion académica (D-205)'
                     ]
                 },
                 {
-                    name: 'Pabellón E: Arquitectura de Plataformas y TI (APETI)',
+                    name: 'PABELLON "E" - ARQUITECTURA DE PLATAFORMAS Y TI (APETI)',
                     areas: [
-                        'Aulas del primer piso',
-                        'Aulas del tercer piso',
-                        'Laboratorios de Cómputo (incluyendo Laboratorio PM)',
-                        'Jefatura de Carrera',
-                        'Pasadizos de los tres niveles'
+                        'Coordinación académica APSTI (E102)',
+                        'Taller de redes y conectividad (E103)',
+                        'aula pedagógica (E104)',
+                        'aula pedagógica (E105)',
+                        'aula de computación exbiblioteca (D102)',
+                        'SSHH interior exbiblioteca',
+                        'Sala de docentes (E201)',
+                        'Lab. De Computo 1 (E202)',
+                        'Lab. De Computo 1 (E203)',
+                        'Centro de seguridad Interior 1 (E301)',
+                        'Centro de seguridad Interior 2 (E301)',
+                        'Taller de mantenimiento (E302)',
+                        'Aula pedagógica (E303)',
+                        'Almacen de mto y reparac comp (E304)'
                     ]
                 },
                 {
-                    name: 'Pabellón F: Construcción Civil',
+                    name: 'PABELLON "F" - CONSTRUCCION CIVIL',
                     areas: [
-                        'Aulas pedagógicas (F-101, F-102, F-103)',
-                        'Jefatura de Construcción Civil',
-                        'Laboratorio de Suelos',
-                        'Pasadizos y escaleras',
-                        'Mitad de la cancha de básquet frontera a CC'
+                        'Sala de usos Multiples (F-101)',
+                        'Sala de Docentes (F-102)',
+                        'Coordinacion Academica (F-103)',
+                        'Topografia (F-103 B)',
+                        'Aula Pedagogica (F-104)',
+                        'Taller multifuncional- Mecanica de suelos (F-105)',
+                        'SSHH - DEPOSITO (F-106)',
+                        'SSHH - DOCENTES - Detras de la cafeteria',
+                        'Aula Pedagogica (F-201)',
+                        'Aula Pedagogica (F-202)',
+                        'Laboratorio de Computo (F-203)'
                     ]
                 },
                 {
-                    name: 'Pabellón G: Asistencia Administrativa',
+                    name: 'PABELLON G - ASISTENCIA ADMINISTRATIVA',
                     areas: [
-                        'Oficinas de Asistencia Administrativa',
-                        'Aulas asignadas a Secretariado Ejecutivo'
+                        'Codinacion Asistencia Administrativa (G-101)',
+                        'Aula pedagógica (G-102)',
+                        'Aula pedagógica (G-103)',
+                        'Aula pedagógica (G-104)',
+                        'Aula de Computo (G-201)',
+                        'Servicio Higienico Varonere general',
+                        'Servicio Higienico Damas General',
+                        'Servicio Higienico Discapacidad',
+                        'Laboratorio de Computo (G-201)'
                     ]
                 },
                 {
-                    name: 'Pabellones H, J, N: Electrónica y Electricidad Industrial',
+                    name: 'PABELLON - DETRÁS DE CAFETERIA',
                     areas: [
-                        'Talleres de Electricidad (J-101, J-102, etc.)',
-                        'Jefatura de Electricidad',
-                        'Laboratorio de Mediciones',
-                        'Talleres de Electrónica (J-103)',
-                        'Jefatura de Electrónica',
-                        'Instalaciones de Canal 45'
+                        'Servicio Higienico Damas',
+                        'Servicio Higienico Varones'
                     ]
                 },
                 {
-                    name: 'Pabellón K: Mecánica de Producción Industrial (PI/MP)',
+                    name: 'PABELLON "J" - ELECTRICIDAD INDUSTRIAL',
                     areas: [
-                        'Talleres de Máquinas-Herramientas (K-101 A, B, C, D)',
-                        'Taller de Soldadura, Moldería y Fundición',
-                        'Laboratorio de Control de Calidad',
-                        'Jefatura y Sala de docentes (K-201)',
-                        'Aulas pedagógicas (K-202, K-203)',
-                        'Aula de Cómputo CAD/CAM / FAVLAB (K-204)',
-                        'Baños de taller (SSHH Damas/Varones)'
+                        'Taller (maq. Elec) (J\'-101)',
+                        'Lab. de Generc. Y sist. P. izquierda (J\'-102)',
+                        'Aula pedagógica Electricidad Industrial (J\'-105 B)',
+                        'Taller de mant. De maq. Electricas (J\'-105 A)',
+                        'Centro de certificación y competencias laborales (J\'-201)',
+                        'Almacen (interior) (J\'-202)',
+                        'Coordinación Academican Electricidad Industrial (J-101)',
+                        'Taller de automatización industrial (J-102)',
+                        'Lab. de Medicic. Electricas y circuitos electrónicos (J-103)',
+                        'Almacen (lab. d med. Elec e instrum) (J-104)',
+                        'Aula Pedagogica (J-201)',
+                        'Aula Pedagogica (J-202)',
+                        'ARCHIVO DE ADMINSTRACION (J-203)'
                     ]
                 },
                 {
-                    name: 'Pabellón L: Mecatrónica Automotriz',
+                    name: 'PABELLON "H - N" - ELECTRONICA / CANAL 45',
                     areas: [
-                        'Sala de docentes y Jefatura (L-101, L-102)',
-                        'Laboratorio de sistema diesel / gasolina',
-                        'Talleres de motores de combustión interna',
-                        'Taller eléctrico / electrónico',
-                        'Taller de mecánica básica',
-                        'Patio de maniobras y Almacén interior'
+                        'Coordinación académica - Electricidad industrial (H-101)',
+                        'Taller de hidraulica, neumatica (H-102)',
+                        'Taller de control automotriz (H-103)',
+                        'Taller de medicion electronica (H-104)',
+                        'Almacén Costado de las escalerar (H-105)',
+                        'Aula pedagogica (H-201)',
+                        'Aula pedagogica (H-202)',
+                        'Laboratorio de computo (H-203)',
+                        'Aula pedagógica (J\'-103)',
+                        'Taller de redes de datos y comunicacionesm canal 45 (N101A)',
+                        'Switch de tv (N101B)',
+                        'Almacen (N101C)'
+                    ]
+                },
+                {
+                    name: 'PABELLON "K" - MECANICA DE PRODUCCION INDUSTRIAL (PI/MP)',
+                    areas: [
+                        'Porton principal Ingreso 1 (K-101)',
+                        'Almacen(Solo tiene llave el Coordinador de area) (K-101A)',
+                        'Laboratorio de Maq. C.N.C. (candado) (K-101B)',
+                        'Taller de Maquinas Herramientas (K-101C)',
+                        'Taller de Soldadura Especiales (K-101D)',
+                        'Porton principal Ingreso 2 (K-102)',
+                        'Taller de soldadura Oxigas (K-102A)',
+                        'Taller de Mecanica de Banco y Ajustes (K-102B)',
+                        'Taller de Molderia y fundición (K-102C)',
+                        'Laboratorio de Control de calidad (K-102D)',
+                        'Coordinación Academica mecanica de producion indsutrial (K-201)',
+                        'Sala de docentes 1 (K-201A)',
+                        'Sala de docentes 2 (K-201B)',
+                        'Aula pedagogica (K-202)',
+                        'Aula pedagogica (K-203)',
+                        'Aula de Computo CAD CDM (K-204)',
+                        'Servicio Higienico Damas',
+                        'Servicio Higienico Varones'
+                    ]
+                },
+                {
+                    name: 'PABELLON "L" - MECATRONICA AUTOMOTRIZ',
+                    areas: [
+                        'Sala de docentes (L101)',
+                        'Coordinación académica Mecatronica (L102)',
+                        'Interior - Almacen (L102B)',
+                        'Porton Principal (L102)',
+                        'Lab sistema diesel gasolina (L102A)',
+                        'Taller de motores de combustion inter (L102B)',
+                        'Taller electrico electronico (L102C)',
+                        'Taller de mecanica basica y soldadura (L102D)',
+                        'Patio de maniobras (L102E)',
+                        'Taller de rectificaciones automot (L102F)',
+                        'Taller de suspencion de direccion (L102G)',
+                        'Servicio Higienico Damas',
+                        'Servicio Higienico Varones',
+                        'Aula pedagógica (L201)',
+                        'Aula pedagógica (L202)',
+                        'Aula pedagógica (L203)'
                     ]
                 },
                 {
@@ -351,7 +460,11 @@ function populatePavilions() {
                         'Pasadizos generales (bus-ped)',
                         'Servicios Higiénicos Generales (detrás de la cafetería)',
                         'Patio de la Bandera',
-                        'Áreas periféricas al local del Patronato'
+                        'Áreas periféricas al local del Patronato',
+                        'Galerias',
+                        'Ventanas',
+                        'Patios comunes',
+                        'Muros'
                     ]
                 }
             ];
@@ -389,10 +502,15 @@ function createDefaultAdmin() {
     db.get(checkSql, [defaultUser], (err, row) => {
         if (err) return console.error(err.message);
         if (!row) {
-            // Se recomienda encarecidamente cambiar esta contraseña tras el primer inicio
-            const saltRounds = 10;
-            const defaultPassword = process.env.INITIAL_ADMIN_PASSWORD || 'Vigil2026#Secure';
+            // La contraseña base DEBE estar definida en el archivo .env
+            const defaultPassword = process.env.ADMIN_PASSWORD;
 
+            if (!defaultPassword) {
+                console.error('CRITICAL: ADMIN_PASSWORD no está definida en .env. No se creará el usuario administrador base por seguridad.');
+                return;
+            }
+
+            const saltRounds = 10;
             bcrypt.hash(defaultPassword, saltRounds, function (err, hash) {
                 if (err) return console.error('Error hashing default password');
 

@@ -100,6 +100,7 @@ function renderFullTable(documents) {
         tbody.appendChild(tr);
     });
 }
+// Cuando las capacitaciones de los datos tienen que cambiar
 
 function renderChart(typeData) {
     const ctx = document.getElementById('docsChart').getContext('2d');

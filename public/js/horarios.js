@@ -239,15 +239,29 @@ document.addEventListener('DOMContentLoaded', async () => {
                         }
                         slotEl.appendChild(nameDiv);
 
-                        // Renderizar las áreas
+                        // Renderizar las áreas agrupadas por pabellón
                         if (w.areas && w.areas.length > 0) {
+                            const areasPorPabellon = {};
                             w.areas.forEach(area => {
-                                const li = document.createElement('li');
-                                li.className = 'text-[0.65rem] text-gray-700 p-1 rounded flex gap-1 items-start leading-tight';
-                                const shortName = w.fullName.split(' ')[0];
-                                li.innerHTML = `<b class="text-gray-900 shrink-0">${shortName}:</b> <span>${area.name} (${area.description})</span>`;
-                                ul.appendChild(li);
+                                if (!areasPorPabellon[area.name]) {
+                                    areasPorPabellon[area.name] = [];
+                                }
+                                areasPorPabellon[area.name].push(area.description);
                             });
+
+                            for (const [pabellon, listaAreas] of Object.entries(areasPorPabellon)) {
+                                const liPavilion = document.createElement('li');
+                                liPavilion.className = 'text-[0.65rem] text-gray-900 font-bold mt-1 uppercase';
+                                liPavilion.textContent = pabellon;
+                                ul.appendChild(liPavilion);
+
+                                listaAreas.forEach(areaDesc => {
+                                    const liArea = document.createElement('li');
+                                    liArea.className = 'text-[0.65rem] text-gray-700 pl-2 leading-tight flex gap-1';
+                                    liArea.innerHTML = `<span class="text-gray-400">-</span> <span>${areaDesc}</span>`;
+                                    ul.appendChild(liArea);
+                                });
+                            }
                         } else {
                             const li = document.createElement('li');
                             li.className = 'text-[0.65rem] text-red-500 italic mt-1 leading-tight';
@@ -651,6 +665,19 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('cleanerAddModal').classList.add('hidden');
     };
 
+    window.openCleanerEditModal = function (id, dni, name, phone) {
+        document.getElementById('cleanerEditForm').reset();
+        document.getElementById('editCleanerId').value = id;
+        document.getElementById('editCleanerDni').value = dni;
+        document.getElementById('editCleanerName').value = name;
+        document.getElementById('editCleanerPhone').value = phone;
+        document.getElementById('cleanerEditModal').classList.remove('hidden');
+    };
+
+    window.closeCleanerEditModal = function () {
+        document.getElementById('cleanerEditModal').classList.add('hidden');
+    };
+
     async function loadCleanersIntoModal() {
         try {
             const res = await fetch('/api/cleaners');
@@ -671,8 +698,12 @@ document.addEventListener('DOMContentLoaded', async () => {
                 tr.innerHTML = `
                     <td class="p-3">${c.dni || '---'}</td>
                     <td class="p-3 font-bold text-gray-800">${c.fullName}</td>
+                    <td class="p-3">${c.phone || '---'}</td>
                     <td class="p-3 text-center">
-                        <button onclick="substituteCleanerModal(${c.id}, '${c.fullName.replace(/'/g, "\\'")}')" class="text-blue-500 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 p-2 rounded transition mr-2" title="Sustituir trabajador (Transferir turnos)">
+                        <button onclick="openCleanerEditModal(${c.id}, '${c.dni}', '${c.fullName.replace(/'/g, "\\'")}', '${c.phone || ''}')" class="text-blue-500 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 p-2 rounded transition mr-2" title="Editar trabajador">
+                            <i class="fa-solid fa-pen"></i>
+                        </button>
+                        <button onclick="substituteCleanerModal(${c.id}, '${c.fullName.replace(/'/g, "\\'")}')" class="text-indigo-500 hover:text-indigo-700 bg-indigo-50 hover:bg-indigo-100 p-2 rounded transition mr-2" title="Sustituir trabajador (Transferir turnos)">
                             <i class="fa-solid fa-arrows-rotate"></i>
                         </button>
                         <button onclick="deleteCleaner(${c.id})" class="text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 p-2 rounded transition" title="Eliminar trabajador">
@@ -781,12 +812,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         e.preventDefault();
         const dni = document.getElementById('addCleanerDni').value;
         const fullName = document.getElementById('addCleanerName').value;
+        const phone = document.getElementById('addCleanerPhone').value;
 
         try {
             const response = await fetch('/api/cleaners', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ dni, fullName, position: 'Personal de Limpieza' })
+                body: JSON.stringify({ dni, fullName, position: 'Personal de Limpieza', phone })
             });
 
             const result = await response.json();
@@ -798,6 +830,36 @@ document.addEventListener('DOMContentLoaded', async () => {
                 await loadInitialData(); // Refrescar lista de Horarios principal si está referenciado
             } else {
                 Swal.fire('Error', result.error || 'No se pudo registrar', 'error');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            Swal.fire('Error', 'Error de conexión', 'error');
+        }
+    });
+
+    document.getElementById('cleanerEditForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const id = document.getElementById('editCleanerId').value;
+        const dni = document.getElementById('editCleanerDni').value;
+        const fullName = document.getElementById('editCleanerName').value;
+        const phone = document.getElementById('editCleanerPhone').value;
+
+        try {
+            const response = await fetch(`/api/cleaners/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ dni, fullName, position: 'Personal de Limpieza', phone })
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                showToast('Trabajador actualizado exitosamente');
+                closeCleanerEditModal();
+                await loadCleanersIntoModal(); // Refrescar la tabla del modal
+                await loadInitialData(); // Refrescar lista de Horarios principal si está referenciado
+            } else {
+                Swal.fire('Error', result.error || 'No se pudo actualizar', 'error');
             }
         } catch (error) {
             console.error('Error:', error);
