@@ -53,9 +53,13 @@ exports.assignWorker = (req, res) => {
     }
 
     if (action === 'clear' || (!action && workerId === null)) {
-        db.run(`DELETE FROM schedule_assignments WHERE slotId = ?`, [slotId], function (err) {
-            if (err) return res.status(500).json({ error: err.message });
-            return res.json({ success: true, slotId });
+        db.run(`DELETE FROM slot_areas WHERE slot_id = ?`, [slotId], function (err) {
+            if (err) console.error("Error al limpiar áreas al liberar turno:", err);
+            
+            db.run(`DELETE FROM schedule_assignments WHERE slotId = ?`, [slotId], function (err) {
+                if (err) return res.status(500).json({ error: err.message });
+                return res.json({ success: true, slotId });
+            });
         });
         return;
     }
