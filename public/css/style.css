@@ -1092,12 +1092,61 @@ body:not(.dark-mode) .u-logout-card-btn:hover {
     background-color: var(--bg-color);
 }
 
-/* Estadísticas del Panel y Reportes */
-.stats-grid {
+/* --- Dashboard Specific Styles --- */
+.dashboard-stats {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 20px;
-    margin-bottom: 25px;
+    margin-bottom: 30px;
+}
+
+/* --- Inline Edit Styles --- */
+body.inline-edit-active table.registry-table td.editable-field {
+    cursor: pointer;
+    position: relative;
+    border: 1px dashed rgba(37, 99, 235, 0.4);
+    background-color: rgba(37, 99, 235, 0.05);
+    transition: all 0.2s;
+}
+
+body.dark-mode.inline-edit-active table.registry-table td.editable-field {
+    border-color: rgba(59, 130, 246, 0.4);
+    background-color: rgba(59, 130, 246, 0.1);
+}
+
+body.inline-edit-active table.registry-table td.editable-field:hover {
+    background-color: rgba(37, 99, 235, 0.1);
+    border-color: rgba(37, 99, 235, 0.8);
+}
+
+body.dark-mode.inline-edit-active table.registry-table td.editable-field:hover {
+    background-color: rgba(59, 130, 246, 0.2);
+}
+
+body.inline-edit-active table.registry-table td.editable-field::after {
+    content: '\f044'; /* fa-pen-to-square */
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    position: absolute;
+    right: 4px;
+    top: 4px;
+    font-size: 10px;
+    color: var(--primary-color);
+    opacity: 0.5;
+}
+
+.inline-edit-input {
+    border: 1px solid var(--primary-color) !important;
+    background-color: var(--input-bg);
+    color: var(--text-main);
+    border-radius: 4px;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+}
+
+body.dark-mode .inline-edit-input {
+    background-color: #1e293b;
+    border-color: #3b82f6 !important;
+    color: #f1f5f9;
 }
 
 .stat-card {

@@ -1,0 +1,236 @@
+{
+  "docs": [
+    {
+      "id": "400-2026",
+      "fecha": "2026-02-13",
+      "tipo": "INFORME N° 014-2026-TESORERIA-IESTP-FPGV-TACNA",
+      "nombre": "Ing. Willy Balboa Mamani",
+      "status": "FINALIZADO",
+      "folios": "4"
+    },
+    {
+      "id": "399-2026",
+      "fecha": "2026-02-13",
+      "tipo": "INFORME N: 001-2026-MVG-IESP-FPGV-FPGV-T",
+      "nombre": "Sr. Mario Vargas Gutierrez",
+      "status": "Finalizado",
+      "folios": "2"
+    },
+    {
+      "id": "398-2026",
+      "fecha": "2026-02-13",
+      "tipo": "INFORME N° 002-2026/JLCC/IESP-FPGV",
+      "nombre": "Juana Luisa Cama Cruz",
+      "status": "FINALIZADO",
+      "folios": "1"
+    },
+    {
+      "id": "397-2026",
+      "fecha": "2026-02-13",
+      "tipo": "INFORME N° 025-2026-CA-FC/PA/IESTP-TACNA - SABS N° 006489",
+      "nombre": "Ing. Ray D. Velazco",
+      "status": "FINALIZADO",
+      "folios": "2"
+    },
+    {
+      "id": "396-2026",
+      "fecha": "2026-02-12",
+      "tipo": "OFICIO N° 241-2026-UGP-UGEL.T-DRET-GOB. REG. TACNA.",
+      "nombre": "Dr. Orlando Quihue Arotico",
+      "status": "Derivado",
+      "folios": "1"
+    },
+    {
+      "id": "395-2026",
+      "fecha": "2026-02-12",
+      "tipo": "CARTA FCPC-001-2026-02-JRCG-CG-07183",
+      "nombre": "Orlando Medina Q.",
+      "status": "FINALIZADO",
+      "folios": "2"
+    },
+    {
+      "id": "394-2026",
+      "fecha": "2026-02-12",
+      "tipo": "OFICIO MULTIPLE N° 018-2026-ORA-HH-DRET/GOB. REG. TACNA",
+      "nombre": "Prof. Yuri Mejia Tang",
+      "status": "FINALIZADO",
+      "folios": "5"
+    },
+    {
+      "id": "393-2026",
+      "fecha": "2026-02-12",
+      "tipo": "INFORME N° 026-2026-JUADM-IESP-FPGV-DAA-T",
+      "nombre": "Modesta Quispe Chambilla",
+      "status": "FINALIZADO",
+      "folios": "1"
+    },
+    {
+      "id": "392-2026",
+      "fecha": "2026-02-12",
+      "tipo": "INFORME N° 025-2026-JUADM-IESP-FPGV DAA-T",
+      "nombre": "Modesta Quispe Chambilla",
+      "status": "Derivado",
+      "folios": "1"
+    },
+    {
+      "id": "391-2026",
+      "fecha": "2026-02-12",
+      "tipo": "INFORME N° 020-2026-JUADM-IESP-FPGV DAA-T",
+      "nombre": "Modesta Quispe Chambilla",
+      "status": "FINALIZADO",
+      "folios": "4"
+    }
+  ],
+  "history": [
+    {
+      "docId": "392-2026",
+      "action": "Derivación / Actualización",
+      "from_area": "Area de Administración",
+      "to_area": "Area de Administración"
+    },
+    {
+      "docId": "392-2026",
+      "action": "Derivación / Actualización",
+      "from_area": "Area de Administración",
+      "to_area": "Area de Administración"
+    },
+    {
+      "docId": "396-2026",
+      "action": "Derivación / Actualización",
+      "from_area": "Area de Administración",
+      "to_area": "Area de Administración"
+    },
+    {
+      "docId": "396-2026",
+      "action": "Derivación / Actualización",
+      "from_area": "Area de Administración",
+      "to_area": "Area de Administración"
+    },
+    {
+      "docId": "399-2026",
+      "action": "Finalización",
+      "from_area": "Area de Administración",
+      "to_area": "Area de Administración"
+    },
+    {
+      "docId": "400-2026",
+      "action": "Derivación / Actualización",
+      "from_area": "Jefatura de Unidad Administrativa",
+      "to_area": "Area de Administración"
+    },
+    {
+      "docId": "400-2026",
+      "action": "Recepción",
+      "from_area": "Mesa de partes",
+      "to_area": "Jefatura de Unidad Administrativa"
+    },
+    {
+      "docId": "399-2026",
+      "action": "Derivación / Actualización",
+      "from_area": "Jefatura de Unidad Administrativa",
+      "to_area": "Area de Administración"
+    },
+    {
+      "docId": "399-2026",
+      "action": "Recepción",
+      "from_area": "Mesa de partes",
+      "to_area": "Jefatura de Unidad Administrativa"
+    },
+    {
+      "docId": "398-2026",
+      "action": "Derivación / Actualización",
+      "from_area": "Jefatura de Unidad Administrativa",
+      "to_area": "Area de Administración"
+    },
+    {
+      "docId": "398-2026",
+      "action": "Recepción",
+      "from_area": "Mesa de partes",
+      "to_area": "Jefatura de Unidad Administrativa"
+    },
+    {
+      "docId": "397-2026",
+      "action": "Derivación / Actualización",
+      "from_area": "Jefatura de Unidad Administrativa",
+      "to_area": "Area de Administración"
+    },
+    {
+      "docId": "397-2026",
+      "action": "Recepción",
+      "from_area": "Mesa de partes",
+      "to_area": "Jefatura de Unidad Administrativa"
+    },
+    {
+      "docId": "396-2026",
+      "action": "Derivación / Actualización",
+      "from_area": "Jefatura de Unidad Administrativa",
+      "to_area": "Area de Administración"
+    },
+    {
+      "docId": "396-2026",
+      "action": "Recepción",
+      "from_area": "Mesa de partes",
+      "to_area": "Jefatura de Unidad Administrativa"
+    },
+    {
+      "docId": "395-2026",
+      "action": "Derivación / Actualización",
+      "from_area": "Jefatura de Unidad Administrativa",
+      "to_area": "Area de Administración"
+    },
+    {
+      "docId": "395-2026",
+      "action": "Recepción",
+      "from_area": "Mesa de partes",
+      "to_area": "Jefatura de Unidad Administrativa"
+    },
+    {
+      "docId": "394-2026",
+      "action": "Derivación / Actualización",
+      "from_area": "Jefatura de Unidad Administrativa",
+      "to_area": "Area de Administración"
+    },
+    {
+      "docId": "394-2026",
+      "action": "Recepción",
+      "from_area": "Mesa de partes",
+      "to_area": "Jefatura de Unidad Administrativa"
+    },
+    {
+      "docId": "393-2026",
+      "action": "Derivación / Actualización",
+      "from_area": "Jefatura de Unidad Administrativa",
+      "to_area": "Area de Administración"
+    },
+    {
+      "docId": "393-2026",
+      "action": "Recepción",
+      "from_area": "Mesa de partes",
+      "to_area": "Jefatura de Unidad Administrativa"
+    },
+    {
+      "docId": "392-2026",
+      "action": "Derivación / Actualización",
+      "from_area": "Jefatura de Unidad Administrativa",
+      "to_area": "Area de Administración"
+    },
+    {
+      "docId": "392-2026",
+      "action": "Recepción",
+      "from_area": "Mesa de partes",
+      "to_area": "Jefatura de Unidad Administrativa"
+    },
+    {
+      "docId": "391-2026",
+      "action": "Derivación / Actualización",
+      "from_area": "Jefatura de Unidad Administrativa",
+      "to_area": "Area de Administración"
+    },
+    {
+      "docId": "391-2026",
+      "action": "Recepción",
+      "from_area": "Mesa de partes",
+      "to_area": "Jefatura de Unidad Administrativa"
+    }
+  ]
+}

@@ -18,6 +18,9 @@ router.post('/api/documents', isAuthenticated, documentController.upload.single(
 
 router.post('/api/documents/update-location', documentController.updateLocation);
 
+// Ruta para actualizar campos en linea (Inline Edit)
+router.put('/api/documents/:id', isAuthenticated, documentController.updateDocumentInline);
+
 // Ruta para subir PDF
 router.post('/api/documents/:id/upload', isAuthenticated, documentController.upload.single('pdfFile'), documentController.uploadPdf); // 'pdfFile' must match input name
 router.delete('/api/documents/:id/pdf', isAuthenticated, documentController.deletePdf);

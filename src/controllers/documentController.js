@@ -305,3 +305,29 @@ exports.deletePdf = (req, res) => {
         }
     });
 };
+
+// Inline Edit: Actualizar campos específicos
+exports.updateDocumentInline = (req, res) => {
+    const docId = req.params.id;
+    const { tipo, nombre, origen, concepto, folios, fecha } = req.body;
+
+    db.get('SELECT * FROM documents WHERE id = ?', [docId], (err, doc) => {
+        if (err || !doc) return res.status(404).json({ success: false, message: 'Documento no encontrado' });
+
+        const newTipo = tipo !== undefined ? tipo : doc.tipo;
+        const newNombre = nombre !== undefined ? nombre : doc.nombre;
+        const newOrigen = origen !== undefined ? origen : doc.origen;
+        const newConcepto = concepto !== undefined ? concepto : doc.concepto;
+        const newFolios = folios !== undefined ? folios : doc.folios;
+        const newFecha = fecha !== undefined ? fecha : doc.fecha;
+
+        db.run(
+            `UPDATE documents SET tipo = ?, nombre = ?, origen = ?, concepto = ?, folios = ?, fecha = ? WHERE id = ?`,
+            [newTipo, newNombre, newOrigen, newConcepto, newFolios, newFecha, docId],
+            function(err) {
+                if (err) return res.status(500).json({ success: false, error: err.message });
+                res.json({ success: true, message: 'Documento actualizado correctamente' });
+            }
+        );
+    });
+};

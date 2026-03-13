@@ -29,6 +29,9 @@ document.getElementById('tipo').addEventListener('change', function () {
     if (this.value === 'Otro') {
         inputTipoOtro.style.display = 'block';
         inputTipoOtro.focus();
+    } else if (this.value === 'FUT S/N') {
+        inputNumeroInforme.style.display = 'none';
+        inputNumeroInforme.value = '';
     } else {
         // For all other options (FUT, INFORME, CARTA, etc.) show the number input
         inputNumeroInforme.style.display = 'block';
@@ -85,6 +88,8 @@ async function submitForm() {
         if (!tipoVal) {
             showError('tipoOtro');
         }
+    } else if (tipoVal === 'FUT S/N') {
+        // No number required for FUT S/N
     } else {
         const numInforme = document.getElementById('numeroInforme').value.trim();
         if (!numInforme) {

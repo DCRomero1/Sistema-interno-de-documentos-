@@ -1,3 +1,5 @@
+let editMode = false;
+
 // Load documents on startup
 document.addEventListener('DOMContentLoaded', () => {
     loadDocuments();
@@ -231,6 +233,11 @@ function renderTable(documents) {
         // Determine Cargo Display based on the LATEST history entry
         let cargoDisplay = formatEmpty(safeCargo);
 
+        let cargo1 = safeCargo;
+        let loc1 = safeUbicacion;
+        let cargo2 = '';
+        let loc2 = '';
+
         if (doc.history && doc.history.length > 0) {
             // 1. Filter relevant history entries (Derivations/Finalizations that have a cargo)
             const derivations = doc.history.filter(h =>
@@ -247,6 +254,14 @@ function renderTable(documents) {
                 const latestDerivations = derivations.filter(h => h.date === latestDate);
 
                 if (latestDerivations.length > 0) {
+                    cargo1 = latestDerivations[0].cargo || cargo1;
+                    loc1 = latestDerivations[0].to || loc1;
+                    
+                    if (latestDerivations.length > 1) {
+                        cargo2 = latestDerivations[1].cargo || '';
+                        loc2 = latestDerivations[1].to || '';
+                    }
+
                     const cargos = latestDerivations.map(d => d.cargo).filter(c => c);
                     // Remove duplicates just in case
                     const uniqueCargos = [...new Set(cargos)];
@@ -270,13 +285,13 @@ function renderTable(documents) {
         row.innerHTML = `
             <td data-label="N° Corr." style="font-weight: bold; color: var(--primary-color);">${displayId}</td>
             <td data-label="Recepción">${formatEmpty(displayFecha)}</td>
-            <td data-label="Tipo">${formatStackedType(doc.tipo)}</td>
-            <td data-label="Remitente">${formatRemitter(doc.nombre)}</td>
+            <td data-label="Tipo" data-field="tipo" class="editable-field">${formatStackedType(doc.tipo)}</td>
+            <td data-label="Remitente" data-field="nombre" class="editable-field">${formatRemitter(doc.nombre)}</td>
             <td data-label="Área Origen">${formatEmpty(doc.origen)}</td>
-            <td data-label="Concepto">${formatEmpty(doc.concepto)}</td>
+            <td data-label="Concepto" data-field="concepto" class="editable-field">${formatEmpty(doc.concepto)}</td>
             <td data-label="Despacho">${formatEmpty(displayFechaDespacho)}</td>
             <td data-label="Área de derivacion">${formatEmpty(safeUbicacion)}</td>
-            <td data-label="Folios">${formatEmpty(doc.folios)}</td>
+            <td data-label="Folios" data-field="folios" class="editable-field">${formatEmpty(doc.folios)}</td>
             <td data-label="Cargo">${cargoDisplay}</td>
             <td data-label="Estado">${getBadge(safeStatus)}</td>
             <td>
@@ -285,7 +300,7 @@ function renderTable(documents) {
                         <i class="fa-solid fa-ellipsis-vertical"></i>
                     </button>
                     <div id="dropdown-${safeId}" class="action-dropdown">
-                        <button class="action-item" onclick="openModal('${safeId}', '${safeFecha}', '${safeUbicacion}', '${safeCargo}')">
+                        <button class="action-item" onclick="openModal('${safeId}', '${safeFecha}', '${escapeHtml(loc1)}', '${escapeHtml(cargo1)}', '${escapeHtml(loc2)}', '${escapeHtml(cargo2)}')">
                             <i class="fa-solid fa-pen-to-square"></i> Actualizar
                         </button>
                         ${doc.pdf_path ?
@@ -409,6 +424,132 @@ window.addEventListener('click', function (event) {
 document.addEventListener('DOMContentLoaded', () => {
     const filterStatus = document.getElementById('filterStatus');
 
+    let editMode = false; // State variable for edit mode
+
+    // Modal Logic...
+    
+    // Edit Mode Toggle
+    const btnEditMode = document.getElementById('btnEditMode');
+    if (btnEditMode) {
+        btnEditMode.addEventListener('click', () => {
+            editMode = !editMode;
+            if (editMode) {
+                document.body.classList.add('inline-edit-active');
+                btnEditMode.innerHTML = '<i class="fa-solid fa-check"></i> <span class="font-bold">Finalizar Edición</span>';
+                btnEditMode.style.backgroundColor = '#dc2626'; // red-600
+                Swal.fire({
+                    title: 'Modo Edición Activado',
+                    text: 'Haz clic en Tipo, Remitente, Concepto o Folios para editar su valor.',
+                    icon: 'info',
+                    timer: 3000,
+                    showConfirmButton: false
+                });
+            } else {
+                document.body.classList.remove('inline-edit-active');
+                btnEditMode.innerHTML = '<i class="fa-solid fa-pen-to-square"></i> <span>Activar Edición</span>';
+                btnEditMode.style.backgroundColor = '#2563eb'; // blue-600
+                // Re-render table to ensure all inputs are removed and original content is restored
+                renderTable(allDocuments);
+            }
+        });
+    }
+
+    // Inline Editing Logic
+    document.getElementById('documentsTableBody').addEventListener('click', (e) => {
+        if (!editMode) return;
+
+        // Ensure we clicked inside an editable field td
+        const td = e.target.closest('td.editable-field');
+        if (!td) return;
+        
+        // Prevent editing if already editing this cell
+        if (td.querySelector('input')) return;
+
+        const tr = td.closest('tr');
+        // Extract docId from the first action-item button's onclick attribute
+        const docIdFull = tr.querySelector('.action-menu-container .action-dropdown .action-item').getAttribute('onclick').match(/'([^']+)'/)[1];
+        const fieldName = td.dataset.field;
+
+        // We need the raw original value, which we can find by finding the doc object
+        const doc = allDocuments.find(d => d.id === docIdFull);
+        if (!doc) return;
+
+        let originalValue = doc[fieldName] || '';
+        
+        if (fieldName === 'fecha') {
+            // For date, format to YYYY-MM-DD for input type date
+            if (originalValue.includes('T')) originalValue = originalValue.split('T')[0];
+        }
+
+        // Save original HTML to restore if cancelled
+        const originalHTML = td.innerHTML;
+
+        // Create input element
+        td.innerHTML = '';
+        const input = document.createElement('input');
+        input.type = fieldName === 'fecha' ? 'date' : (fieldName === 'folios' ? 'number' : 'text');
+        input.value = originalValue;
+        input.className = 'inline-edit-input form-input';
+        input.style.width = '100%';
+        input.style.minWidth = '100px';
+        input.style.padding = '4px 8px';
+        input.style.fontSize = '0.9rem';
+
+        td.appendChild(input);
+        input.focus();
+
+        // Handle Save
+        const saveEdit = async () => {
+            const newValue = input.value.trim();
+            if (newValue === originalValue) {
+                renderTable(allDocuments); // Simply re-render to restore original format
+                return;
+            }
+
+            try {
+                const bodyData = {};
+                bodyData[fieldName] = newValue;
+
+                const response = await fetch(`/api/documents/${docIdFull}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(bodyData)
+                });
+
+                if (response.ok) {
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'success',
+                        title: 'Campo actualizado',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    // Reload data silently
+                    await loadDocuments(); 
+                } else {
+                    Swal.fire('Error', 'No se pudo actualizar', 'error');
+                    renderTable(allDocuments);
+                }
+            } catch (error) {
+                console.error('Error updating inline:', error);
+                Swal.fire('Error', 'Error de conexión', 'error');
+                renderTable(allDocuments);
+            }
+        };
+
+        // Events
+        input.addEventListener('blur', saveEdit);
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                input.blur(); // Triggers saveEdit
+            } else if (e.key === 'Escape') {
+                renderTable(allDocuments); // Cancel
+            }
+        });
+    });
+
 
     // Populate Dynamic Filters
     // Populate Dynamic Filters
@@ -416,6 +557,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Defined official areas
         const officialAreas = [
             "Consejo Asesor",
+            "Tesoreria-Caja",
             "Area de Administración",
             "Area de Calidad",
             "Secretaría Académica",
@@ -491,8 +633,10 @@ document.addEventListener('DOMContentLoaded', () => {
         "Asistente administrativo": "Area de Administración",
         "Seguridad y vigilancia": "Area de Administración",
         "Limpieza y mantenimiento": "Area de Administración",
-        "Caja": "Area de Administración",
-        "Tesorero": "Area de Administración",
+        "Caja": "Tesoreria-Caja",
+        "Tesoreria-Caja": "Tesoreria-Caja",
+        "Tesoreria": "Tesoreria-Caja",
+        "Personal De Turno": "Area de Administración",
         "Jefatura de Unidad Administrativa": "Area de Administración",
         "Secretaria": "Area de Administración",
         "Oficinista II": "Area de Administración",
@@ -592,19 +736,19 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-function openModal(docId, fecha, ubicacion, cargo) {
+function openModal(docId, fecha, ubicacion, cargo, loc2Param, cargo2Param) {
     document.getElementById('updateModal').style.display = 'block';
     document.getElementById('modalDocId').value = docId;
-    const inputs = ['modalFechaDespacho', 'modalNewLocation', 'modalCargo'];
+    const inputs = ['modalFechaDespacho', 'modalNewLocation', 'modalCargo', 'modalNewLocation2', 'modalCargo2'];
 
     // Clear previous errors
     inputs.forEach(id => {
         const el = document.getElementById(id);
-        el.classList.remove('input-error');
-        // Remove old listeners to avoid duplicates (cloneNode is a simple way, or just add logic inside)
-        // ideally we define listeners outside, but for now specific clearing on focus
-        el.oninput = function () { this.classList.remove('input-error'); };
-        el.onchange = function () { this.classList.remove('input-error'); };
+        if (el) {
+            el.classList.remove('input-error');
+            el.oninput = function () { this.classList.remove('input-error'); };
+            el.onchange = function () { this.classList.remove('input-error'); };
+        }
     });
 
     const fFecha = document.getElementById('modalFechaDespacho');
@@ -613,11 +757,29 @@ function openModal(docId, fecha, ubicacion, cargo) {
 
     fFecha.value = fecha;
     fUbicacion.value = ubicacion;
-
     fCargo.value = cargo;
     document.getElementById('modalObs').value = '';
-    // Reset Checkbox
+    
+    // Checkboxes and Second Derivation Elements
     document.getElementById('modalFinalize').checked = false;
+    
+    const enableSecond = document.getElementById('enableSecondDerivation');
+    const secondFields = document.getElementById('secondDerivationFields');
+    const fCargo2 = document.getElementById('modalCargo2');
+    const fLoc2 = document.getElementById('modalNewLocation2');
+
+    // Populate Second derivation if exists
+    if (loc2Param && cargo2Param && loc2Param !== 'undefined' && cargo2Param !== 'undefined' && loc2Param !== '' && cargo2Param !== '') {
+        if (enableSecond) enableSecond.checked = true;
+        if (secondFields) secondFields.style.display = 'block';
+        if (fLoc2) fLoc2.value = loc2Param;
+        if (fCargo2) fCargo2.value = cargo2Param;
+    } else {
+        if (enableSecond) enableSecond.checked = false;
+        if (secondFields) secondFields.style.display = 'none';
+        if (fCargo2) fCargo2.value = '';
+        if (fLoc2) fLoc2.value = '';
+    }
 
     // Highlight empty fields immediately
     if (!fecha) fFecha.classList.add('input-error');
